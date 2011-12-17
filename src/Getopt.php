@@ -45,16 +45,16 @@ class Getopt {
      * The argument $options can be either a string in the format accepted by the PHP library
      * function getopt() or an array
      *
-     * @param mixed $options see above
+     * @param mixed $options Array of options, a String, or null
      *
      * @link https://www.gnu.org/s/hello/manual/libc/Getopt.html GNU Getopt manual
      */
-    public function __construct($options) {
+    public function __construct($options = null) {
         if (is_string($options)) {
             $this->optionList = $this->parseOptionString($options);
         } elseif (is_array($options)) {
             $this->optionList = $this->validateOptions($options);
-        } else {
+        } else if ($options != null) {
             throw new InvalidArgumentException("Getopt(): argument must be string or array");
         }
     }
