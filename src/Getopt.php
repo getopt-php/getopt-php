@@ -33,7 +33,7 @@ class Getopt {
     const REQUIRED_ARGUMENT = 1;
     const OPTIONAL_ARGUMENT = 2;
 
-    private $optionList;
+    private $optionList = array();
 
     private $options;
 
@@ -50,12 +50,8 @@ class Getopt {
      * @link https://www.gnu.org/s/hello/manual/libc/Getopt.html GNU Getopt manual
      */
     public function __construct($options = null) {
-        if (is_string($options)) {
-            $this->optionList = $this->parseOptionString($options);
-        } elseif (is_array($options)) {
-            $this->optionList = $this->validateOptions($options);
-        } else if ($options != null) {
-            throw new InvalidArgumentException("Getopt(): argument must be string or array");
+        if ($options !== null) {
+            $this->addOptions($options);
         }
     }
 
@@ -305,5 +301,38 @@ class Getopt {
      */
     public function getOptionList() {
         return $this->optionList;
+    }
+
+    /**
+     * Parses and Adds options
+     * The argument $options can be either a string in the format accepted by the PHP library
+     * function getopt() or an array
+     *
+     * @param mixed $options Array of options, a String, or null
+     */
+    public function addOptions($options)
+    {
+        if (is_string($options)) {
+            return $this->addParsedOptions($this->parseOptionString($options));
+        }
+
+        if (is_array($options)) {
+            return $this->addParsedOptions($this->validateOptions($options));
+        }
+        
+        throw new InvalidArgumentException("Getopt(): argument must be string or array");
+    }
+
+    /**
+     * Merges new options with the ones already in the Getopt optionList.
+     * 
+     * @param array $options The array from parsing from parseOptionString() or validateOptions()
+     *
+     * @return array
+     * @internal
+     */
+    private function addParsedOptions (array $options)
+    {
+        return $this->optionList = array_merge($this->optionList, $options);
     }
 }
