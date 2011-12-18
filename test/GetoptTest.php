@@ -1,6 +1,6 @@
 <?php
 
-require_once '../src/Getopt.php';
+require_once dirname(__FILE__) . '/../src/Getopt.php';
 
 
 class GetoptTest extends PHPUnit_Framework_TestCase {
