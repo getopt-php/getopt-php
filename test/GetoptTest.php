@@ -4,7 +4,6 @@ require_once dirname(__FILE__) . '/../src/Getopt.php';
 
 
 class GetoptTest extends PHPUnit_Framework_TestCase {
-    
     public function testConstructorString() {
         $getopt = new Getopt('ab:c::d');
         $opts = $getopt->getOptionList();
@@ -230,5 +229,22 @@ class GetoptTest extends PHPUnit_Framework_TestCase {
         $getopt->parse('-a -b');
         $this->assertEquals(1, $getopt->getOption('a'));
         $this->assertEquals(1, $getopt->getOption('b'));
+    }
+
+    public function testAddOptions ()
+    {
+        $getopt = new Getopt();
+        $getopt->addOptions('a:');
+        $getopt->addOptions(array(
+            array('s', null, Getopt::OPTIONAL_ARGUMENT),
+            array(null, 'long', Getopt::OPTIONAL_ARGUMENT),
+            array('n', 'name', Getopt::OPTIONAL_ARGUMENT)
+        ));
+
+        $getopt->parse('-a aparam -s sparam --long longparam');
+        $this->assertCount(4, $getopt->getOptionList());
+        $this->assertEquals('aparam', $getopt->getOption('a'));
+        $this->assertEquals('longparam', $getopt->getOption('long'));
+        $this->assertEquals('sparam', $getopt->getOption('s'));
     }
 }

@@ -57,6 +57,19 @@ Example:
         array('c', 'charlie', Getopt::OPTIONAL_ARGUMENT)
     ));
 
+#### Adding more options after the Getopt object has been created
+
+The method `addOptions()` can be called with the same arguments as `__construct()`, the options that
+get parsed, will be merged with the previous ones. 
+
+    $getopt = new Getopt;
+    $getopt->addOptions('ab:c::')
+    $getopt->addOptions(array(
+        array('a', null, Getopt::NO_ARGUMENT),
+        array(null, 'bravo', Getopt::REQUIRED_ARGUMENT),
+        array('c', 'charlie', Getopt::OPTIONAL_ARGUMENT)
+    ));
+
 ### 2. Invoke the parser
 
 After constructing the Getopt object, a call to `parse()` will evaluate the arguments and store the
