@@ -83,7 +83,6 @@ class Getopt {
                 continue;
             }
             if ($arg == '--' || substr($arg, 0, 1) != '-') {
-                echo "fetching rest as operands\n";
                 // no more options, treat the remaining arguments as operands
                 $first_operand_index = $arg == '--' ? $i + 1 : $i;
                 $this->operands = array_slice($arguments, $first_operand_index);
