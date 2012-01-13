@@ -138,6 +138,13 @@ Notes
   an equals sign: `--option=-value` works, whereas `--option -value` does not.
 
 
+Composer support
+----------------
+
+Getopt.PHP is available as a [Composer](https://github.com/composer/composer) package on
+[Packagist](http://packagist.org/packages/ulrichsg/getopt-php).
+
+
 References
 ----------
 
