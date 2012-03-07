@@ -1,9 +1,9 @@
 <?php
+namespace Ulrichsg;
 
-require_once dirname(__FILE__) . '/../src/Getopt.php';
+require_once __DIR__ . '/../../src/Ulrichsg/Getopt.php';
 
-
-class GetoptTest extends PHPUnit_Framework_TestCase {
+class GetoptTest extends \PHPUnit_Framework_TestCase {
     public function testConstructorString() {
         $getopt = new Getopt('ab:c::d');
         $opts = $getopt->getOptionList();

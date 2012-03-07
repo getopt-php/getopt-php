@@ -1,5 +1,5 @@
 <?php
-
+namespace Ulrichsg;
 /*
  * Copyright (c) 2011 Ulrich Schmidt-Goertz <ulrich at schmidt-goertz.de>
  *
@@ -166,7 +166,7 @@ class Getopt {
      */
     private function parseOptionString($string) {
         if (empty($string)) {
-            throw new InvalidArgumentException('Option string must not be empty');
+            throw new \InvalidArgumentException('Option string must not be empty');
         }
         $option_list = array();
         $eol = strlen($string) - 1;
@@ -175,7 +175,7 @@ class Getopt {
             $ch = $string[$i];
             if (!preg_match('/^[A-Za-z]$/', $ch)) {
                 $colon = $next_can_be_colon ? " or ':'" : '';
-                throw new InvalidArgumentException("Option string is not well formed: "
+                throw new \InvalidArgumentException("Option string is not well formed: "
                         . "expected a letter$colon, found '$ch' at position " . ($i + 1));
             }
             if ($i == $eol || $string[$i + 1] != ':') {
@@ -208,25 +208,25 @@ class Getopt {
             self::NO_ARGUMENT, self::OPTIONAL_ARGUMENT, self::REQUIRED_ARGUMENT
         );
         if (empty($options)) {
-            throw new InvalidArgumentException('No options given');
+            throw new \InvalidArgumentException('No options given');
         }
         foreach ($options as $option) {
             if (!is_array($option) || count($option) < 3) {
-                throw new InvalidArgumentException("Too few fields in argument, must be 3 (short/long/type)");
+                throw new \InvalidArgumentException("Too few fields in argument, must be 3 (short/long/type)");
             }
             if (!(is_null($option[0]) || preg_match("/^[a-zA-Z]$/", $option[0]))) {
-                throw new InvalidArgumentException("First component of option must be "
+                throw new \InvalidArgumentException("First component of option must be "
                         . "null or a letter, found '" . $option[0] . "'");
             }
             if (!(is_null($option[1]) || preg_match("/^[a-zA-Z0-9_-]*$/", $option[1]))) {
-                throw new InvalidArgumentException("Second component of option must be "
+                throw new \InvalidArgumentException("Second component of option must be "
                         . "null or an alphanumeric string, found '" . $option[1] . "'");
             }
             if (empty($option[0]) && empty($option[1])) {
-                throw new InvalidArgumentException("The short and long name of an option must not both be empty");
+                throw new \InvalidArgumentException("The short and long name of an option must not both be empty");
             }
             if (!in_array($option[2], $valid_argument_specs, true)) {
-                throw new InvalidArgumentException("Third component of option must be one of "
+                throw new \InvalidArgumentException("Third component of option must be one of "
                         . "Getopt::NO_ARGUMENT, Getopt::OPTIONAL_ARGUMENT and Getopt::REQUIRED_ARGUMENT");
             }
         }
@@ -247,7 +247,7 @@ class Getopt {
         foreach ($this->optionList as $opt) {
             if (($is_long && $opt[1] == $option) || (!$is_long && $opt[0] == $option)) {
                 if ($opt[2] == self::REQUIRED_ARGUMENT && empty($value)) {
-                    throw new UnexpectedValueException("Option '$option' must have a value");
+                    throw new \UnexpectedValueException("Option '$option' must have a value");
                 }
                 // for no-argument options, check if they are duplicate
                 if ($opt[2] == self::NO_ARGUMENT) {
@@ -268,7 +268,7 @@ class Getopt {
                 return;
             }
         }
-        throw new UnexpectedValueException("Option '$option' is unknown");
+        throw new \UnexpectedValueException("Option '$option' is unknown");
     }
 
     /**
@@ -319,7 +319,7 @@ class Getopt {
             return $this->addParsedOptions($this->validateOptions($options));
         }
         
-        throw new InvalidArgumentException("Getopt(): argument must be string or array");
+        throw new \InvalidArgumentException("Getopt(): argument must be string or array");
     }
 
     /**
