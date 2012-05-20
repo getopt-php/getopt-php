@@ -165,7 +165,7 @@ class Getopt {
      * @internal
      */
     private function parseOptionString($string) {
-        if (empty($string)) {
+        if (!strlen($string)) {
             throw new \InvalidArgumentException('Option string must not be empty');
         }
         $option_list = array();
@@ -222,7 +222,7 @@ class Getopt {
                 throw new \InvalidArgumentException("Second component of option must be "
                         . "null or an alphanumeric string, found '" . $option[1] . "'");
             }
-            if (empty($option[0]) && empty($option[1])) {
+            if (!strlen($option[0]) && !strlen($option[1])) {
                 throw new \InvalidArgumentException("The short and long name of an option must not both be empty");
             }
             if (!in_array($option[2], $valid_argument_specs, true)) {
@@ -246,7 +246,7 @@ class Getopt {
     private function addOption($option, $value, $is_long) {
         foreach ($this->optionList as $opt) {
             if (($is_long && $opt[1] == $option) || (!$is_long && $opt[0] == $option)) {
-                if ($opt[2] == self::REQUIRED_ARGUMENT && empty($value)) {
+                if ($opt[2] == self::REQUIRED_ARGUMENT && !strlen($value)) {
                     throw new \UnexpectedValueException("Option '$option' must have a value");
                 }
                 // for no-argument options, check if they are duplicate
@@ -255,14 +255,14 @@ class Getopt {
                     $value = is_null($old_value) ? 1 : $old_value + 1;
                 }
                 // for optional-argument options, set value to 1 if none was given
-                if (empty($value)) {
+                if (!strlen($value)) {
                     $value = 1;
                 }
                 // add both long and short names (if they exist) to the option array to facilitate lookup
-                if (!empty($opt[0])) {
+                if (strlen($opt[0]) > 0) {
                     $this->options[$opt[0]] = $value;
                 }
-                if (!empty($opt[1])) {
+                if (strlen($opt[1]) > 0) {
                     $this->options[$opt[1]] = $value;
                 }
                 return;

@@ -247,4 +247,10 @@ class GetoptTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('longparam', $getopt->getOption('long'));
         $this->assertEquals('sparam', $getopt->getOption('s'));
     }
+
+	public function testParseZeroArgument() {
+		$getopt = new Getopt('a:');
+		$getopt->parse('-a 0');
+		$this->assertEquals('0', $getopt->getOption('a'));
+	}
 }
