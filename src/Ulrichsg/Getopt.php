@@ -33,11 +33,12 @@ class Getopt {
     const REQUIRED_ARGUMENT = 1;
     const OPTIONAL_ARGUMENT = 2;
 
-    private $optionList = array();
-
-    private $options;
-
-    private $operands = array();
+    /** @var array */
+    protected $optionList = array();
+    /** @var array */
+    protected $options = array();
+    /** @var array */
+    protected $operands = array();
 
     /**
      * Create a new Getopt object.
@@ -148,6 +149,17 @@ class Getopt {
     }
 
     /**
+     * Return all the options. Must be invoked after parse().
+     *
+     * Will return an empty array if called before parse() is called.
+     *
+     * @return array
+     */
+    public function getOptions() {
+        return $this->options;
+    }
+
+    /**
      * Return the list of operands. Must be invoked after parse().
      *
      * @return array
@@ -161,7 +173,8 @@ class Getopt {
      *
      * @param string $string the option string
      *
-     * @return void
+     * @throws \InvalidArgumentException
+     * @return array
      * @internal
      */
     private function parseOptionString($string) {
@@ -200,6 +213,7 @@ class Getopt {
      *
      * @param array $options the option list
      *
+     * @throws \InvalidArgumentException
      * @return array the validated options array
      * @internal
      */
@@ -240,6 +254,7 @@ class Getopt {
      * @param string $value the option's value (or null)
      * @param boolean $is_long whether the option name is long or short
      *
+     * @throws \UnexpectedValueException
      * @return void
      * @internal
      */
@@ -308,6 +323,8 @@ class Getopt {
      * function getopt() or an array
      *
      * @param mixed $options Array of options, a String, or null
+     * @throws \InvalidArgumentException
+     * @return array
      */
     public function addOptions($options)
     {
