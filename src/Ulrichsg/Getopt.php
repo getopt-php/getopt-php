@@ -33,6 +33,8 @@ class Getopt {
     const REQUIRED_ARGUMENT = 1;
     const OPTIONAL_ARGUMENT = 2;
 
+    /** @var string */
+    protected $scriptName;
     /** @var array */
     protected $optionList = array();
     /** @var array */
@@ -72,8 +74,9 @@ class Getopt {
         if (!isset($arguments)) {
             global $argv;
             $arguments = $argv;
-            array_shift($arguments); // $argv[0] is the script's name
+            $this->scriptName = array_shift($arguments); // $argv[0] is the script's name
         } elseif (is_string($arguments)) {
+        	$this->scriptName = $_SERVER['PHP_SELF'];
             $arguments = explode(' ', $arguments);
         }
 
@@ -160,6 +163,24 @@ class Getopt {
     }
 
     /**
+     * Prints help message based on
+     */
+    public function showHelp() {
+    	printf("usage: %s [options] [operands]\n", $this->scriptName);
+    	foreach ($this->optionList as $name => $option) {
+    		list($short, $long, $required, $description) = $option;
+    		switch ($required) {
+    			case self::NO_ARGUMENT: $required = ''; break;
+    			case self::REQUIRED_ARGUMENT: $required = "<$long>"; break;
+    			case self::OPTIONAL_ARGUMENT: $required = "[$long]"; break;
+    		}
+    		$padded = str_pad(sprintf(" -%s, --%s %s", $short, $long, $required), 25);
+    		printf("%s %s\n", $padded, $description);
+
+    	}
+    }
+
+    /**
      * Return the list of operands. Must be invoked after parse().
      *
      * @return array
@@ -242,6 +263,9 @@ class Getopt {
             if (!in_array($option[2], $valid_argument_specs, true)) {
                 throw new \InvalidArgumentException("Third component of option must be one of "
                         . "Getopt::NO_ARGUMENT, Getopt::OPTIONAL_ARGUMENT and Getopt::REQUIRED_ARGUMENT");
+            }
+            if (!isset($option[3])) {
+            	$option[3] = ""; // description
             }
         }
         return $options;
@@ -335,13 +359,13 @@ class Getopt {
         if (is_array($options)) {
             return $this->addParsedOptions($this->validateOptions($options));
         }
-        
+
         throw new \InvalidArgumentException("Getopt(): argument must be string or array");
     }
 
     /**
      * Merges new options with the ones already in the Getopt optionList.
-     * 
+     *
      * @param array $options The array from parsing from parseOptionString() or validateOptions()
      *
      * @return array
