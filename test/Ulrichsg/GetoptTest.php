@@ -126,7 +126,7 @@ class GetoptTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals(1, $getopt->getOption('b'));
         $this->assertEquals(1, $getopt->getOption('c'));
     }
-    
+
     public function testParseCumulativeOption() {
         $getopt = new Getopt('ab');
         $getopt->parse('-a -b -a -a');
@@ -146,7 +146,7 @@ class GetoptTest extends \PHPUnit_Framework_TestCase {
         $getopt->parse('-a value');
         $this->assertEquals('value', $getopt->getOption('a'));
     }
-    
+
     public function testParseNoArgumentOptionAndOperand() {
         $getopt = new Getopt('a');
         $getopt->parse('-a b');
@@ -252,5 +252,27 @@ class GetoptTest extends \PHPUnit_Framework_TestCase {
 		$getopt = new Getopt('a:');
 		$getopt->parse('-a 0');
 		$this->assertEquals('0', $getopt->getOption('a'));
+	}
+
+	public function testShowHelp() {
+		$getopt = new Getopt(array(
+			array('f', 'file', Getopt::REQUIRED_ARGUMENT, 'file to use'),
+			array('h', 'help', Getopt::NO_ARGUMENT, 'print this message'),
+			array('v', 'verbose', Getopt::NO_ARGUMENT, 'display information while processing'),
+			array('d', 'date', Getopt::REQUIRED_ARGUMENT, 'force a particular date')
+		));
+
+		$getopt->parse('-f somefile.txt -v -d today');
+
+		$scriptName = $_SERVER['PHP_SELF'];
+
+		$expected  = "usage: $scriptName [options] [action]\n";
+		$expected .= " -f, --file <file>        file to use\n";
+		$expected .= " -h, --help               print this message\n";
+		$expected .= " -v, --verbose            display information while processing\n";
+		$expected .= " -d, --date <date>        force a particular date\n";
+
+		$this->expectOutputString($expected);
+		$getopt->showHelp();
 	}
 }
