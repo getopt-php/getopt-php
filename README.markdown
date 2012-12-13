@@ -19,10 +19,12 @@ Features
 Usage
 -----
 ### 0. Include the package
-    // Require the composer autloader
-    require_once __DIR__.'/../vendor/.composer/autoload.php';
-    use Ulrichsg\Getopt;
 
+```php
+// Require the composer autloader
+require_once __DIR__.'/../vendor/.composer/autoload.php';
+use Ulrichsg\Getopt;
+```
 ### 1. Create a Getopt object
 
 There are two ways to construct a Getopt instance:
@@ -31,9 +33,9 @@ There are two ways to construct a Getopt instance:
 
 The first way uses the very compact notation used by PHP's `getopt()` (and the original GNU getopt),
 but cannot be used to declare long options:
-
-    $getopt = new Getopt('ab:c::');
-
+```php
+$getopt = new Getopt('ab:c::');
+```
 Each letter declares one option. Letters may be followed by either one or two colons to determine
 if the option can or must have an argument:
 
@@ -55,24 +57,49 @@ have exactly three fields, in this order:
 
 Example:
 
-    $getopt = new Getopt(array(
-        array('a', null, Getopt::NO_ARGUMENT),
-        array(null, 'bravo', Getopt::REQUIRED_ARGUMENT),
-        array('c', 'charlie', Getopt::OPTIONAL_ARGUMENT)
-    ));
+```php
+$getopt = new Getopt(array(
+    array('a', null, Getopt::NO_ARGUMENT),
+    array(null, 'bravo', Getopt::REQUIRED_ARGUMENT),
+    array('c', 'charlie', Getopt::OPTIONAL_ARGUMENT)
+));
+```
 
 #### Adding more options after the Getopt object has been created
 
 The method `addOptions()` can be called with the same arguments as `__construct()`, the options that
-get parsed, will be merged with the previous ones. 
+get parsed, will be merged with the previous ones.
 
-    $getopt = new Getopt;
-    $getopt->addOptions('ab:c::')
-    $getopt->addOptions(array(
-        array('a', null, Getopt::NO_ARGUMENT),
-        array(null, 'bravo', Getopt::REQUIRED_ARGUMENT),
-        array('c', 'charlie', Getopt::OPTIONAL_ARGUMENT)
-    ));
+```php
+$getopt = new Getopt;
+$getopt->addOptions('ab:c::')
+$getopt->addOptions(array(
+    array('a', null, Getopt::NO_ARGUMENT),
+    array(null, 'bravo', Getopt::REQUIRED_ARGUMENT),
+    array('c', 'charlie', Getopt::OPTIONAL_ARGUMENT)
+));
+```
+
+#### Description
+
+You can optionally pass descriptions to arguments
+
+```php
+$getopt = new Getopt(array(
+    array('a', null, Getopt::NO_ARGUMENT, 'description of a'),
+    array(null, 'bravo', Getopt::REQUIRED_ARGUMENT, 'description of bravo'),
+    array('c', 'charlie', Getopt::OPTIONAL_ARGUMENT, 'description of charlie')
+));
+```
+
+Which can then be used by `showHelp()` to print a help message
+
+```bash
+usage: myscript.php [options] [operands]
+ -a, --                   description of a
+ -, --bravo <bravo>       description of bravo
+ -c, --charlie [charlie]  description of charlie
+```
 
 ### 2. Invoke the parser
 
@@ -100,11 +127,13 @@ one of the following:
 Note that, if an option has both a short and a long name, it can be retrieved using either name
 regardless of which name is used in the parsed data:
 
-    $getopt = new Getopt(array(
-        array('o', 'option', Getopt::REQUIRED_ARGUMENT)
-    );
-    $getopt->parse('-o value');
-    echo $getopt->getOption('option')); // value
+```php
+$getopt = new Getopt(array(
+    array('o', 'option', Getopt::REQUIRED_ARGUMENT)
+);
+$getopt->parse('-o value');
+echo $getopt->getOption('option')); // value
+```
 
 #### getOperands
 

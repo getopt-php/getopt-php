@@ -266,7 +266,7 @@ class GetoptTest extends \PHPUnit_Framework_TestCase {
 
 		$scriptName = $_SERVER['PHP_SELF'];
 
-		$expected  = "usage: $scriptName [options] [action]\n";
+		$expected  = "usage: $scriptName [options] [operands]\n";
 		$expected .= " -f, --file <file>        file to use\n";
 		$expected .= " -h, --help               print this message\n";
 		$expected .= " -v, --verbose            display information while processing\n";

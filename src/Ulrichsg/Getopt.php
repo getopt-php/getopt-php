@@ -166,7 +166,7 @@ class Getopt {
      * Prints help message based on
      */
     public function showHelp() {
-    	printf("usage: %s [options] [action]\n", $this->scriptName);
+    	printf("usage: %s [options] [operands]\n", $this->scriptName);
     	foreach ($this->optionList as $name => $option) {
     		list($short, $long, $required, $description) = $option;
     		switch ($required) {
