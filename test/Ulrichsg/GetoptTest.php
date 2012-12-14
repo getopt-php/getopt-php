@@ -256,21 +256,19 @@ class GetoptTest extends \PHPUnit_Framework_TestCase {
 
 	public function testShowHelp() {
 		$getopt = new Getopt(array(
-			array('f', 'file', Getopt::REQUIRED_ARGUMENT, 'file to use'),
-			array('h', 'help', Getopt::NO_ARGUMENT, 'print this message'),
-			array('v', 'verbose', Getopt::NO_ARGUMENT, 'display information while processing'),
-			array('d', 'date', Getopt::REQUIRED_ARGUMENT, 'force a particular date')
+			array('a', 'alpha', Getopt::NO_ARGUMENT, 'Short and long options with no argument'),
+			array(null, 'beta', Getopt::OPTIONAL_ARGUMENT, 'Long option only with an optional argument'),
+			array('c', null, Getopt::REQUIRED_ARGUMENT, 'Short option only with a mandatory argument')
 		));
+		$getopt->parse('');
 
-		$getopt->parse('-f somefile.txt -v -d today');
+		$script = $_SERVER['PHP_SELF'];
 
-		$scriptName = $_SERVER['PHP_SELF'];
-
-		$expected  = "usage: $scriptName [options] [operands]\n";
-		$expected .= " -f, --file <file>        file to use\n";
-		$expected .= " -h, --help               print this message\n";
-		$expected .= " -v, --verbose            display information while processing\n";
-		$expected .= " -d, --date <date>        force a particular date\n";
+		$expected  = "Usage: $script [options] [operands]\n";
+		$expected .= "Options:\n";
+		$expected .= "  -a, --alpha             Short and long options with no argument\n";
+		$expected .= "  --beta [<arg>]          Long option only with an optional argument\n";
+		$expected .= "  -c <arg>                Short option only with a mandatory argument\n";
 
 		$this->expectOutputString($expected);
 		$getopt->showHelp();
