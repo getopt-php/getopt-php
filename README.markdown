@@ -21,8 +21,7 @@ Usage
 ### 0. Include the package
 
 ```php
-// Require the composer autloader
-require_once __DIR__.'/../vendor/.composer/autoload.php';
+require 'vendor/autoload.php';
 use Ulrichsg\Getopt;
 ```
 ### 1. Create a Getopt object
