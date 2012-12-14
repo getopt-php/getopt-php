@@ -21,8 +21,7 @@ Usage
 ### 0. Include the package
 
 ```php
-// Require the composer autloader
-require_once __DIR__.'/../vendor/.composer/autoload.php';
+require 'vendor/autoload.php';
 use Ulrichsg\Getopt;
 ```
 ### 1. Create a Getopt object
@@ -86,19 +85,20 @@ You can optionally pass descriptions to arguments
 
 ```php
 $getopt = new Getopt(array(
-    array('a', null, Getopt::NO_ARGUMENT, 'description of a'),
-    array(null, 'bravo', Getopt::REQUIRED_ARGUMENT, 'description of bravo'),
-    array('c', 'charlie', Getopt::OPTIONAL_ARGUMENT, 'description of charlie')
+	array('a', 'alpha', Getopt::NO_ARGUMENT, 'Short and long options with no argument'),
+	array(null, 'beta', Getopt::OPTIONAL_ARGUMENT, 'Long option only with an optional argument'),
+	array('c', null, Getopt::REQUIRED_ARGUMENT, 'Short option only with a mandatory argument')
 ));
 ```
 
 Which can then be used by `showHelp()` to print a help message
 
 ```bash
-usage: myscript.php [options] [operands]
- -a, --                   description of a
- -, --bravo <bravo>       description of bravo
- -c, --charlie [charlie]  description of charlie
+Usage: script.php [options] [operands]
+Options:
+  -a, --alpha             Short and long options with no argument
+  --beta [<arg>]          Long option only with an optional argument
+  -c <arg>                Short option only with a mandatory argument
 ```
 
 ### 2. Invoke the parser

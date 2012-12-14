@@ -163,20 +163,29 @@ class Getopt {
     }
 
     /**
-     * Prints help message based on
+     * Prints help message based on the available options.
      */
     public function showHelp() {
-    	printf("usage: %s [options] [operands]\n", $this->scriptName);
+    	printf("Usage: %s [options] [operands]\n", $this->scriptName);
+    	echo "Options:\n";
     	foreach ($this->optionList as $name => $option) {
-    		list($short, $long, $required, $description) = $option;
-    		switch ($required) {
-    			case self::NO_ARGUMENT: $required = ''; break;
-    			case self::REQUIRED_ARGUMENT: $required = "<$long>"; break;
-    			case self::OPTIONAL_ARGUMENT: $required = "[$long]"; break;
+    		list($short, $long, $arg, $description) = $option;
+    		switch ($arg) {
+    			case self::NO_ARGUMENT: $arg = ''; break;
+    			case self::REQUIRED_ARGUMENT: $arg = "<arg>"; break;
+    			case self::OPTIONAL_ARGUMENT: $arg = "[<arg>]"; break;
     		}
-    		$padded = str_pad(sprintf(" -%s, --%s %s", $short, $long, $required), 25);
+    		$short = ($short) ? '-'.$short : '';
+    		$long = ($long) ? '--'.$long : '';
+    		if ($short && $long) {
+    			$options = $short.', '.$long;
+    		} else if ($short) {
+    			$options = $short;
+    		} else {
+    			$options = $long;
+    		}
+    		$padded = str_pad(sprintf("  %s %s", $options, $arg), 25);
     		printf("%s %s\n", $padded, $description);
-
     	}
     }
 
