@@ -101,6 +101,9 @@ Options:
   -c <arg>                Short option only with a mandatory argument
 ```
 
+If you don't want to output the usage information text directly you can use the output of the
+`getHelpText()` method to add e.g. usage examples.
+
 ### 2. Invoke the parser
 
 After constructing the Getopt object, a call to `parse()` will evaluate the arguments and store the
@@ -111,7 +114,11 @@ value instead.
 
 ### 3. Retrieve the values
 
-Getopt.PHP has two methods for retrieving data: `getOption()` and `getOperands()`.
+Getopt.PHP has multiple methods for retrieving data:
+
+* `getOptions()`,
+* `getOption($name)` and
+* `getOperands()`.
 
 #### getOption
 
