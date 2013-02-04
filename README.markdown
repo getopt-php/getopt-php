@@ -185,6 +185,16 @@ Getopt.PHP is available as a [Composer](https://github.com/composer/composer) pa
 [Packagist](http://packagist.org/packages/ulrichsg/getopt-php).
 
 
+Development
+-----------
+
+The `composer.json` file specifies PHPUnit as a development requirement. To install composer and
+the required development dependencies to enhance Getopt.PHP just run:
+<code>make install-dev-dependencies</code> and then run the tests via <code>make test</code>.
+
+To get a list of make target just run `make` without any commandline arguments.
+
+
 References
 ----------
 

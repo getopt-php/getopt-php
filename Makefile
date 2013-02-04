@@ -29,7 +29,7 @@ install-dependencies:
 install-dev-dependencies:
 
 	@make install-composer
-	@php -n -d allow_url_fopen=1 -d date.timezone="Europe/Berlin" ./bin/composer.phar -- update --dev
+	@php -n -d allow_url_fopen=1 -d date.timezone="Europe/Berlin" ./bin/composer.phar update --dev
 	
 .PHONY: test help
 
