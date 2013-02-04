@@ -62,10 +62,10 @@ class Getopt {
      * Evaluate the given arguments. These can be passed either as a string or as an array.
      * If nothing is passed, the running script's command line arguments are used.
      *
-     * A {@link GetoptParseException} is thrown when the arguments are not well-formed or
-     * do not conform to the options passed by the user.
+     * A {@link \UnexpectedValueException} or {@link \InvalidArgumentException} is thrown
+     * when the arguments are not well-formed or do not conform to the options passed by the user.
      *
-     * @param mixed $arguments optional
+     * @param mixed $arguments optional ARGV array or space separated string
      *
      * @return void
      */
@@ -86,18 +86,18 @@ class Getopt {
             if (empty($arg)) {
                 continue;
             }
-            if ($arg == '--' || substr($arg, 0, 1) != '-') {
+            if ($arg == '--' || mb_substr($arg, 0, 1) != '-') {
                 // no more options, treat the remaining arguments as operands
                 $first_operand_index = $arg == '--' ? $i + 1 : $i;
                 $this->operands = array_slice($arguments, $first_operand_index);
                 break;
             }
-            if (substr($arg, 0, 2) == '--') {
+            if (mb_substr($arg, 0, 2) == '--') {
                 // long option
-                $option = substr($arg, 2);
+                $option = mb_substr($arg, 2);
                 if (strpos($option, '=') === false) {
                     if ($i < $num_args - 1
-                            && substr($arguments[$i + 1], 0, 1) != '-'
+                            && mb_substr($arguments[$i + 1], 0, 1) != '-'
                             && $this->optionHasArgument($option, true)) {
                         $value = $arguments[$i + 1];
                         ++$i;
@@ -110,15 +110,15 @@ class Getopt {
                 $this->addOption($option, $value, true);
             } else {
                 // short option
-                $option = substr($arg, 1);
-                if (strlen($option) > 1) {
+                $option = mb_substr($arg, 1);
+                if (mb_strlen($option) > 1) {
                     // multiple options strung together
-                    foreach (str_split($option, 1) as $ch) {
+                    foreach ($this->mb_str_split($option, 1) as $ch) {
                         $this->addOption($ch, null, false);
                     }
                 } else {
                     if ($i < $num_args - 1
-                            && substr($arguments[$i + 1], 0, 1) != '-'
+                            && mb_substr($arguments[$i + 1], 0, 1) != '-'
                             && $this->optionHasArgument($option, false)) {
                         $value = $arguments[$i + 1];
                         ++$i;
@@ -164,30 +164,43 @@ class Getopt {
 
     /**
      * Prints help message based on the available options.
+     *
+     * @param int $padding Number of characters to pad output of options to
      */
-    public function showHelp() {
-    	printf("Usage: %s [options] [operands]\n", $this->scriptName);
-    	echo "Options:\n";
-    	foreach ($this->optionList as $name => $option) {
-    		list($short, $long, $arg, $description) = $option;
-    		switch ($arg) {
-    			case self::NO_ARGUMENT: $arg = ''; break;
-    			case self::REQUIRED_ARGUMENT: $arg = "<arg>"; break;
-    			case self::OPTIONAL_ARGUMENT: $arg = "[<arg>]"; break;
-    		}
-    		$short = ($short) ? '-'.$short : '';
-    		$long = ($long) ? '--'.$long : '';
-    		if ($short && $long) {
-    			$options = $short.', '.$long;
-    		} else if ($short) {
-    			$options = $short;
-    		} else {
-    			$options = $long;
-    		}
-    		$padded = str_pad(sprintf("  %s %s", $options, $arg), 25);
-    		printf("%s %s\n", $padded, $description);
-    	}
+    public function showHelp($padding = 25) {
+        echo $this->getHelpText($padding);
     }
+
+    /**
+     * @param int $padding Number of characters to pad output of options to
+     *
+     * @return string help message for given options.
+     */
+    public function getHelpText($padding = 25) {
+        $help_text = sprintf("Usage: %s [options] [operands]\n", $this->scriptName);
+        $help_text .= "Options:\n";
+        foreach ($this->optionList as $name => $option) {
+            @list($short, $long, $arg, $description) = $option;
+            switch ($arg) {
+                case self::NO_ARGUMENT: $arg = ''; break;
+                case self::REQUIRED_ARGUMENT: $arg = "<arg>"; break;
+                case self::OPTIONAL_ARGUMENT: $arg = "[<arg>]"; break;
+            }
+            $short = ($short) ? '-'.$short : '';
+            $long = ($long) ? '--'.$long : '';
+            if ($short && $long) {
+                $options = $short.', '.$long;
+            } else if ($short) {
+                $options = $short;
+            } else {
+                $options = $long;
+            }
+            $padded = str_pad(sprintf("  %s %s", $options, $arg), $padding);
+            $help_text .= sprintf("%s %s\n", $padded, $description);
+        }
+        return $help_text;
+    }
+
 
     /**
      * Return the list of operands. Must be invoked after parse().
@@ -207,12 +220,12 @@ class Getopt {
      * @return array
      * @internal
      */
-    private function parseOptionString($string) {
-        if (!strlen($string)) {
+    protected function parseOptionString($string) {
+        if (!mb_strlen($string)) {
             throw new \InvalidArgumentException('Option string must not be empty');
         }
         $option_list = array();
-        $eol = strlen($string) - 1;
+        $eol = mb_strlen($string) - 1;
         $next_can_be_colon = false;
         for ($i = 0; $i <= $eol; ++$i) {
             $ch = $string[$i];
@@ -247,7 +260,7 @@ class Getopt {
      * @return array the validated options array
      * @internal
      */
-    private function validateOptions(array $options) {
+    protected function validateOptions(array $options) {
         $valid_argument_specs = array(
             self::NO_ARGUMENT, self::OPTIONAL_ARGUMENT, self::REQUIRED_ARGUMENT
         );
@@ -266,7 +279,7 @@ class Getopt {
                 throw new \InvalidArgumentException("Second component of option must be "
                         . "null or an alphanumeric string, found '" . $option[1] . "'");
             }
-            if (!strlen($option[0]) && !strlen($option[1])) {
+            if (!mb_strlen($option[0]) && !mb_strlen($option[1])) {
                 throw new \InvalidArgumentException("The short and long name of an option must not both be empty");
             }
             if (!in_array($option[2], $valid_argument_specs, true)) {
@@ -291,10 +304,10 @@ class Getopt {
      * @return void
      * @internal
      */
-    private function addOption($option, $value, $is_long) {
+    protected function addOption($option, $value, $is_long) {
         foreach ($this->optionList as $opt) {
             if (($is_long && $opt[1] == $option) || (!$is_long && $opt[0] == $option)) {
-                if ($opt[2] == self::REQUIRED_ARGUMENT && !strlen($value)) {
+                if ($opt[2] == self::REQUIRED_ARGUMENT && !mb_strlen($value)) {
                     throw new \UnexpectedValueException("Option '$option' must have a value");
                 }
                 // for no-argument options, check if they are duplicate
@@ -303,14 +316,14 @@ class Getopt {
                     $value = is_null($old_value) ? 1 : $old_value + 1;
                 }
                 // for optional-argument options, set value to 1 if none was given
-                if (!strlen($value)) {
+                if (!mb_strlen($value)) {
                     $value = 1;
                 }
                 // add both long and short names (if they exist) to the option array to facilitate lookup
-                if (strlen($opt[0]) > 0) {
+                if (mb_strlen($opt[0]) > 0) {
                     $this->options[$opt[0]] = $value;
                 }
-                if (strlen($opt[1]) > 0) {
+                if (mb_strlen($opt[1]) > 0) {
                     $this->options[$opt[1]] = $value;
                 }
                 return;
@@ -328,7 +341,7 @@ class Getopt {
      * @return boolean
      * @internal
      */
-    private function optionHasArgument($name, $is_long) {
+    protected function optionHasArgument($name, $is_long) {
         foreach ($this->optionList as $option) {
             if ((!$is_long && $option[0] == $name)
                     || ($is_long && $option[1] == $name)) {
@@ -380,8 +393,30 @@ class Getopt {
      * @return array
      * @internal
      */
-    private function addParsedOptions (array $options)
+    protected function addParsedOptions (array $options)
     {
         return $this->optionList = array_merge($this->optionList, $options);
+    }
+
+    /**
+     * @param string $str string to split
+     * @param int $l 
+     *
+     * @return string
+     * @internal
+     */
+    protected function mb_str_split($str, $l = 0)
+    {
+        if ($l > 0) {
+            $ret = array();
+            $len = mb_strlen($str, "UTF-8");
+            for ($i = 0; $i < $len; $i += $l) {
+                $ret[] = mb_substr($str, $i, $l, "UTF-8");
+            }
+
+            return $ret;
+        }
+
+        return preg_split("//u", $str, -1, PREG_SPLIT_NO_EMPTY);
     }
 }
