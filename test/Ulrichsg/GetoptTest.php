@@ -35,7 +35,7 @@ class GetoptTest extends \PHPUnit_Framework_TestCase {
 
     public function testConstructorStringInvalidCharacter() {
         $this->setExpectedException('InvalidArgumentException');
-        $foo = new Getopt('ab:c::däΩ');
+        $foo = new Getopt('ab:c::dä');
     }
 
     public function testConstructorStringStartsWithColon() {
