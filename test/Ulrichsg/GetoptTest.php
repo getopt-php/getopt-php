@@ -291,4 +291,17 @@ class GetoptTest extends \PHPUnit_Framework_TestCase {
         $this->expectOutputString($expected);
         $getopt->showHelp();
     }
+
+    public function testDoubleHyphenNotInOperands()
+    {
+        $getopt = new Getopt('a:');
+        $getopt->parse('-a 0 foo -- bar baz');
+        $this->assertEquals('0', $getopt->getOption('a'));
+        $operands = $getopt->getOperands();
+        $this->assertInternalType('array', $operands);
+        $this->assertCount(3, $operands);
+        $this->assertEquals('foo', $operands[0]);
+        $this->assertEquals('bar', $operands[1]);
+        $this->assertEquals('baz', $operands[2]);
+    }
 }

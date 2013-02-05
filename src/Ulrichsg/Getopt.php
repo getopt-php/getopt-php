@@ -129,6 +129,15 @@ class Getopt {
                 }
             }
         } // endfor
+
+        // remove '--' from operands array
+        $operands = array();
+        foreach($this->operands as $operand) {
+            if ($operand !== '--') {
+                $operands[] = $operand;
+            }
+        }
+        $this->operands = $operands;
     }
 
     /**
