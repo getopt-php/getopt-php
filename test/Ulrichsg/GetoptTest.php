@@ -1,8 +1,6 @@
 <?php
 namespace Ulrichsg;
 
-require_once __DIR__ . '/../../src/Ulrichsg/Getopt.php';
-
 class GetoptTest extends \PHPUnit_Framework_TestCase {
     public function testConstructorString() {
         $getopt = new Getopt('ab:c::d');
@@ -248,29 +246,62 @@ class GetoptTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('sparam', $getopt->getOption('s'));
     }
 
-	public function testParseZeroArgument() {
-		$getopt = new Getopt('a:');
-		$getopt->parse('-a 0');
-		$this->assertEquals('0', $getopt->getOption('a'));
-	}
+    public function testParseZeroArgument() {
+        $getopt = new Getopt('a:');
+        $getopt->parse('-a 0');
+        $this->assertEquals('0', $getopt->getOption('a'));
+    }
 
-	public function testShowHelp() {
-		$getopt = new Getopt(array(
-			array('a', 'alpha', Getopt::NO_ARGUMENT, 'Short and long options with no argument'),
-			array(null, 'beta', Getopt::OPTIONAL_ARGUMENT, 'Long option only with an optional argument'),
-			array('c', null, Getopt::REQUIRED_ARGUMENT, 'Short option only with a mandatory argument')
+    public function testShowHelp() {
+        $getopt = new Getopt(array(
+            array('a', 'alpha', Getopt::NO_ARGUMENT, 'Short and long options with no argument'),
+            array(null, 'beta', Getopt::OPTIONAL_ARGUMENT, 'Long option only with an optional argument'),
+            array('c', null, Getopt::REQUIRED_ARGUMENT, 'Short option only with a mandatory argument')
 		));
-		$getopt->parse('');
+        $getopt->parse('');
 
-		$script = $_SERVER['PHP_SELF'];
+        $script = $_SERVER['PHP_SELF'];
 
-		$expected  = "Usage: $script [options] [operands]\n";
-		$expected .= "Options:\n";
-		$expected .= "  -a, --alpha             Short and long options with no argument\n";
-		$expected .= "  --beta [<arg>]          Long option only with an optional argument\n";
-		$expected .= "  -c <arg>                Short option only with a mandatory argument\n";
+        $expected  = "Usage: $script [options] [operands]\n";
+        $expected .= "Options:\n";
+        $expected .= "  -a, --alpha             Short and long options with no argument\n";
+        $expected .= "  --beta [<arg>]          Long option only with an optional argument\n";
+        $expected .= "  -c <arg>                Short option only with a mandatory argument\n";
 
-		$this->expectOutputString($expected);
-		$getopt->showHelp();
-	}
+        $this->expectOutputString($expected);
+        $getopt->showHelp();
+    }
+
+    public function testShowHelpWithMissingDescriptions() {
+        $getopt = new Getopt(array(
+            array('a', 'alpha', Getopt::NO_ARGUMENT),
+            array(null, 'beta', Getopt::OPTIONAL_ARGUMENT),
+            array('c', null, Getopt::REQUIRED_ARGUMENT)
+		));
+        $getopt->parse('');
+
+        $script = $_SERVER['PHP_SELF'];
+
+        $expected  = "Usage: $script [options] [operands]\n";
+        $expected .= "Options:\n";
+        $expected .= "  -a, --alpha             \n";
+        $expected .= "  --beta [<arg>]          \n";
+        $expected .= "  -c <arg>                \n";
+
+        $this->expectOutputString($expected);
+        $getopt->showHelp();
+    }
+
+    public function testDoubleHyphenNotInOperands()
+    {
+        $getopt = new Getopt('a:');
+        $getopt->parse('-a 0 foo -- bar baz');
+        $this->assertEquals('0', $getopt->getOption('a'));
+        $operands = $getopt->getOperands();
+        $this->assertInternalType('array', $operands);
+        $this->assertCount(3, $operands);
+        $this->assertEquals('foo', $operands[0]);
+        $this->assertEquals('bar', $operands[1]);
+        $this->assertEquals('baz', $operands[2]);
+    }
 }
