@@ -202,8 +202,11 @@ References
 * [PHP function reference: getopt](http://php.net/manual/en/function.getopt.php)
 
 
-License
--------
+License and Credits
+-------------------
 
-Getopt.PHP is (c) 2011 Ulrich Schmidt-Goertz. It is published under the
+Getopt.PHP is (c) 2011-2013 Ulrich Schmidt-Goertz. It is published under the
 [MIT License](http://www.opensource.org/licenses/mit-license.php).
+
+Thanks to everyone who has contributed to this project (in chronological order):
+@avargas, @CHH, @christiaan, @kler, @alexkappa and @graste. Your pull requests are most welcome.
