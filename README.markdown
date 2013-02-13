@@ -101,6 +101,9 @@ Options:
   -c <arg>                Short option only with a mandatory argument
 ```
 
+If you don't want to output the usage information text directly you can use the output of the
+`getHelpText()` method to add e.g. usage examples.
+
 ### 2. Invoke the parser
 
 After constructing the Getopt object, a call to `parse()` will evaluate the arguments and store the
@@ -111,7 +114,11 @@ value instead.
 
 ### 3. Retrieve the values
 
-Getopt.PHP has two methods for retrieving data: `getOption()` and `getOperands()`.
+Getopt.PHP has multiple methods for retrieving data:
+
+* `getOptions()`,
+* `getOption($name)` and
+* `getOperands()`.
 
 #### getOption
 
@@ -176,6 +183,16 @@ Composer support
 
 Getopt.PHP is available as a [Composer](https://github.com/composer/composer) package on
 [Packagist](http://packagist.org/packages/ulrichsg/getopt-php).
+
+
+Development
+-----------
+
+The `composer.json` file specifies PHPUnit as a development requirement. To install composer and
+the required development dependencies to enhance Getopt.PHP just run:
+<code>make install-dev-dependencies</code> and then run the tests via <code>make test</code>.
+
+To get a list of make target just run `make` without any commandline arguments.
 
 
 References
