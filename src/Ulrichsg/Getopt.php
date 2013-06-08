@@ -189,7 +189,7 @@ class Getopt {
         $help_text = sprintf("Usage: %s [options] [operands]\n", $this->scriptName);
         $help_text .= "Options:\n";
         foreach ($this->optionList as $name => $option) {
-            @list($short, $long, $arg, $description) = $option;
+            list($short, $long, $arg, $description) = $option;
             switch ($arg) {
                 case self::NO_ARGUMENT: $arg = ''; break;
                 case self::REQUIRED_ARGUMENT: $arg = "<arg>"; break;
@@ -276,7 +276,7 @@ class Getopt {
         if (empty($options)) {
             throw new \InvalidArgumentException('No options given');
         }
-        foreach ($options as $option) {
+        foreach ($options as &$option) {
             if (!is_array($option) || count($option) < 3) {
                 throw new \InvalidArgumentException("Too few fields in argument, must be 3 (short/long/type)");
             }
