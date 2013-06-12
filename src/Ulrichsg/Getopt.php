@@ -76,7 +76,7 @@ class Getopt {
             $arguments = $argv;
             $this->scriptName = array_shift($arguments); // $argv[0] is the script's name
         } elseif (is_string($arguments)) {
-        	$this->scriptName = $_SERVER['PHP_SELF'];
+            $this->scriptName = $_SERVER['PHP_SELF'];
             $arguments = explode(' ', $arguments);
         }
 
@@ -113,8 +113,21 @@ class Getopt {
                 $option = mb_substr($arg, 1);
                 if (mb_strlen($option) > 1) {
                     // multiple options strung together
-                    foreach ($this->mb_str_split($option, 1) as $ch) {
-                        $this->addOption($ch, null, false);
+                    $options = $this->mb_str_split($option, 1);
+                    foreach ($options as $j => $ch) {
+                        if ($j < count($options) - 1
+                            || !(
+                                $i < $num_args - 1
+                                && mb_substr($arguments[$i + 1], 0, 1) != '-'
+                                && $this->optionHasArgument($ch, false)
+                            )
+                        ) {
+                            $this->addOption($ch, null, false);
+                        } else {    // e.g. `ls -sw 100`
+                            $value = $arguments[$i + 1];
+                            ++$i;
+                            $this->addOption($ch, $value, false);
+                        }
                     }
                 } else {
                     if ($i < $num_args - 1
@@ -296,7 +309,7 @@ class Getopt {
                         . "Getopt::NO_ARGUMENT, Getopt::OPTIONAL_ARGUMENT and Getopt::REQUIRED_ARGUMENT");
             }
             if (!isset($option[3])) {
-            	$option[3] = ""; // description
+                $option[3] = ""; // description
             }
         }
         return $options;
@@ -409,7 +422,7 @@ class Getopt {
 
     /**
      * @param string $str string to split
-     * @param int $l 
+     * @param int $l
      *
      * @return string
      * @internal
