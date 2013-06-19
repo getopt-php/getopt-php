@@ -145,6 +145,19 @@ class GetoptTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('value', $getopt->getOption('a'));
     }
 
+    public function testParseCollapsedShortOptionsRequiredArgumentMissing() {
+        $this->setExpectedException('UnexpectedValueException');
+        $getopt = new Getopt('ab:');
+        $getopt->parse('-ab');
+    }
+
+    public function testParseCollapsedShortOptionsWithArgument() {
+        $getopt = new Getopt('ab:');
+        $getopt->parse('-ab value');
+        $this->assertEquals(1, $getopt->getOption('a'));
+        $this->assertEquals('value', $getopt->getOption('b'));
+    }
+
     public function testParseNoArgumentOptionAndOperand() {
         $getopt = new Getopt('a');
         $getopt->parse('-a b');
@@ -257,7 +270,7 @@ class GetoptTest extends \PHPUnit_Framework_TestCase {
             array('a', 'alpha', Getopt::NO_ARGUMENT, 'Short and long options with no argument'),
             array(null, 'beta', Getopt::OPTIONAL_ARGUMENT, 'Long option only with an optional argument'),
             array('c', null, Getopt::REQUIRED_ARGUMENT, 'Short option only with a mandatory argument')
-		));
+        ));
         $getopt->parse('');
 
         $script = $_SERVER['PHP_SELF'];
@@ -277,7 +290,7 @@ class GetoptTest extends \PHPUnit_Framework_TestCase {
             array('a', 'alpha', Getopt::NO_ARGUMENT),
             array(null, 'beta', Getopt::OPTIONAL_ARGUMENT),
             array('c', null, Getopt::REQUIRED_ARGUMENT)
-		));
+        ));
         $getopt->parse('');
 
         $script = $_SERVER['PHP_SELF'];
