@@ -14,6 +14,7 @@ Features
 * Cumulative options (eg. `-vvv`)
 * Options may take optional or mandatory arguments
 * Two alternative notations for long options with arguments: `--option value` and `--option=value`
+* Collapsed short options with mandatory argument at the end (eg. `-ab 1` instead of `-a -b 1`)
 
 
 Usage
@@ -209,4 +210,4 @@ Getopt.PHP is (c) 2011-2013 Ulrich Schmidt-Goertz. It is published under the
 [MIT License](http://www.opensource.org/licenses/mit-license.php).
 
 Thanks to everyone who has contributed to this project (in chronological order):
-@avargas, @CHH, @christiaan, @kler, @alexkappa and @graste. Your pull requests are most welcome.
+@avargas, @CHH, @christiaan, @kler, @alexkappa, @graste and @geoffroy-aubry. Your pull requests are most welcome.

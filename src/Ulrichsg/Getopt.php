@@ -1,7 +1,7 @@
 <?php
 namespace Ulrichsg;
 /*
- * Copyright (c) 2011 Ulrich Schmidt-Goertz <ulrich at schmidt-goertz.de>
+ * Copyright (c) 2011-2013 Ulrich Schmidt-Goertz <ulrich at schmidt-goertz.de>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -424,7 +424,7 @@ class Getopt {
      * @param string $str string to split
      * @param int $l
      *
-     * @return string
+     * @return array
      * @internal
      */
     protected function mb_str_split($str, $l = 0)
