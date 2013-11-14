@@ -68,13 +68,6 @@ class GetoptTest extends \PHPUnit_Framework_TestCase {
         ));
     }
 
-    public function testConstructorArrayIncompleteOption() {
-        $this->setExpectedException('InvalidArgumentException');
-        $foo = new Getopt(array(
-            array('a', null)
-        ));
-    }
-
     public function testConstructorArrayNoLetter() {
         $this->setExpectedException('InvalidArgumentException');
         $foo = new Getopt(array(
@@ -259,7 +252,32 @@ class GetoptTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('sparam', $getopt->getOption('s'));
     }
 
-    public function testParseZeroArgument() {
+	public function testAddOptionsChooseShortOrLongAutomatically() {
+		$getopt = new Getopt();
+        $getopt->addOptions(array(
+            array('s'),
+            array('long', Getopt::OPTIONAL_ARGUMENT)
+        ));
+
+        $getopt->parse('-s --long longparam');
+        $this->assertEquals('longparam', $getopt->getOption('long'));
+        $this->assertEquals('1', $getopt->getOption('s'));
+	}
+
+	public function testAddOptionsUseDefaultArgumentType() {
+		$getopt = new Getopt(null, Getopt::REQUIRED_ARGUMENT);
+        $getopt->addOptions(array(
+            array('l', 'long')
+        ));
+
+        $getopt->parse('-l something');
+        $this->assertEquals('something', $getopt->getOption('l'));
+
+		$getopt->parse('--long someOtherThing');
+		$this->assertEquals('someOtherThing', $getopt->getOption('long'));
+	}
+
+	public function testParseZeroArgument() {
         $getopt = new Getopt('a:');
         $getopt->parse('-a 0');
         $this->assertEquals('0', $getopt->getOption('a'));

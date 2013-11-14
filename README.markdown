@@ -67,8 +67,10 @@ $getopt = new Getopt(array(
 
 #### Adding more options after the Getopt object has been created
 
-The method `addOptions()` can be called with the same arguments as `__construct()`, the options that
-get parsed, will be merged with the previous ones.
+The method `addOptions()` can be called with the same arguments as `__construct()`. Options passed that way are
+merged with the existing ones.
+
+Example:
 
 ```php
 $getopt = new Getopt;
@@ -80,9 +82,30 @@ $getopt->addOptions(array(
 ));
 ```
 
+#### Leaving out some array elements
+
+When using the array method shown above, it is not always necessary to pass all three elements. The
+following rules apply:
+
+* You can omit either the short or the long option. Getopt will then detect whether the first element of your array
+  is a short or a long option, and set the other one to `null`.
+* You can omit the argument mode, in which case the default mode is assumed. The default mode is `NO_ARGUMENT`,
+  but you can change it through an optional second argument to the Getopt constructor.
+
+Example:
+
+```php
+$getopt = new Getopt(null, Getopt::OPTIONAL_ARGUMENT);
+$getopt->addOptions(array(
+    array('a', Getopt::REQUIRED_ARGUMENT),  // short option only, required argument
+    array('bravo'),                         // long option only, optional argument (default mode set by constructor)
+    array('c', 'charlie')                   // short and long option, optional argument (as above)
+));
+```
+
 #### Description
 
-You can optionally pass descriptions to arguments
+You can optionally pass descriptions to arguments:
 
 ```php
 $getopt = new Getopt(array(
@@ -92,7 +115,7 @@ $getopt = new Getopt(array(
 ));
 ```
 
-Which can then be used by `showHelp()` to print a help message
+These can then be used by `showHelp()` to print a help message:
 
 ```bash
 Usage: script.php [options] [operands]
@@ -102,7 +125,7 @@ Options:
   -c <arg>                Short option only with a mandatory argument
 ```
 
-If you don't want to output the usage information text directly you can use the output of the
+If you don't want to output the usage information text directly, you can use the output of the
 `getHelpText()` method to add e.g. usage examples.
 
 ### 2. Invoke the parser
@@ -193,7 +216,7 @@ The `composer.json` file specifies PHPUnit as a development requirement. To inst
 the required development dependencies to enhance Getopt.PHP just run:
 <code>make install-dev-dependencies</code> and then run the tests via <code>make test</code>.
 
-To get a list of make target just run `make` without any commandline arguments.
+To get a list of make target just run `make` without any command line arguments.
 
 
 References

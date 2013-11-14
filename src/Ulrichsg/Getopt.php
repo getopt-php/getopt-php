@@ -41,6 +41,8 @@ class Getopt {
     protected $options = array();
     /** @var array */
     protected $operands = array();
+	/** @var int */
+	protected $defaultType;
 
     /**
      * Create a new Getopt object.
@@ -49,10 +51,12 @@ class Getopt {
      * function getopt() or an array
      *
      * @param mixed $options Array of options, a String, or null
+	 * @param int $defaultType The default option type to use when omitted
      *
      * @link https://www.gnu.org/s/hello/manual/libc/Getopt.html GNU Getopt manual
      */
-    public function __construct($options = null) {
+    public function __construct($options = null, $defaultType = Getopt::NO_ARGUMENT) {
+		$this->defaultType = $defaultType;
         if ($options !== null) {
             $this->addOptions($options);
         }
@@ -290,9 +294,12 @@ class Getopt {
             throw new \InvalidArgumentException('No options given');
         }
         foreach ($options as &$option) {
-            if (!is_array($option) || count($option) < 3) {
-                throw new \InvalidArgumentException("Too few fields in argument, must be 3 (short/long/type)");
+            if (!is_array($option)) {
+                throw new \InvalidArgumentException("Option must be array");
             }
+			if (count($option) < 3) {
+				$option = $this->completeOptionArray($option);
+			}
             if (!(is_null($option[0]) || preg_match("/^[a-zA-Z]$/", $option[0]))) {
                 throw new \InvalidArgumentException("First component of option must be "
                         . "null or a letter, found '" . $option[0] . "'");
@@ -419,6 +426,36 @@ class Getopt {
     {
         return $this->optionList = array_merge($this->optionList, $options);
     }
+
+	/**
+	 * When using addOptions(), instead of a full option spec ([short, long, type]) users can leave out one or more of
+	 * these parts and have Getopt fill them in intelligently:
+	 * - If either the short or the long option string is left out, the first element of the given array is interpreted
+	 *   as either short (if it has length 1) or long, and the other one is set to null.
+	 * - If the type is left out, it is set to NO_ARGUMENT.
+	 *
+	 * @param array $option
+	 *
+	 * @return array
+	 * @internal
+	 */
+	protected function completeOptionArray(array $option) {
+		$short = (strlen($option[0]) == 1) ? $option[0] : null;
+
+		$long = null;
+		if (is_null($short)) {
+			$long = $option[0];
+		} elseif (count($option) > 1 && !is_int($option[1])) {
+			$long = $option[1];
+		}
+
+		$type = $this->defaultType;
+		if (count($option) == 2 && is_int($option[1])) {
+			$type = $option[1];
+		}
+
+		return array($short, $long, $type);
+	}
 
     /**
      * @param string $str string to split
