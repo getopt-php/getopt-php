@@ -43,6 +43,8 @@ class Getopt {
     protected $operands = array();
 	/** @var int */
 	protected $defaultType;
+    /** @var string */
+    protected $title = '';
 
     /**
      * Create a new Getopt object.
@@ -203,7 +205,8 @@ class Getopt {
      * @return string help message for given options.
      */
     public function getHelpText($padding = 25) {
-        $help_text = sprintf("Usage: %s [options] [operands]\n", $this->scriptName);
+        $help_text = $this->title ?: '';
+        $help_text .= sprintf("Usage: %s [options] [operands]\n", $this->scriptName);
         $help_text .= "Options:\n";
         foreach ($this->optionList as $name => $option) {
             list($short, $long, $arg, $description) = $option;
@@ -477,5 +480,15 @@ class Getopt {
         }
 
         return preg_split("//u", $str, -1, PREG_SPLIT_NO_EMPTY);
+    }
+
+    /**
+     * Application title in help message.
+     *
+     * @param string $value
+     */
+    public function setTitle($value)
+    {
+        $this->title = $value;
     }
 }
