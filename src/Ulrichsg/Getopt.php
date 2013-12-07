@@ -27,7 +27,7 @@ namespace Ulrichsg;
  * @version 1.0
  * @link    https://github.com/ulrichsg/getopt-php
  */
-class Getopt implements \Countable, \ArrayAccess {
+class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
 
     const NO_ARGUMENT = 0;
     const REQUIRED_ARGUMENT = 1;
@@ -515,5 +515,9 @@ class Getopt implements \Countable, \ArrayAccess {
 	public function offsetUnset($offset) {
 		throw new \LogicException('Getopt is read-only');
 	}
-}
+
+	public function getIterator() {
+		$options = $this->options; //copy for immutability
+		return new \ArrayIterator($options);
+	}
 }

@@ -295,6 +295,15 @@ class GetoptTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals(1, $getopt['q']);
 	}
 
+	public function testIterable() {
+		$getopt = new Getopt('ab:');
+		$getopt->parse('-a -b foo');
+		$expected = array('a' => 1, 'b' => 'foo');
+		foreach ($getopt as $option => $value) {
+			$this->assertEquals($expected[$option], $value);
+		}
+	}
+
     public function testShowHelp() {
         $getopt = new Getopt(array(
             array('a', 'alpha', Getopt::NO_ARGUMENT, 'Short and long options with no argument'),
