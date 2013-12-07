@@ -283,6 +283,12 @@ class GetoptTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('0', $getopt->getOption('a'));
     }
 
+	public function testCountable() {
+		$getopt = new Getopt('abc');
+		$getopt->parse('-a -b -c');
+		$this->assertEquals(3, count($getopt));
+	}
+
     public function testShowHelp() {
         $getopt = new Getopt(array(
             array('a', 'alpha', Getopt::NO_ARGUMENT, 'Short and long options with no argument'),
