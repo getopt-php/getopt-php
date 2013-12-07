@@ -323,6 +323,29 @@ class GetoptTest extends \PHPUnit_Framework_TestCase {
         $getopt->showHelp();
     }
 
+    public function testShowHelpWithTitle()
+    {
+        $getopt = new Getopt(array(
+            array('a', 'alpha', Getopt::NO_ARGUMENT),
+            array(null, 'beta', Getopt::OPTIONAL_ARGUMENT),
+            array('c', null, Getopt::REQUIRED_ARGUMENT)
+        ));
+        $getopt->setTitle("Test version 1.2.0\n");
+        $getopt->parse('');
+
+        $script = $_SERVER['PHP_SELF'];
+
+        $expected = "Test version 1.2.0\n";
+        $expected .= "Usage: $script [options] [operands]\n";
+        $expected .= "Options:\n";
+        $expected .= "  -a, --alpha             \n";
+        $expected .= "  --beta [<arg>]          \n";
+        $expected .= "  -c <arg>                \n";
+
+        $this->expectOutputString($expected);
+        $getopt->showHelp();
+    }
+
     public function testDoubleHyphenNotInOperands()
     {
         $getopt = new Getopt('a:');
