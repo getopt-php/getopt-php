@@ -27,7 +27,7 @@ namespace Ulrichsg;
  * @version 1.0
  * @link    https://github.com/ulrichsg/getopt-php
  */
-class Getopt implements \Countable {
+class Getopt implements \Countable, \ArrayAccess {
 
     const NO_ARGUMENT = 0;
     const REQUIRED_ARGUMENT = 1;
@@ -498,6 +498,22 @@ class Getopt implements \Countable {
 	
 	public function count() {
 		return count($this->options);
+	}
+
+	public function offsetExists($offset) {
+		return isset($this->options[$offset]);
+	}
+
+	public function offsetGet($offset) {
+		return $this->options[$offset];
+	}
+
+	public function offsetSet($offset, $value) {
+		throw new \LogicException('Getopt is read-only');
+	}
+
+	public function offsetUnset($offset) {
+		throw new \LogicException('Getopt is read-only');
 	}
 }
 }
