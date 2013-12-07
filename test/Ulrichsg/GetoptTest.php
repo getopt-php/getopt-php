@@ -235,6 +235,17 @@ class GetoptTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals(1, $getopt->getOption('b'));
     }
 
+	public function testParseOptionWithDefaultValue() {
+		$getopt = new Getopt(array(
+			array('a', null, Getopt::REQUIRED_ARGUMENT, 'alpha', 10),
+			array('b', 'beta', Getopt::REQUIRED_ARGUMENT, 'beta', 20)
+		));
+		$getopt->parse('-a 12');
+		$this->assertEquals(12, $getopt->getOption('a'));
+		$this->assertEquals(20, $getopt->getOption('b'));
+		$this->assertEquals(20, $getopt->getOption('beta'));
+	}
+
     public function testAddOptions ()
     {
         $getopt = new Getopt();

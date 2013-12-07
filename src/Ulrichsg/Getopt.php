@@ -149,6 +149,8 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
             }
         } // endfor
 
+		$this->addDefaultValues();
+
         // remove '--' from operands array
         $operands = array();
         foreach($this->operands as $operand) {
@@ -363,6 +365,27 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
         }
         throw new \UnexpectedValueException("Option '$option' is unknown");
     }
+
+	/**
+	 * If there are options with default values that were not overridden by the parsed option string,
+	 * add them to the list of known options.
+	 *
+	 * @internal
+	 */
+	protected function addDefaultValues() {
+		foreach ($this->optionList as $option) {
+			if (isset($option[4])
+					&& is_null($this->getOption($option[0]))
+					&& is_null($this->getOption($option[1]))) {
+				if ($option[0]) {
+					$this->addOption($option[0], $option[4], false);
+				}
+				if ($option[1]) {
+					$this->addOption($option[1], $option[4], true);
+				}
+			}
+		}
+	}
 
     /**
      * Return true if the given option can take an argument, false if it can't or is unknown.
