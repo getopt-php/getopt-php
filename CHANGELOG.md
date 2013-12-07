@@ -1,3 +1,11 @@
+## 1.3.0 (2013-12-07)
+
+Features:
+* Default values for options
+* ArrayAccess, Countable and Traversable support
+* Can set program name to enhance help message (courtesy of @misterion)
+
+
 ## 1.2.0 (2013-11-14)
 
 Features:

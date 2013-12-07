@@ -128,6 +128,24 @@ Options:
 If you don't want to output the usage information text directly, you can use the output of the
 `getHelpText()` method to add e.g. usage examples.
 
+Additionally, as of v1.3.0 the `setTitle()` method can be used to specify the program's name,
+which will then be included in the help message.
+
+#### Default values
+
+It is also possible to specify default values for options. If an option with a default value does not occur in
+the argument string, it is automatically set to the default.
+
+```php
+$getopt = new Getopt(array(
+	array('a', null, Getopt::REQUIRED_ARGUMENT, '', 'foo');
+));
+
+$getopt->parse('');
+echo $getopt->getOption('a'); //prints "foo"
+```
+
+
 ### 2. Invoke the parser
 
 After constructing the Getopt object, a call to `parse()` will evaluate the arguments and store the
@@ -149,7 +167,8 @@ Getopt.PHP has multiple methods for retrieving data:
 `$getopt->getOption($name)` returns the value associated with the option `name`. The value can be
 one of the following:
 
-* `null`, if the option does not occur in the parsed arguments
+* `null`, if the option does not occur in the parsed arguments and has no default value
+* the default value, if the option does not occur in the parsed arguments but has a default value
 * an integer, if the option occurs without argument. The actual value is the number of occurrences.
   In most cases this will be 1, only in case of a cumulative option it can be greater than that (eg.
   for `-vvv` a call to `getOption('v')` will return 3).
@@ -161,7 +180,7 @@ regardless of which name is used in the parsed data:
 ```php
 $getopt = new Getopt(array(
     array('o', 'option', Getopt::REQUIRED_ARGUMENT)
-);
+));
 $getopt->parse('-o value');
 echo $getopt->getOption('option')); // value
 ```
@@ -178,6 +197,17 @@ are neither options nor option values. Getopt determines the operands using the 
   is the first argument), then it and everything after it is considered an operand.
 * If an argument is encountered that starts with one or two hyphens, but is not a known option,
   it is *not* considered an operand, but an error is thrown.
+
+#### Syntactic sugar through PHP interfaces
+
+The Getopt class implements a number of PHP's "magic interfaces":
+
+* Countable: `count($getopt)` returns the number of arguments given (not counting operands, but including default
+  values).
+* ArrayAccess: `$getopt[$name]` is an alias for `$getopt->getOption($name)`.
+* Traversable: A Getopt object can be iterated over with `foreach` as if it was an array of the form
+  `$optionName => $value`. Again this includes default values. Options that have both a short and a long name only
+  occur once, using the short name.
 
 
 Error handling
@@ -233,4 +263,5 @@ Getopt.PHP is (c) 2011-2013 Ulrich Schmidt-Goertz. It is published under the
 [MIT License](http://www.opensource.org/licenses/mit-license.php).
 
 Thanks to everyone who has contributed to this project (in chronological order):
-@avargas, @CHH, @christiaan, @kler, @alexkappa, @graste and @geoffroy-aubry. Your pull requests are most welcome.
+@avargas, @CHH, @christiaan, @kler, @alexkappa, @graste, @geoffroy-aubry and @misterion.
+Your pull requests are most welcome.

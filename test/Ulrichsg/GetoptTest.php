@@ -307,9 +307,12 @@ class GetoptTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testIterable() {
-		$getopt = new Getopt('ab:');
-		$getopt->parse('-a -b foo');
-		$expected = array('a' => 1, 'b' => 'foo');
+		$getopt = new Getopt(array(
+			array(null, 'alpha', Getopt::NO_ARGUMENT),
+			array('b', 'beta', Getopt::REQUIRED_ARGUMENT)
+		));
+		$getopt->parse('--alpha -b foo');
+		$expected = array('alpha' => 1, 'b' => 'foo'); // 'beta' should not occur
 		foreach ($getopt as $option => $value) {
 			$this->assertEquals($expected[$option], $value);
 		}

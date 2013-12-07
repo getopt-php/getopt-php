@@ -24,7 +24,7 @@ namespace Ulrichsg;
  * Getopt.PHP allows for easy processing of command-line arguments.
  * It is a more powerful, object-oriented alternative to PHP's built-in getopt() function.
  *
- * @version 1.0
+ * @version 1.3.0
  * @link    https://github.com/ulrichsg/getopt-php
  */
 class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
@@ -166,7 +166,8 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
      *
      * The return value can be any of the following:
      * <ul>
-     *   <li><b>null</b> if the option is not given</li>
+     *   <li><b>null</b> if the option is not given and does not have a default value</li>
+	 *   <li><b>the default value</b> if it has been defined and the option is not given</li>
      *   <li><b>an integer</b> if the option is given without argument. The
      *       returned value is the number of occurrences of the option.</li>
      *   <li><b>a string</b> if the option is given with an argument. The
@@ -528,7 +529,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
 	}
 
 	public function offsetGet($offset) {
-		return $this->options[$offset];
+		return $this->getOption($offset);
 	}
 
 	public function offsetSet($offset, $value) {
@@ -540,7 +541,20 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
 	}
 
 	public function getIterator() {
-		$options = $this->options; //copy for immutability
-		return new \ArrayIterator($options);
+		// For options that have both short and long names, $this->options has two entries.
+		// We don't want this when iterating, so we have to filter the duplicates out.
+		$filteredOptions = array();
+		foreach ($this->options as $name => $value) {
+			$keep = true;
+			foreach ($this->optionList as $option) {
+				if ($option[1] == $name && !is_null($option[0])) {
+					$keep = false;
+				}
+			}
+			if ($keep) {
+				$filteredOptions[$name] = $value;
+			}
+		}
+		return new \ArrayIterator($filteredOptions);
 	}
 }
