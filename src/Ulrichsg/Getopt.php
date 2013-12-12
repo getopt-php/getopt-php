@@ -247,10 +247,28 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
     /**
      * Return a specific operand (does not do bounds checking). Must be invoked after parse().
      *
-     * @return array
+     * @return string
      */
     public function getOperand($index) {
         return $this->operands[$index];
+    }
+
+    /**
+     * Returns true or false depending on if any operands were passed. Must be invoked after parse().
+     *
+     * @return boolean
+     */
+    public function hasOperands() {
+        return $this->getOperandCount() > 0;
+    }
+
+    /**
+     * Returns number of operands, if any, were passed. Must be invoked after parse().
+     *
+     * @return integer
+     */
+    public function getOperandCount() {
+        return count($this->getOperands());
     }
     
     /**
