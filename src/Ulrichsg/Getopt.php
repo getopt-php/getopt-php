@@ -25,6 +25,7 @@ namespace Ulrichsg;
  * It is a more powerful, object-oriented alternative to PHP's built-in getopt() function.
  *
  * @version 1.3.0
+ * @version 2013-12-11
  * @link    https://github.com/ulrichsg/getopt-php
  */
 class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
@@ -32,6 +33,12 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
     const NO_ARGUMENT = 0;
     const REQUIRED_ARGUMENT = 1;
     const OPTIONAL_ARGUMENT = 2;
+    
+    const OPT_SHORT   = 0;
+    const OPT_LONG    = 1;
+    const OPT_TYPE    = 2;
+    const OPT_DESC    = 3;
+    const OPT_DEFVAL  = 4;
 
     /** @var string */
     protected $scriptName;
@@ -244,6 +251,33 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
     }
 
     /**
+     * Return a specific operand (does not do bounds checking). Must be invoked after parse().
+     *
+     * @return string
+     */
+    public function getOperand($index) {
+        return $this->operands[$index];
+    }
+
+    /**
+     * Returns true or false depending on if any operands were passed. Must be invoked after parse().
+     *
+     * @return boolean
+     */
+    public function hasOperands() {
+        return $this->getOperandCount() > 0;
+    }
+
+    /**
+     * Returns number of operands, if any, were passed. Must be invoked after parse().
+     *
+     * @return integer
+     */
+    public function getOperandCount() {
+        return count($this->getOperands());
+    }
+    
+    /**
      * Parse an option string.
      *
      * @param string $string the option string
@@ -261,7 +295,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
         $next_can_be_colon = false;
         for ($i = 0; $i <= $eol; ++$i) {
             $ch = $string[$i];
-            if (!preg_match('/^[A-Za-z]$/', $ch)) {
+            if (!preg_match('/^[A-Za-z0-9]$/', $ch)) {
                 $colon = $next_can_be_colon ? " or ':'" : '';
                 throw new \InvalidArgumentException("Option string is not well formed: "
                         . "expected a letter$colon, found '$ch' at position " . ($i + 1));
@@ -306,23 +340,23 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
 			if (count($option) < 3) {
 				$option = $this->completeOptionArray($option);
 			}
-            if (!(is_null($option[0]) || preg_match("/^[a-zA-Z]$/", $option[0]))) {
+            if (!(is_null($option[self::OPT_SHORT]) || preg_match("/^[a-zA-Z0-9]$/", $option[self::OPT_SHORT]))) {
                 throw new \InvalidArgumentException("First component of option must be "
-                        . "null or a letter, found '" . $option[0] . "'");
+                        . "null or a letter, found '" . $option[self::OPT_SHORT] . "'");
             }
-            if (!(is_null($option[1]) || preg_match("/^[a-zA-Z0-9_-]*$/", $option[1]))) {
+            if (!(is_null($option[self::OPT_LONG]) || preg_match("/^[a-zA-Z0-9_-]*$/", $option[self::OPT_LONG]))) {
                 throw new \InvalidArgumentException("Second component of option must be "
-                        . "null or an alphanumeric string, found '" . $option[1] . "'");
+                        . "null or an alphanumeric string, found '" . $option[self::OPT_LONG] . "'");
             }
-            if (!mb_strlen($option[0]) && !mb_strlen($option[1])) {
+            if (!mb_strlen($option[self::OPT_SHORT]) && !mb_strlen($option[self::OPT_LONG])) {
                 throw new \InvalidArgumentException("The short and long name of an option must not both be empty");
             }
-            if (!in_array($option[2], $valid_argument_specs, true)) {
+            if (!in_array($option[self::OPT_TYPE], $valid_argument_specs, true)) {
                 throw new \InvalidArgumentException("Third component of option must be one of "
                         . "Getopt::NO_ARGUMENT, Getopt::OPTIONAL_ARGUMENT and Getopt::REQUIRED_ARGUMENT");
             }
-            if (!isset($option[3])) {
-                $option[3] = ""; // description
+            if (!isset($option[self::OPT_DESC])) {
+                $option[self::OPT_DESC] = ""; // description
             }
         }
         return $options;
@@ -341,12 +375,12 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
      */
     protected function addOption($option, $value, $is_long) {
         foreach ($this->optionList as $opt) {
-            if (($is_long && $opt[1] == $option) || (!$is_long && $opt[0] == $option)) {
-                if ($opt[2] == self::REQUIRED_ARGUMENT && !mb_strlen($value)) {
+            if (($is_long && $opt[self::OPT_LONG] == $option) || (!$is_long && $opt[self::OPT_SHORT] == $option)) {
+                if ($opt[self::OPT_TYPE] == self::REQUIRED_ARGUMENT && !mb_strlen($value)) {
                     throw new \UnexpectedValueException("Option '$option' must have a value");
                 }
                 // for no-argument options, check if they are duplicate
-                if ($opt[2] == self::NO_ARGUMENT) {
+                if ($opt[self::OPT_TYPE] == self::NO_ARGUMENT) {
                     $old_value = $this->getOption($option);
                     $value = is_null($old_value) ? 1 : $old_value + 1;
                 }
@@ -355,11 +389,11 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
                     $value = 1;
                 }
                 // add both long and short names (if they exist) to the option array to facilitate lookup
-                if (mb_strlen($opt[0]) > 0) {
-                    $this->options[$opt[0]] = $value;
+                if (mb_strlen($opt[self::OPT_SHORT]) > 0) {
+                    $this->options[$opt[self::OPT_SHORT]] = $value;
                 }
-                if (mb_strlen($opt[1]) > 0) {
-                    $this->options[$opt[1]] = $value;
+                if (mb_strlen($opt[self::OPT_LONG]) > 0) {
+                    $this->options[$opt[self::OPT_LONG]] = $value;
                 }
                 return;
             }
@@ -375,14 +409,14 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
 	 */
 	protected function addDefaultValues() {
 		foreach ($this->optionList as $option) {
-			if (isset($option[4])
-					&& is_null($this->getOption($option[0]))
-					&& is_null($this->getOption($option[1]))) {
-				if ($option[0]) {
-					$this->addOption($option[0], $option[4], false);
+			if (isset($option[self::OPT_DEFVAL])
+					&& is_null($this->getOption($option[self::OPT_SHORT]))
+					&& is_null($this->getOption($option[self::OPT_LONG]))) {
+				if ($option[self::OPT_SHORT]) {
+					$this->addOption($option[self::OPT_SHORT], $option[self::OPT_DEFVAL], false);
 				}
-				if ($option[1]) {
-					$this->addOption($option[1], $option[4], true);
+				if ($option[self::OPT_LONG]) {
+					$this->addOption($option[self::OPT_LONG], $option[self::OPT_DEFVAL], true);
 				}
 			}
 		}
@@ -399,9 +433,9 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
      */
     protected function optionHasArgument($name, $is_long) {
         foreach ($this->optionList as $option) {
-            if ((!$is_long && $option[0] == $name)
-                    || ($is_long && $option[1] == $name)) {
-                return $option[2] != self::NO_ARGUMENT;
+            if ((!$is_long && $option[self::OPT_SHORT] == $name)
+                    || ($is_long && $option[self::OPT_LONG] == $name)) {
+                return $option[self::OPT_TYPE] != self::NO_ARGUMENT;
             }
         }
         return false;
@@ -467,18 +501,18 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
 	 * @internal
 	 */
 	protected function completeOptionArray(array $option) {
-		$short = (strlen($option[0]) == 1) ? $option[0] : null;
+		$short = (strlen($option[self::OPT_SHORT]) == 1) ? $option[self::OPT_SHORT] : null;
 
 		$long = null;
 		if (is_null($short)) {
-			$long = $option[0];
-		} elseif (count($option) > 1 && !is_int($option[1])) {
-			$long = $option[1];
+			$long = $option[self::OPT_SHORT];
+		} elseif (count($option) > 1 && !is_int($option[self::OPT_LONG])) {
+			$long = $option[self::OPT_LONG];
 		}
 
 		$type = $this->defaultType;
-		if (count($option) == 2 && is_int($option[1])) {
-			$type = $option[1];
+		if (count($option) == 2 && is_int($option[self::OPT_LONG])) {
+			$type = $option[self::OPT_LONG];
 		}
 
 		return array($short, $long, $type);
@@ -547,7 +581,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
 		foreach ($this->options as $name => $value) {
 			$keep = true;
 			foreach ($this->optionList as $option) {
-				if ($option[1] == $name && !is_null($option[0])) {
+				if ($option[self::OPT_LONG] == $name && !is_null($option[self::OPT_SHORT])) {
 					$keep = false;
 				}
 			}
