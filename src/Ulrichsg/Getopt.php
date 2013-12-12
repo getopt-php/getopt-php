@@ -25,7 +25,7 @@ namespace Ulrichsg;
  * It is a more powerful, object-oriented alternative to PHP's built-in getopt() function.
  *
  * @version 1.3.0
- * @version 2013-12-07
+ * @version 2013-12-11
  * @link    https://github.com/ulrichsg/getopt-php
  */
 class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
@@ -289,7 +289,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
         $next_can_be_colon = false;
         for ($i = 0; $i <= $eol; ++$i) {
             $ch = $string[$i];
-            if (!preg_match('/^[A-Za-z]$/', $ch)) {
+            if (!preg_match('/^[A-Za-z0-9]$/', $ch)) {
                 $colon = $next_can_be_colon ? " or ':'" : '';
                 throw new \InvalidArgumentException("Option string is not well formed: "
                         . "expected a letter$colon, found '$ch' at position " . ($i + 1));
@@ -334,7 +334,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
 			if (count($option) < 3) {
 				$option = $this->completeOptionArray($option);
 			}
-            if (!(is_null($option[0]) || preg_match("/^[a-zA-Z]$/", $option[0]))) {
+            if (!(is_null($option[0]) || preg_match("/^[a-zA-Z0-9]$/", $option[0]))) {
                 throw new \InvalidArgumentException("First component of option must be "
                         . "null or a letter, found '" . $option[0] . "'");
             }
