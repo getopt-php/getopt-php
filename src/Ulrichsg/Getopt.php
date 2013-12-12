@@ -25,6 +25,7 @@ namespace Ulrichsg;
  * It is a more powerful, object-oriented alternative to PHP's built-in getopt() function.
  *
  * @version 1.3.0
+ * @version 2013-12-07
  * @link    https://github.com/ulrichsg/getopt-php
  */
 class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
@@ -243,6 +244,15 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
         return $this->operands;
     }
 
+    /**
+     * Return a specific operand (does not do bounds checking). Must be invoked after parse().
+     *
+     * @return array
+     */
+    public function getOperand($index) {
+        return $this->operands[$index];
+    }
+    
     /**
      * Parse an option string.
      *
