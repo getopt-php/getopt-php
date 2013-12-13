@@ -235,6 +235,13 @@ class GetoptTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('-value', $getopt->getOption('option'));
     }
 
+    public function testParseLongOptionTooShort() {
+        $this->setExpectedException('InvalidArgumentException');
+        $getopt = new Getopt(array(
+            array(null, 'a', Getopt::REQUIRED_ARGUMENT)
+        ));
+    }
+
     public function testParseNoValueStartingWithHyphenRequired() {
         $this->setExpectedException('UnexpectedValueException');
         $getopt = new Getopt('a:b');

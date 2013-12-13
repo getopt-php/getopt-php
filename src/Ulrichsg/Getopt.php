@@ -24,8 +24,8 @@ namespace Ulrichsg;
  * Getopt.PHP allows for easy processing of command-line arguments.
  * It is a more powerful, object-oriented alternative to PHP's built-in getopt() function.
  *
- * @version 1.3.0
- * @version 2013-12-11
+ * @version 1.4.1
+ * @version 2013-12-13
  * @link    https://github.com/ulrichsg/getopt-php
  */
 class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
@@ -60,14 +60,27 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
      * function getopt() or an array
      *
      * @param mixed $options Array of options, a String, or null
-	 * @param int $defaultType The default option type to use when omitted
+     * @param int $defaultType The default option type to use when omitted
+     * @param bool $allowDuplicates When false, throws an exception if any duplicate short/long options are found; when true, allows duplicate options.
+     * @throws \InvalidArgumentException
      *
      * @link https://www.gnu.org/s/hello/manual/libc/Getopt.html GNU Getopt manual
      */
-    public function __construct($options = null, $defaultType = Getopt::NO_ARGUMENT) {
+    public function __construct($options = null, $defaultType = Getopt::NO_ARGUMENT, $allowDuplicates = false) {
 		$this->defaultType = $defaultType;
         if ($options !== null) {
             $this->addOptions($options);
+            
+            //now check the optionList for duplicates, starting at the bottom (last added -> first added)
+            if (!$allowDuplicates)
+                foreach (array_reverse($this->optionList, true) as $idx => $opt) {
+                $short = $opt[self::OPT_SHORT];
+                $long = $opt[self::OPT_LONG];
+                if ($this->checkForDuplicateOption($short, $idx) || $this->checkForDuplicateOption($long, $idx)) {
+                  throw new \InvalidArgumentException("Duplicate option found: ".
+                        "[Index($idx)] '$short' or '$long' already exists in available options");
+                }
+              }
         }
     }
 
@@ -253,6 +266,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
     /**
      * Return a specific operand (does not do bounds checking). Must be invoked after parse().
      *
+     * @param int $index
      * @return string
      */
     public function getOperand($index) {
@@ -344,7 +358,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
                 throw new \InvalidArgumentException("First component of option must be "
                         . "null or a letter, found '" . $option[self::OPT_SHORT] . "'");
             }
-            if (!(is_null($option[self::OPT_LONG]) || preg_match("/^[a-zA-Z0-9_-]*$/", $option[self::OPT_LONG]))) {
+            if (!(is_null($option[self::OPT_LONG]) || preg_match("/^[a-zA-Z0-9][a-zA-Z0-9_-]{1,}$/", $option[self::OPT_LONG]))) {
                 throw new \InvalidArgumentException("Second component of option must be "
                         . "null or an alphanumeric string, found '" . $option[self::OPT_LONG] . "'");
             }
@@ -358,6 +372,10 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
             if (!isset($option[self::OPT_DESC])) {
                 $option[self::OPT_DESC] = ""; // description
             }
+            /*if (($this->checkForDuplicateOption($option[self::OPT_SHORT]))||
+                ($this->checkForDuplicateOption($option[self::OPT_LONG]))) {
+              throw new \InvalidArgumentException("That option already exists in available options");
+            }*/
         }
         return $options;
     }
@@ -399,6 +417,24 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate {
             }
         }
         throw new \UnexpectedValueException("Option '$option' is unknown");
+    }
+
+    /**
+     * Check for duplicate short/long option names
+     *
+     * @param $optionstr
+     * @param $index
+     * @return boolean
+     * @internal
+     */
+    protected function checkForDuplicateOption($optionstr, $index) {
+        foreach ($this->optionList as $idx => $opt) {
+            if (is_string($optionstr) && $idx != $index
+                    && (($optionstr == $opt[self::OPT_SHORT]) || ($optionstr == $opt[self::OPT_LONG]))) {
+                return true;
+            }
+        }
+        return false;
     }
 
 	/**

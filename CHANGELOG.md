@@ -1,3 +1,10 @@
+## 1.4.1 (2013-12-13)
+
+Bugfixes:
+* Long options are required to be longer than 1 character
+* Passing duplicate option names to the constructor is forbidden by default
+
+
 ## 1.4.0 (2013-12-13)
 
 Features:
