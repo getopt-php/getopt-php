@@ -138,6 +138,13 @@ class GetoptTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('value', $getopt->getOption('a'));
     }
 
+	public function testParseNumericOption() {
+		$getopt = new Getopt('a:2');
+		$getopt->parse('-a 2 -2');
+		$this->assertEquals('2', $getopt->getOption('a'));
+		$this->assertEquals(1, $getopt->getOption('2'));
+	}
+
     public function testParseCollapsedShortOptionsRequiredArgumentMissing() {
         $this->setExpectedException('UnexpectedValueException');
         $getopt = new Getopt('ab:');
@@ -167,10 +174,16 @@ class GetoptTest extends \PHPUnit_Framework_TestCase {
         $this->assertNull($getopt->getOption('a'));
         $this->assertNull($getopt->getOption('b'));
         $operands = $getopt->getOperands();
+
         $this->assertInternalType('array', $operands);
         $this->assertCount(2, $operands);
         $this->assertEquals('-a', $operands[0]);
         $this->assertEquals('-b', $operands[1]);
+
+	    $this->assertTrue($getopt->hasOperands());
+	    $this->assertEquals(2, $getopt->getOperandCount());
+	    $this->assertEquals('-a', $getopt->getOperand(0));
+	    $this->assertEquals('-b', $getopt->getOperand(1));
     }
 
     public function testParseLongOptionWithoutArgument() {
