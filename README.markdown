@@ -36,7 +36,7 @@ but cannot be used to declare long options:
 ```php
 $getopt = new Getopt('ab:c::');
 ```
-Each letter declares one option. Letters may be followed by either one or two colons to determine
+Each letter (or digit) declares one option. Letters may be followed by either one or two colons to determine
 if the option can or must have an argument:
 
 * No colon - no argument
@@ -197,6 +197,12 @@ are neither options nor option values. Getopt determines the operands using the 
   is the first argument), then it and everything after it is considered an operand.
 * If an argument is encountered that starts with one or two hyphens, but is not a known option,
   it is *not* considered an operand, but an error is thrown.
+
+There are additional methods for accessing operands that encapsulate the array:
+
+* `$getopt->getOperand($index)`
+* `$getopt->hasOperands()`
+* `$getopt->getOperandCount()`
 
 #### Syntactic sugar through PHP interfaces
 

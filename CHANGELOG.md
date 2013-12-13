@@ -1,3 +1,10 @@
+## 1.4.0 (2013-12-13)
+
+Features:
+* Options can be numeric (courtesy of @patinthehat)
+* Additional convenience methods for working with operands (ditto)
+
+
 ## 1.3.0 (2013-12-07)
 
 Features:
