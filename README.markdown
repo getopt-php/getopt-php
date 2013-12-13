@@ -269,5 +269,8 @@ Getopt.PHP is (c) 2011-2013 Ulrich Schmidt-Goertz. It is published under the
 [MIT License](http://www.opensource.org/licenses/mit-license.php).
 
 Thanks to everyone who has contributed to this project (in chronological order):
-@avargas, @CHH, @christiaan, @kler, @alexkappa, @graste, @geoffroy-aubry and @misterion.
+@avargas, @CHH, @christiaan, @kler, @alexkappa, @graste, @geoffroy-aubry,
+@misterion and @patinthehat.
 Your pull requests are most welcome.
+
+[![Build Status](https://travis-ci.org/ulrichsg/getopt-php.png)](https://travis-ci.org/ulrichsg/getopt-php)
