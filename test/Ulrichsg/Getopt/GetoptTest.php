@@ -1,5 +1,6 @@
 <?php
-namespace Ulrichsg;
+
+namespace Ulrichsg\Getopt;
 
 class GetoptTest extends \PHPUnit_Framework_TestCase {
     public function testConstructorString() {
