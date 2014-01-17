@@ -53,6 +53,64 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('someOtherThing', $getopt->getOption('long'));
     }
 
+    public function testAddOptionsFailsOnInvalidArgument()
+    {
+        $this->setExpectedException('\InvalidArgumentException');
+        $getopt = new Getopt(null);
+        $getopt->addOptions(new Option('a', 'alpha'));
+    }
+
+    public function testAddOptionsOverwritesExistingOptions()
+    {
+        $getopt = new Getopt(array(
+            array('a', null, Getopt::REQUIRED_ARGUMENT)
+        ));
+        $getopt->addOptions(array(
+            array('a', null, Getopt::NO_ARGUMENT)
+        ));
+        $getopt->parse('-a foo');
+
+        $this->assertEquals(1, $getopt->getOption('a'));
+        $this->assertEquals('foo', $getopt->getOperand(0));
+    }
+
+    public function testAddOptionsFailsOnConflict()
+    {
+        $this->setExpectedException('\InvalidArgumentException');
+        $getopt = new Getopt(array(
+            array('v', 'version')
+        ));
+        $getopt->addOptions(array(
+            array('v', 'verbose')
+        ));
+    }
+
+    public function testParseUsesGlobalArgvWhenNoneGiven()
+    {
+        global $argv;
+        $argv = array('foo.php', '-a');
+
+        $getopt = new Getopt('a');
+        $getopt->parse();
+        $this->assertEquals(1, $getopt->getOption('a'));
+    }
+
+    public function testAccessMethods()
+    {
+        $getopt = new Getopt('a');
+        $getopt->parse('-a foo');
+
+        $options = $getopt->getOptions();
+        $this->assertCount(1, $options);
+        $this->assertEquals(1, $options['a']);
+        $this->assertEquals(1, $getopt->getOption('a'));
+
+        $operands = $getopt->getOperands();
+        $this->assertCount(1, $operands);
+        $this->assertEquals('foo', $operands[0]);
+        $this->assertEquals('foo', $getopt->getOperand(0));
+    }
+
     public function testCountable()
     {
         $getopt = new Getopt('abc');

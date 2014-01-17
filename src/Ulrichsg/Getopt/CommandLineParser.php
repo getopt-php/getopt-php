@@ -2,6 +2,9 @@
 
 namespace Ulrichsg\Getopt;
 
+/**
+ * Parses command line arguments according to a list of allowed options.
+ */
 class CommandLineParser
 {
     /** @var Option[] */
@@ -10,11 +13,21 @@ class CommandLineParser
     private $options = array();
     private $operands = array();
 
+    /**
+     * Creates a new instance.
+     *
+     * @param Option[] $optionList the list of allowed options
+     */
     public function __construct(array $optionList)
     {
         $this->optionList = $optionList;
     }
 
+    /**
+     * Parses the given arguments and converts them into options and operands.
+     *
+     * @param mixed $arguments a string or an array with one argument per element
+     */
     public function parse($arguments)
     {
         if (!is_array($arguments)) {
@@ -29,7 +42,7 @@ class CommandLineParser
             }
             if ($arg == '--' || mb_substr($arg, 0, 1) != '-') {
                 // no more options, treat the remaining arguments as operands
-                $firstOperandIndex = $arg == '--' ? $i + 1 : $i;
+                $firstOperandIndex = ($arg == '--') ? $i + 1 : $i;
                 $operands = array_slice($arguments, $firstOperandIndex);
                 break;
             }
@@ -50,11 +63,22 @@ class CommandLineParser
         }
     }
 
+    /**
+     * Returns the options created by a previous invocation of parse().
+     *
+     * @return array
+     */
     public function getOptions()
     {
         return $this->options;
     }
 
+
+    /**
+     * Returns the operands created by a previous invocation of parse(),
+     *
+     * @return array
+     */
     public function getOperands()
     {
         return $this->operands;
@@ -189,6 +213,7 @@ class CommandLineParser
 
     /**
      * Split the string into individual characters,
+     *
      * @param string $string string to split
      * @return array
      */

@@ -1,3 +1,5 @@
+*Note: This documentation covers v1.4 of Getopt.PHP. Documentation for the new v2.0 is under development.*
+
 Getopt.PHP
 ==========
 

@@ -1,3 +1,10 @@
+## 2.0.0-RC.1 (2014-01-17)
+
+Changes:
+* Namespace is now Ulrichsg\Getopt
+* Public API has been cleaned up, please refer to the documentation
+
+
 ## 1.4.1 (2013-12-13)
 
 Bugfixes:

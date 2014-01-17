@@ -7,10 +7,15 @@ namespace Ulrichsg\Getopt;
  */
 class OptionParser
 {
-    private $defaultType;
+    private $defaultMode;
 
-    public function __construct($defaultType) {
-        $this->defaultType = $defaultType;
+    /**
+     * Creates a new instance.
+     *
+     * @param int $defaultMode will be assigned to options when no mode is given for them.
+     */
+    public function __construct($defaultMode) {
+        $this->defaultMode = $defaultMode;
     }
 
     /**
@@ -52,7 +57,8 @@ class OptionParser
     }
 
     /**
-     * Parse an option array.
+     * Processes an option array. The array elements can either be Option objects or arrays conforming to the format
+     * (short, long, mode [, description [, default]]). See documentation for details.
      *
      * @param array $array
      * @return Option[]
@@ -118,11 +124,11 @@ class OptionParser
             $long = $row[1];
         }
 
-        $type = $this->defaultType;
+        $mode = $this->defaultMode;
         if (count($row) == 2 && is_int($row[1])) {
-            $type = $row[1];
+            $mode = $row[1];
         }
 
-        return array($short, $long, $type);
+        return array($short, $long, $mode);
     }
 }

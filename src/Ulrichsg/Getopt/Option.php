@@ -2,6 +2,9 @@
 
 namespace Ulrichsg\Getopt;
 
+/**
+ * Represents an option that Getopt accepts.
+ */
 class Option
 {
     private $short;
@@ -11,14 +14,49 @@ class Option
     private $hasDefault = false;
     private $default;
 
+    /**
+     * Creates a new option.
+     *
+     * @param string $short the option's short name (a single letter or digit) or null for long-only options
+     * @param string $long the option's long name (a string of 2+ letter/digit/_/- characters, starting with a letter
+     *                     or digit) or null for short-only options
+     * @param int $mode whether the option can/must have an argument (one of the constants defined in the Getopt class)
+     *                  (optional, defaults to no argument)
+     * @throws \InvalidArgumentException if both short and long name are null
+     */
     public function __construct($short, $long, $mode = Getopt::NO_ARGUMENT)
     {
         if (!$short && !$long) {
-            throw new \InvalidArgumentException("The short and long name of an option must not both be empty");
+            throw new \InvalidArgumentException("The short and long name may not both be empty");
         }
         $this->setShort($short);
         $this->setLong($long);
         $this->setMode($mode);
+    }
+
+    /**
+     * Defines a description for the option. This is only used for generating usage information.
+     *
+     * @param string $description
+     * @return Option this object (for chaining calls)
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * Defines a default value for the option.
+     *
+     * @param mixed $value
+     * @return Option this object (for chaining calls)
+     */
+    public function setDefaultValue($value)
+    {
+        $this->default = $value;
+        $this->hasDefault = true;
+        return $this;
     }
 
     /**
@@ -29,7 +67,7 @@ class Option
      */
     public function matches($string)
     {
-        return ($string == $this->short) || ($string == $this->long);
+        return ($string === $this->short) || ($string === $this->long);
     }
 
     public function short()
@@ -52,11 +90,6 @@ class Option
         return $this->description;
     }
 
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
     public function hasDefaultValue()
     {
         return $this->hasDefault;
@@ -65,13 +98,6 @@ class Option
     public function getDefaultValue()
     {
         return $this->default;
-    }
-
-    public function setDefaultValue($value)
-    {
-        $this->default = $value;
-        $this->hasDefault = true;
-        return $this;
     }
 
     private function setShort($short)
