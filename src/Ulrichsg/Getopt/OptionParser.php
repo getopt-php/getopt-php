@@ -59,6 +59,9 @@ class OptionParser
     /**
      * Processes an option array. The array elements can either be Option objects or arrays conforming to the format
      * (short, long, mode [, description [, default]]). See documentation for details.
+	 *
+	 * Developer note: Please don't add any further elements to the array. Future features should be configured only
+	 * through the Option class's methods.
      *
      * @param array $array
      * @return Option[]
@@ -97,15 +100,8 @@ class OptionParser
         if ($rowSize >= 4) {
             $option->setDescription($row[3]);
         }
-        if ($row[2] != Getopt::NO_ARGUMENT) {
-            $argument = new Argument();
-            if ($rowSize >= 5 and !empty($row[4])) {
-                $argument->setDefaultValue($row[4]);
-            }
-            if ($rowSize >= 6) {
-                $argument->setValidation($row[5]);
-            }
-            $option->setArgument($argument);
+        if ($rowSize >= 5 && $row[2] != Getopt::NO_ARGUMENT) {
+            $option->setArgument(new Argument($row[4]));
         }
         return $option;
     }

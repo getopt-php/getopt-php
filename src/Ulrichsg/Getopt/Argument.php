@@ -13,6 +13,7 @@ class Argument
      * Creates a new argument.
      * 
      * @param scalar|null $default Default value or NULL
+     * @param callable|null $validation a validation function (optional)
      * @throws \InvalidArgumentException
      */
     public function __construct($default = null, $validation = null)
@@ -20,7 +21,6 @@ class Argument
         if (!is_null($default)) {
             $this->setDefaultValue($default);
         }
-
         if (!is_null($validation)) {
             $this->setValidation($validation);
         }
@@ -38,12 +38,13 @@ class Argument
         if (!is_scalar($value)) {
             throw new \InvalidArgumentException("Default value must be scalar");
         }
-        $this->default = (string) $value;
+        $this->default = $value;
         return $this;
     }
 
     /**
-     * Set a validation function
+     * Set a validation function.
+     * The function must take a string and return true if it is valid, false otherwise.
      * 
      * @param callable $callable
      * @return Argument this object (for chaining calls)
@@ -54,22 +55,19 @@ class Argument
         if (!is_callable($callable)) {
             throw new \InvalidArgumentException("Validation must be a callable");
         }
-        if (!is_bool($callable('test'))) {
-            throw new \InvalidArgumentException("Validation function must return boolean");
-        }
         $this->validation = $callable;
         return $this;
     }
 
     /**
-     * Check if an argument validates according to the specification
+     * Check if an argument validates according to the specification.
      * 
      * @param string $arg
      * @return bool
      */
     public function validates($arg)
     {
-        return call_user_func($this->validation, $arg);
+        return (bool)call_user_func($this->validation, $arg);
     }
 
     /**
@@ -95,7 +93,7 @@ class Argument
     /**
      * Retrieve the default value
      * 
-     * @return string|null
+     * @return scalar|null
      */
     public function getDefaultValue()
     {

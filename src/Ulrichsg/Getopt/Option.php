@@ -11,8 +11,7 @@ class Option
     private $long;
     private $mode;
     private $description = '';
-    private $hasDefault = false;
-    private $default;
+    private $argument;
 
     /**
      * Creates a new option.
@@ -32,6 +31,7 @@ class Option
         $this->setShort($short);
         $this->setLong($long);
         $this->setMode($mode);
+        $this->argument = new Argument();
     }
 
     /**
@@ -43,6 +43,21 @@ class Option
     public function setDescription($description)
     {
         $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * Set the argument object
+     *
+     * @param Argument $arg
+     * @return Option this object (for chaining calls)
+     */
+    public function setArgument(Argument $arg)
+    {
+        if ($this->mode == Getopt::NO_ARGUMENT) {
+            throw new \InvalidArgumentException("Option should not have any argument");
+        }
+        $this->argument = $arg;
         return $this;
     }
 
@@ -76,38 +91,13 @@ class Option
     {
         return $this->description;
     }
-    
-    /**
-     * Set the argument object
-     * 
-     * @param Argument $arg
-     * @return Option this object (for chaining calls)
-     */
-    public function setArgument(Argument $arg)
-    {
-        if ($this->mode == Getopt::NO_ARGUMENT) {
-            throw new \InvalidArgumentException("Option should not have any argument");
-        }
-        $this->argument = $arg;
-        return $this;
-    }
-
-    /**
-     * Check whether the option has an argument
-     * 
-     * @return bool
-     */
-    public function hasArgument()
-    {
-        return ($this->mode != Getopt::NO_ARGUMENT) and isset($this->argument);
-    }
 
     /**
      * Retrieve the argument object
      * 
-     * @return Argument|null
+     * @return Argument
      */
-    public function argument()
+    public function getArgument()
     {
         return $this->argument;
     }

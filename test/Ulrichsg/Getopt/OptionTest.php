@@ -46,8 +46,7 @@ class OptionTest extends \PHPUnit_Framework_TestCase
     {
         $option = new Option('a', null, Getopt::OPTIONAL_ARGUMENT);
         $option->setArgument(new Argument());
-        $this->assertTrue($option->hasArgument());
-        $this->assertInstanceof('Ulrichsg\Getopt\Argument', $option->argument());
+        $this->assertInstanceof('Ulrichsg\Getopt\Argument', $option->getArgument());
     }
 
     public function testSetArgumentWrongMode()

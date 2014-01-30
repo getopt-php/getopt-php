@@ -67,14 +67,11 @@ class OptionParserTest extends \PHPUnit_Framework_TestCase
             array(
                 array('a', 'alpha', Getopt::OPTIONAL_ARGUMENT, 'Description', 42),
                 new Option('b', 'beta'),
-                array('c'),
-                array('d', null, Getopt::OPTIONAL_ARGUMENT, '', null, function($arg) {
-                    return $arg == 'test';
-                })
+                array('c')
             )
         );
 
-        $this->assertCount(4, $options);
+        $this->assertCount(3, $options);
         foreach ($options as $option) {
             $this->assertInstanceOf('Ulrichsg\Getopt\Option', $option);
             switch ($option->short()) {
@@ -82,7 +79,7 @@ class OptionParserTest extends \PHPUnit_Framework_TestCase
                     $this->assertEquals('alpha', $option->long());
                     $this->assertEquals(Getopt::OPTIONAL_ARGUMENT, $option->mode());
                     $this->assertEquals('Description', $option->getDescription());
-                    $this->assertEquals(42, $option->argument()->getDefaultValue());
+                    $this->assertEquals(42, $option->getArgument()->getDefaultValue());
                     break;
                 case 'b':
                     $this->assertEquals('beta', $option->long());
@@ -93,11 +90,7 @@ class OptionParserTest extends \PHPUnit_Framework_TestCase
                     $this->assertNull($option->long());
                     $this->assertEquals(Getopt::REQUIRED_ARGUMENT, $option->mode());
                     $this->assertEquals('', $option->getDescription());
-                    $this->assertFalse($option->argument->hasDefaultValue());
-                    break;
-                case 'd':
-                    $this->assertTrue($option->argument()->hasValidation());
-                    $this->assertTrue($option->argument()->validates('test'));
+                    $this->assertFalse($option->getArgument()->hasDefaultValue());
                     break;
                 default:
                     $this->fail('Unexpected option: '.$option->short());
