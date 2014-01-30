@@ -1,3 +1,9 @@
+## 2.0.0 (2014-01-30)
+
+Features:
+* Argument validation (courtesy of @jochenvdv)
+
+
 ## 2.0.0-RC.1 (2014-01-17)
 
 Changes:

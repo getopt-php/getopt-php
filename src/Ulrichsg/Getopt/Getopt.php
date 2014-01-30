@@ -6,7 +6,7 @@ namespace Ulrichsg\Getopt;
  * Getopt.PHP allows for easy processing of command-line arguments.
  * It is a more powerful, object-oriented alternative to PHP's built-in getopt() function.
  *
- * @version 2.0.0-rc.1
+ * @version 2.0.0
  * @license MIT
  * @link    https://github.com/ulrichsg/getopt-php
  */
