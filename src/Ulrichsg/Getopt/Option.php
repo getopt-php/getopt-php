@@ -47,19 +47,6 @@ class Option
     }
 
     /**
-     * Defines a default value for the option.
-     *
-     * @param mixed $value
-     * @return Option this object (for chaining calls)
-     */
-    public function setDefaultValue($value)
-    {
-        $this->default = $value;
-        $this->hasDefault = true;
-        return $this;
-    }
-
-    /**
      * Returns true if the given string is equal to either the short or the long name.
      *
      * @param string $string
@@ -89,15 +76,40 @@ class Option
     {
         return $this->description;
     }
-
-    public function hasDefaultValue()
+    
+    /**
+     * Set the argument object
+     * 
+     * @param Argument $arg
+     * @return Option this object (for chaining calls)
+     */
+    public function setArgument(Argument $arg)
     {
-        return $this->hasDefault;
+        if ($this->mode == Getopt::NO_ARGUMENT) {
+            throw new \InvalidArgumentException("Option should not have any argument");
+        }
+        $this->argument = $arg;
+        return $this;
     }
 
-    public function getDefaultValue()
+    /**
+     * Check whether the option has an argument
+     * 
+     * @return bool
+     */
+    public function hasArgument()
     {
-        return $this->default;
+        return ($this->mode != Getopt::NO_ARGUMENT) and isset($this->argument);
+    }
+
+    /**
+     * Retrieve the argument object
+     * 
+     * @return Argument|null
+     */
+    public function argument()
+    {
+        return $this->argument;
     }
 
     private function setShort($short)

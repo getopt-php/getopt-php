@@ -181,15 +181,15 @@ class CommandLineParser
     private function addDefaultValues()
     {
         foreach ($this->optionList as $option) {
-            if ($option->hasDefaultValue()
+            if ($option->hasArgument() and $option->argument()->hasDefaultValue()
                     && !isset($this->options[$option->short()])
                     && !isset($this->options[$option->long()])
             ) {
                 if ($option->short()) {
-                    $this->addOption($option->short(), $option->getDefaultValue());
+                    $this->addOption($option->short(), $option->argument()->getDefaultValue());
                 }
                 if ($option->long()) {
-                    $this->addOption($option->long(), $option->getDefaultValue());
+                    $this->addOption($option->long(), $option->argument()->getDefaultValue());
                 }
             }
         }

@@ -248,9 +248,9 @@ class CommandLineParserTest extends \PHPUnit_Framework_TestCase
     public function testParseOptionWithDefaultValue()
     {
         $optionA = new Option('a', null, Getopt::REQUIRED_ARGUMENT);
-        $optionA->setDefaultValue(10);
+        $optionA->setArgument(new Argument(10));
         $optionB = new Option('b', 'beta', Getopt::REQUIRED_ARGUMENT);
-        $optionB->setDefaultValue(20);
+        $optionB->setArgument(new Argument(20));
         $parser = new CommandLineParser(array($optionA, $optionB));
         $parser->parse('-a 12');
 

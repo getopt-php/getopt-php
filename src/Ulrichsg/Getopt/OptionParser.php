@@ -97,8 +97,12 @@ class OptionParser
         if ($rowSize >= 4) {
             $option->setDescription($row[3]);
         }
-        if ($rowSize >= 5) {
-            $option->setDefaultValue($row[4]);
+        if ($row[2] != Getopt::NO_ARGUMENT) {
+            $argument = new Argument();
+            if ($rowSize >= 5) {
+                $argument->setDefaultValue($row[4]);
+            }
+            $option->setArgument($argument);
         }
         return $option;
     }
