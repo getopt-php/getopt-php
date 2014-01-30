@@ -47,6 +47,7 @@ class Argument
      * 
      * @param callable $callable
      * @return Argument this object (for chaining calls)
+     * @throws \InvalidArgumentException
      */
     public function setValidation($callable)
     {
@@ -82,7 +83,7 @@ class Argument
     }
 
     /**
-     * Check whether the argument has a defaul value
+     * Check whether the argument has a default value
      * 
      * @return boolean
      */
