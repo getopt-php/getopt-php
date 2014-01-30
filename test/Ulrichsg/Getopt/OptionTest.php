@@ -42,13 +42,18 @@ class OptionTest extends \PHPUnit_Framework_TestCase
         new Option(null, 'a', Getopt::REQUIRED_ARGUMENT);
     }
 
-    public function testDefaultValue()
+    public function testSetArgument()
     {
-        $option = new Option('a', null);
-        $this->assertFalse($option->hasDefaultValue());
+        $option = new Option('a', null, Getopt::OPTIONAL_ARGUMENT);
+        $option->setArgument(new Argument());
+        $this->assertTrue($option->hasArgument());
+        $this->assertInstanceof('Ulrichsg\Getopt\Argument', $option->argument());
+    }
 
-        $option->setDefaultValue('foo');
-        $this->assertTrue($option->hasDefaultValue());
-        $this->assertEquals('foo', $option->getDefaultValue());
+    public function testSetArgumentWrongMode()
+    {
+        $this->setExpectedException('InvalidArgumentException');
+        $option = new Option('a', null, Getopt::NO_ARGUMENT);
+        $option->setArgument(new Argument());
     }
 }

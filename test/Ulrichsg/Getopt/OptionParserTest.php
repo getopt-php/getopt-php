@@ -67,11 +67,14 @@ class OptionParserTest extends \PHPUnit_Framework_TestCase
             array(
                 array('a', 'alpha', Getopt::OPTIONAL_ARGUMENT, 'Description', 42),
                 new Option('b', 'beta'),
-                array('c')
+                array('c'),
+                array('d', null, Getopt::OPTIONAL_ARGUMENT, '', null, function($arg) {
+                    return $arg == 'test';
+                })
             )
         );
 
-        $this->assertCount(3, $options);
+        $this->assertCount(4, $options);
         foreach ($options as $option) {
             $this->assertInstanceOf('Ulrichsg\Getopt\Option', $option);
             switch ($option->short()) {
@@ -79,19 +82,22 @@ class OptionParserTest extends \PHPUnit_Framework_TestCase
                     $this->assertEquals('alpha', $option->long());
                     $this->assertEquals(Getopt::OPTIONAL_ARGUMENT, $option->mode());
                     $this->assertEquals('Description', $option->getDescription());
-                    $this->assertEquals(42, $option->getDefaultValue());
+                    $this->assertEquals(42, $option->argument()->getDefaultValue());
                     break;
                 case 'b':
                     $this->assertEquals('beta', $option->long());
                     $this->assertEquals(Getopt::NO_ARGUMENT, $option->mode());
                     $this->assertEquals('', $option->getDescription());
-                    $this->assertFalse($option->hasDefaultValue());
                     break;
                 case 'c':
                     $this->assertNull($option->long());
                     $this->assertEquals(Getopt::REQUIRED_ARGUMENT, $option->mode());
                     $this->assertEquals('', $option->getDescription());
-                    $this->assertFalse($option->hasDefaultValue());
+                    $this->assertFalse($option->argument->hasDefaultValue());
+                    break;
+                case 'd':
+                    $this->assertTrue($option->argument()->hasValidation());
+                    $this->assertTrue($option->argument()->validates('test'));
                     break;
                 default:
                     $this->fail('Unexpected option: '.$option->short());

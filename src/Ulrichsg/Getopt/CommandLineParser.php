@@ -154,6 +154,11 @@ class CommandLineParser
                 if ($option->mode() == Getopt::REQUIRED_ARGUMENT && !mb_strlen($value)) {
                     throw new \UnexpectedValueException("Option '$string' must have a value");
                 }
+                if ($option->hasArgument() and $option->argument()->hasValidation()) {
+                    if ((mb_strlen($value) > 0) and !$option->argument()->validates($value)) {
+                        throw new \UnexpectedValueException("Option '$string' has an invalid value");
+                    }
+                }
                 // for no-argument options, check if they are duplicate
                 if ($option->mode() == Getopt::NO_ARGUMENT) {
                     $oldValue = isset($this->options[$string]) ? $this->options[$string] : null;
@@ -181,15 +186,15 @@ class CommandLineParser
     private function addDefaultValues()
     {
         foreach ($this->optionList as $option) {
-            if ($option->hasDefaultValue()
+            if ($option->hasArgument() and $option->argument()->hasDefaultValue()
                     && !isset($this->options[$option->short()])
                     && !isset($this->options[$option->long()])
             ) {
                 if ($option->short()) {
-                    $this->addOption($option->short(), $option->getDefaultValue());
+                    $this->addOption($option->short(), $option->argument()->getDefaultValue());
                 }
                 if ($option->long()) {
-                    $this->addOption($option->long(), $option->getDefaultValue());
+                    $this->addOption($option->long(), $option->argument()->getDefaultValue());
                 }
             }
         }
