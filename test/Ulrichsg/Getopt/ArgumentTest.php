@@ -14,7 +14,7 @@ class ArgumentTest extends \PHPUnit_Framework_TestCase
 
     public function testSetDefaultValueNotScalar()
     {
-        $this->setexpectedException('InvalidArgumentException');
+        $this->setExpectedException('InvalidArgumentException');
         $argument = new Argument();
         $argument->setDefaultValue(array());
     }

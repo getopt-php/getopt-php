@@ -11,6 +11,7 @@ class Argument
      * Creates a new argument.
      * 
      * @param scalar|null $default Default value or NULL
+     * @throws \InvalidArgumentException
      */
     public function __construct($default = null)
     {
@@ -24,6 +25,7 @@ class Argument
      * 
      * @param scalar $value
      * @return Argument this object (for chaining calls)
+     * @throws \InvalidArgumentException
      */
     public function setDefaultValue($value)
     {
