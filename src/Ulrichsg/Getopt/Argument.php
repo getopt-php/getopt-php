@@ -6,6 +6,8 @@ class Argument
 {
     /** @var string */
     private $default;
+    /** @var callable */
+    private $validation;
 
     /**
      * Creates a new argument.
@@ -13,10 +15,14 @@ class Argument
      * @param scalar|null $default Default value or NULL
      * @throws \InvalidArgumentException
      */
-    public function __construct($default = null)
+    public function __construct($default = null, $validation = null)
     {
         if (!is_null($default)) {
             $this->setDefaultValue($default);
+        }
+
+        if (!is_null($validation)) {
+            $this->setValidation($validation);
         }
     }
 
@@ -34,6 +40,45 @@ class Argument
         }
         $this->default = (string) $value;
         return $this;
+    }
+
+    /**
+     * Set a validation function
+     * 
+     * @param callable $callable
+     * @return Argument this object (for chaining calls)
+     */
+    public function setValidation($callable)
+    {
+        if (!is_callable($callable)) {
+            throw new \InvalidArgumentException("Validation must be a callable");
+        }
+        if (!is_bool($callable('test'))) {
+            throw new \InvalidArgumentException("Validation function must return boolean");
+        }
+        $this->validation = $callable;
+        return $this;
+    }
+
+    /**
+     * Check if an argument validates according to the specification
+     * 
+     * @param string $arg
+     * @return bool
+     */
+    public function validates($arg)
+    {
+        return call_user_func($this->validation, $arg);
+    }
+
+    /**
+     * Check if the argument has a validation function
+     * 
+     * @return bool
+     */
+    public function hasValidation()
+    {
+        return isset($this->validation);
     }
 
     /**

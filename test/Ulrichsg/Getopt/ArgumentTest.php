@@ -18,4 +18,29 @@ class ArgumentTest extends \PHPUnit_Framework_TestCase
         $argument = new Argument();
         $argument->setDefaultValue(array());
     }
+
+    public function testValidates()
+    {
+        $argument = new Argument();
+        $argument->setValidation(function($arg) use ($argument) {
+            $this->assertEquals('test', $arg);
+            return true;
+        });
+        $this->assertTrue($argument->hasValidation());
+        $this->assertTrue($argument->validates('test'));
+    }
+
+    public function testSetValidationUncallable()
+    {
+        $this->setExpectedException('InvalidArgumentException');
+        $argument = new Argument();
+        $argument->setValidation('');
+    }
+
+    public function testSetValidationInvalidCallable()
+    {
+        $this->setExpectedException('InvalidArgumentException');
+        $argument = new Argument();
+        $argument->setValidation(function() {});
+    }
 }

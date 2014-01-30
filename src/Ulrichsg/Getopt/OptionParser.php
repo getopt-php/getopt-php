@@ -99,8 +99,11 @@ class OptionParser
         }
         if ($row[2] != Getopt::NO_ARGUMENT) {
             $argument = new Argument();
-            if ($rowSize >= 5) {
+            if ($rowSize >= 5 and !empty($row[4])) {
                 $argument->setDefaultValue($row[4]);
+            }
+            if ($rowSize >= 6) {
+                $argument->setValidation($row[5]);
             }
             $option->setArgument($argument);
         }
