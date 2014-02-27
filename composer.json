@@ -2,7 +2,7 @@
     "name": "ulrichsg/getopt-php",
     "type": "library",
     "description": "Command line arguments parser for PHP 5.3",
-    "homepage": "http://github.com/ulrichsg/getopt-php",
+    "homepage": "http://ulrichsg.github.io/getopt-php",
     "license": "MIT",
     "authors": [
         {

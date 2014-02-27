@@ -8,7 +8,7 @@ namespace Ulrichsg\Getopt;
  *
  * @version 2.0.0
  * @license MIT
- * @link    https://github.com/ulrichsg/getopt-php
+ * @link    http://ulrichsg.github.io/getopt-php
  */
 class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
 {
