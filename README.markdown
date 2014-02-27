@@ -17,7 +17,7 @@ Features
 Documentation
 -------------
 
-* Documentation for the current version (2.0+)](http://ulrichsg.github.io/getopt-php/)
+* [Documentation for the current version (2.0+)](http://ulrichsg.github.io/getopt-php/)
 * [Legacy documentation (1.4)](https://github.com/ulrichsg/getopt-php/blob/2aa8ab1be57200af4cc51447d2a6c244b75ca70b/README.markdown)
 
 License
