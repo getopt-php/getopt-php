@@ -2,16 +2,18 @@
 layout: default
 title: Installation
 ---
-<h1>Installation</h1>
+<h1>{{ page.title }}</h1>
 
 <p>The recommended way of installing Getopt.php is to use <a href="http://getcomposer.org">Composer</a>. Add it to your
 <tt>composer.json</tt> file like this:</p>
 
-<code>{
+{% highlight json %}
+{
     "require": {
         "ulrichsg/getopt-php": "2.0.*"
     }
-}</code>
+}
+{% endhighlight %}
 
 <p>Replace <tt>2.0.*</tt> by the release number you want to use (a list of releases is available on
 <a href="https://packagist.org/packages/ulrichsg/getopt-php">Packagist</a>).</p>

@@ -1,0 +1,19 @@
+---
+layout: default
+title: Option Descriptions
+---
+<h1>{{ page.title }}</h1>
+
+<p>You can add short description texts to individual options. They will be used to enhance the
+	<a href="{{ site.baseurl}}/basic/usage-information.html">generated help text</a>.</p>
+
+<p>
+
+{% highlight php startinline %}
+$getopt = new Getopt(array(
+    new Option('v', 'version')
+        ->setDescription('Display version information'),
+    new Option('h', 'help')
+        ->setDescription('Show help text')
+));
+{% endhighlight %}

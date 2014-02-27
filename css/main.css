@@ -39,7 +39,7 @@ h2 {
 	font-size: 18px;
 }
 
-p, li {
+p, li, dd {
 	color: #444;
 }
 
@@ -53,9 +53,14 @@ a {
 	color: #318cda;
 }
 
+dd {
+	margin-left: 2em;
+	margin-bottom: 5px;
+}
+
 #nav {
 	float: left;
-	width: 150px;
+	width: 180px;
 }
 
 #nav ul {

@@ -1,0 +1,24 @@
+---
+layout: default
+title: Argument Validation
+---
+<h1>{{ page.title }}</h1>
+
+<p>You can have Getopt check the validity of an option argument by assigning it a
+	<a href="http://www.php.net/manual/en/language.types.callable.php">callable</a> validation function:</p>
+
+{% highlight php startinline %}
+$getopt = new Getopt(array(
+    new Option('a', null, Getopt::REQUIRED_ARGUMENT)
+        ->setArgument(new Argument(null, function($value) {
+            return ($value > 9000);
+        }))
+));
+{% endhighlight %}
+
+<p>If the validation returns <tt>false</tt>, an <tt>UnexpectedValueException</tt> is thrown. This is the same type
+	thrown for any other errors related to user input, so you don't have to handle it separately.</p>
+
+<p><strong>Note:</strong> The validation function is the second argument of the <tt>Argument</tt> constructor because
+	the first one is used for the <a href="default-values.html">default value</a> &ndash; making it very easy to
+	combine these two.</p>

@@ -1,0 +1,64 @@
+---
+layout: default
+title: Retrieving Values
+---
+<h1>{{ page.title }}</h1>
+
+<p>After you have constructed your <tt>Getopt</tt> object and specified all your options, you have to invoke the parser
+	next. In the usual case this looks just like this:</p>
+
+{% highlight php startinline %}
+$getopt->parse();
+{% endhighlight %}
+
+<p>By default, Getopt looks for command line arguments in the global variable <tt>$argv</tt>. You can override this
+	behavior by passing a string or array.</p>
+
+<p>After that (and if no error occurred &ndash; see below for that case) you can use the following methods:</p>
+
+<h2>Getting Option Values</h2>
+
+<p>You can get an individual option's value by its name or all given options as an associative array with names as keys:</p>
+
+{% highlight php startinline %}
+$getopt->getOption('v');
+$getopt->getOptions();
+
+// alternative: syntactic sugar
+$getopt['v'];
+{% endhighlight %}
+
+<p>An option that has both a short and long name can be retrieved using either, regardless of which one was actually given
+	at the command line.</p>
+
+<p>The possible option values are:</p>
+
+<ul>
+	<li>If the option was given with an argument (for the <tt>REQUIRED_ARGUMENT</tt> and <tt>OPTIONAL_ARGUMENT</tt> modes),
+		the value is that argument, as a string.</li>
+	<li>If the option was given without an argument (for the <tt>OPTIONAL_ARGUMENT</tt> and <tt>NO_ARGUMENT</tt> modes),
+		the value is the number of times the option occurred on the command line. This allows for cumulative options,
+		like many *nix tools use for e.g. verbosity levels: a command line like <tt>-vvv</tt> results in a value of&nbsp;3.</li>
+	<li>If the option was not given, the value is <tt>null</tt>.</li>
+</ul>
+
+<h2>Getting Operand Values</h2>
+
+<p>Everything that is not an option or option argument is considered an operand. In addition, if the command line contains
+	the string <tt> -- </tt>, everything after it is also treated as an operand. These can be retrieved individually
+	by index or as an array:</p>
+
+{% highlight php startinline %}
+// returns the ($i+1)th operand as a string or null if there are less operands
+$getopt->getOperand($i);
+
+// returns all operands
+$getopt->getOperands();
+{% endhighlight %}
+
+<h2>Error Handling</h2>
+
+<p>If the command line arguments do not match the specified options, <tt>Getopt::parse()</tt> will throw a standard
+	<tt>UnexpectedValueException</tt> with a message containing detailed information about what went wrong. Catching
+	this exception thus allows you to react to the error the way you prefer (you could, for instance, use
+	<tt>Getopt::getHelpText()</tt> to print <a href="usage-information.html">usage information</a>).</p>

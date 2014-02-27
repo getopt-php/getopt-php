@@ -1,0 +1,31 @@
+---
+layout: default
+title: Advanced Features
+---
+<h1>{{ page.title }}</h1>
+
+<p>These optional features add more power to Getopt in exchange for some additional configuration work.</p>
+
+<p>One thing all of these have in common is that they make use of chainable methods. That makes it easy to add any
+	number of them to an <tt>Option</tt> object, for example:</pp>
+
+{% highlight php startinline %}
+$getopt = new Getopt(array(
+    new Option('o', 'option', Getopt::REQUIRED_ARGUMENT)
+        ->setDescription('Description of option')
+        ->setArgument(new Argument('Default value'))
+));
+{% endhighlight %}
+
+<h2>Topics</h2>
+
+<dl>
+	<dt><a href="option-descriptions.html">Option Descriptions</a></dt>
+	<dd>Add description texts to options for richer help texts</dd>
+
+	<dt><a href="default-values.html">Default Values</a></dt>
+	<dd>Set default values for option arguments</dd>
+
+	<dt><a href="argument-validation.html">Argument Validation</a></dt>
+	<dd>Automatically check the validity of option arguments</dd>
+</dl>

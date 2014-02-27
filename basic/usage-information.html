@@ -1,0 +1,32 @@
+---
+layout: default
+title: Usage Information
+---
+<h1>{{ page.title }}</h1>
+
+<p>Getopt can automatically generate a human-readable usage information from the specified options. Use it for quickly
+	setting up help texts:</p>
+
+{% highlight php startinline %}
+echo $getopt->getHelpText();
+{% endhighlight %}
+
+<p>The result will look similar to this:</p>
+
+{% highlight text %}
+Usage: my-program.php [options] [operands]
+Options:
+  -a, --alpha             Short and long options with no argument
+  --beta [<arg>]          Long option only with an optional argument
+  -c <arg>                Short option only with a mandatory argument
+{% endhighlight %}
+
+<p>Notes:</p>
+
+<ul>
+	<li>The name of the program is determined automatically.</li>
+	<li>The description text following each option only appears if you have set it
+		(<a href="{{ site.baseurl}}/advanced/option-descriptions.html">see here</a>).</li>
+	<li>You can change the padding of the description texts by passing the desired number to <tt>getHelpText()</tt>.
+		The default is 25.</li>
+</ul>

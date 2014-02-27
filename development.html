@@ -1,0 +1,40 @@
+---
+layout: default
+title: Development
+---
+<h1>{{ page.title }}</h1>
+
+<p>Getopt has received contributions from <a href="https://github.com/ulrichsg/getopt-php/graphs/contributors">several
+	people</a> in the past, for which I am deeply thankful. If you would like to contribute, feel free to
+	<a href="https://github.com/ulrichsg/getopt-php/issues">create an issue</a> or clone the source and submit a pull
+	request. If you are planning to hack on Getopt yourself, please read the rest of this page for some general
+	information.</p>
+
+<h2>Guidelines</h2>
+
+<ul>
+	<li>Getopt supports PHP versions back up to 5.3, so unfortunately, all those shiny language features from newer
+		versions are off limits. Luckily, <a href="https://travis-ci.org/ulrichsg/getopt-php">Travis</a> ensures this
+		automatically and will notify you if your pull request does not respect it (or if it breaks anything else).</li>
+	<li>With v2.0 I have adopted <a href="http://www.php-fig.org/psr/psr-2/">PSR-2</a> as coding conventions, so I would
+		ask all contributors to adhere to it. You probably don't use it in your personal work (and neither do I), but
+		it's the closest thing to a community consensus that the PHP world has, and thus I consider it appropriate for
+		an open source project to use.</li>
+	<li>Please supply unit tests and doc comments wherever necessary.</li>
+</ul>
+
+<h2>Running the Tests</h2>
+
+<p>If PHPUnit is already installed, calling <tt>phpunit</tt> in the project directory will run the test suite.
+	However, if it is not, you can pull it in as a local dependency by running:</p>
+
+{% highlight console %}
+$ make install-dev-dependencies
+{% endhighlight %}
+
+<p>This will download Composer and then run it to install Getopt's development dependencies (i.e. PHPUnit). After that,
+	the test suite can be executed like this:</p>
+
+{% highlight console %}
+$ make test
+{% endhighlight %}
