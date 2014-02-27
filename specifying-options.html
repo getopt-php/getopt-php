@@ -27,7 +27,7 @@ title: Specifying Options
 	function</a> (and the original GNU getopt). It is the shortest way to set up Getopt, but it does not support
 	long options or any advanced features:</p>
 
-{% highlight php %}
+{% highlight php startinline %}
 $getopt = new Getopt('ab:c::');
 {% endhighlight %}
 
@@ -45,11 +45,11 @@ $getopt = new Getopt('ab:c::');
 <p>This way has been newly introduced in version 2.0 of Getopt and is the only one that grants access to all advanced
 	features. It involves manually creating <tt>Option</tt> objects and passing them to the Getopt constructor:</p>
 
-{% highlight php %}
+{% highlight php startinline %}
 $getopt = new Getopt(array(
-	new Option('a', 'alpha', Getopt::REQUIRED_ARGUMENT),
-	new Option(null, 'beta', Getopt::OPTIONAL_ARGUMENT),
-	new Option('c', null)
+    new Option('a', 'alpha', Getopt::REQUIRED_ARGUMENT),
+    new Option(null, 'beta', Getopt::OPTIONAL_ARGUMENT),
+    new Option('c', null)
 ));
 {% endhighlight %}
 
@@ -64,11 +64,11 @@ $getopt = new Getopt(array(
 
 <p>This way is very similar to the explicit way, except that the three option arguments are placed in an array:</p>
 
-{% highlight php %}
+{% highlight php startinline %}
 $getopt = new Getopt(array(
-	array('a', 'alpha', Getopt::REQUIRED_ARGUMENT),
-	array(null, 'beta', Getopt::OPTIONAL_ARGUMENT),
-	array('c', null)
+    array('a', 'alpha', Getopt::REQUIRED_ARGUMENT),
+    array(null, 'beta', Getopt::OPTIONAL_ARGUMENT),
+    array('c', null)
 ));
 {% endhighlight %}
 
