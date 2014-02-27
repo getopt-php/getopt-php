@@ -1,0 +1,103 @@
+html {
+	display: table;
+	margin: auto;
+	height: 100%;
+	background-color: #EEE;
+}
+
+body {
+	position: relative;
+	display: table-cell;
+	width: 1000px;
+	min-height: 100%;
+	background-color: #FFF;
+	font-family: Georgia, serif;
+	font-size: 16px;
+	color: #222;
+}
+
+#head {
+	height: 75px;
+	line-height: 75px;
+	border-bottom: 1px solid #AAA;
+	font-size: 36px;
+	font-weight: bold;
+	padding-left: 20px;
+}
+
+#content {
+	margin-left: 200px;
+	margin-right: 1em;
+	padding-bottom: 80px;
+}
+
+h1 {
+	font-size: 24px;
+}
+
+h2 {
+	font-size: 18px;
+}
+
+p, li {
+	color: #444;
+}
+
+tt, code {
+	font-family: monospace;
+	font-size: 14px;
+	white-space: pre;
+}
+
+a {
+	color: #318cda;
+}
+
+#nav {
+	float: left;
+	width: 150px;
+}
+
+#nav ul {
+	font-size: 14px;
+}
+
+#nav, #nav ul {
+	list-style: outside none;
+	padding-left: 20px;
+}
+
+#nav a {
+	text-decoration: none;
+}
+
+#nav a:hover, #footer a:hover {
+	text-decoration: underline;
+}
+
+#footer {
+	position: absolute;
+	bottom: 0;
+	clear: both;
+	width: 100%;
+	min-height: 60px;
+	margin-top: 1em;
+	border-top: 1px solid #AAA;
+	padding: 1em 0 5px 0;
+	text-align: center;
+	vertical-align: middle;
+	font-size: 14px;
+}
+
+#footer p {
+	margin: 0;
+	color: #888;
+}
+
+
+#gh-ribbon {
+	position: absolute;
+	top: 0;
+	right: 0;
+	border: 0;
+}

@@ -1,0 +1,22 @@
+---
+layout: default
+title: About
+---
+<h1>About</h1>
+
+<p>Getopt.php is a command-line argument processor for PHP 5.3 and above. It started out as an object-oriented
+	replacement for PHP's own <a href="http://php.net/manual/en/function.getopt.php"><tt>getopt()</tt></a> method,
+	but has since evolved to become significantly more powerful.</p>
+
+<h2>Features</h2>
+
+<ul>
+	<li>Supports both short (eg. <tt>-v</tt>) and long (eg. <tt>--version</tt>) options</li>
+	<li>Option aliasing, ie. an option can have both a long and a short version</li>
+	<li>Cumulative short options (eg. <tt>-vvv</tt>)</li>
+	<li>Two alternative notations for long options with arguments: <tt>--option value</tt> and <tt>--option=value</tt></li>
+	<li>Collapsed short options (eg. <tt>-abc</tt> instead of <tt>-a -b -c</tt>), also with an argument for the last
+		option (eg. <tt>-ab 1</tt> instead of <tt>-a -b 1</tt>)</li>
+	<li>Default argument values</li>
+	<li>Argument validation</li>
+</ul>

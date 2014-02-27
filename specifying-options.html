@@ -1,0 +1,80 @@
+---
+layout: default
+title: Specifying Options
+---
+<h1>Specifying Options</h1>
+
+<p>Every option is defined by up to three pieces of information:</p>
+<ul>
+	<li>its <em>short name</em>, which must be a single letter or digit. For instance, if you want to respond to
+	<tt>php my_program.php -v</tt> by showing some version information, add an option with a short name "v".</li>
+	<li>its <em>long name</em>, which must be at least two characters long and can contain letters, digits, underscores
+		and hyphens, but has to begin with a letter or digit. For instance, you can make <em>version</em> the long name
+		of your <tt>-v</tt> option, which will then also react to <tt>php my_program.php --version</tt>.
+	<li>its <em>mode</em>, which describes whether the option has a mandatory, an optional or no argument. The default
+		is no argument.</li>
+</ul>
+
+<p><strong>Note:</strong> An option does not need to have both a long and a short name. Either name may be disabled by
+	setting it to <tt>null</tt>.</p>
+
+<p>Getopt.php offers multiple ways to specify options. Which one you should choose depends on the set of features you
+	want to use.</p>
+
+<h2>The Original Way (Short Options Only)</h2>
+
+<p>This uses the exact same syntax as <a href="http://php.net/manual/en/function.getopt.php">PHP's <tt>getopt()</tt>
+	function</a> (and the original GNU getopt). It is the shortest way to set up Getopt, but it does not support
+	long options or any advanced features:</p>
+
+{% highlight php %}
+$getopt = new Getopt('ab:c::');
+{% endhighlight %}
+
+<p>Each letter or digit in the string declares one option. Letters may be followed by either one or two colons to
+	determine if the option can or must have an argument:</p>
+
+<ul>
+	<li>No colon - no argument</li>
+	<li>One colon - argument required</li>
+	<li>Two colons - argument optional</li>
+</ul>
+
+<h2>The Explicit Way</h2>
+
+<p>This way has been newly introduced in version 2.0 of Getopt and is the only one that grants access to all advanced
+	features. It involves manually creating <tt>Option</tt> objects and passing them to the Getopt constructor:</p>
+
+{% highlight php %}
+$getopt = new Getopt(array(
+	new Option('a', 'alpha', Getopt::REQUIRED_ARGUMENT),
+	new Option(null, 'beta', Getopt::OPTIONAL_ARGUMENT),
+	new Option('c', null)
+));
+{% endhighlight %}
+
+<p>The three arguments of the <tt>Option</tt> constructor are the same as described above: short name, long name and mode.
+	Either long or short name can be null. For the mode use one of the three class constants <tt>Getopt::REQUIRED_ARGUMENT</tt>,
+	<tt>Getopt::OPTONAL_ARGUMENT</tt> or <tt>Getopt::NO_ARGUMENT</tt>. The latter can be omitted as it is the default value.</p>
+
+<h2>The Legacy Way</h2>
+
+<p>This is how long names and advanced features could be accessed in Getopt v1. It still works, but is considered
+	deprecated and will not support future features, thus it should not be used anymore.</p>
+
+<p>This way is very similar to the explicit way, except that the three option arguments are placed in an array:</p>
+
+{% highlight php %}
+$getopt = new Getopt(array(
+	array('a', 'alpha', Getopt::REQUIRED_ARGUMENT),
+	array(null, 'beta', Getopt::OPTIONAL_ARGUMENT),
+	array('c', null)
+));
+{% endhighlight %}
+
+<h2>Adding more options</h2>
+
+<p>If you want to add options to an existing <tt>Getopt</tt> object, you can do so by calling <tt>addOptions()</tt>.
+	It takes the same types of arguments as the constructor. If you give it an option with the same name(s) as an already
+	existing one, the latter will be overwritten. Passing an option where only one name is equal to an existing
+	option's, but the other one is different, will result in an exception.</p>
