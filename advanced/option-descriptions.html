@@ -17,3 +17,14 @@ $getopt = new Getopt(array(
         ->setDescription('Show help text')
 ));
 {% endhighlight %}
+
+<h2>The Legacy Way</h2>
+
+<p>If you are using the array notation from Getopt v1, you can set the description as the fourth
+	element of the option array:</p>
+
+{% highlight php startinline %}
+$getopt = new Getopt(array(
+   array('v', 'version', Getopt::NO_ARGUMENT, 'Display version information')
+));
+{% endhighlight %}
