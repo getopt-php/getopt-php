@@ -45,7 +45,7 @@ class OptionTest extends \PHPUnit_Framework_TestCase
     public function testSetArgument()
     {
         $option = new Option('a', null, Getopt::OPTIONAL_ARGUMENT);
-        $option->setArgument(new Argument());
+        $this->assertEquals($option, $option->setArgument(new Argument()));
         $this->assertInstanceof('Ulrichsg\Getopt\Argument', $option->getArgument());
     }
 
@@ -55,4 +55,18 @@ class OptionTest extends \PHPUnit_Framework_TestCase
         $option = new Option('a', null, Getopt::NO_ARGUMENT);
         $option->setArgument(new Argument());
     }
+
+	public function testSetDefaultValue()
+	{
+		$option = new Option('a', null, Getopt::OPTIONAL_ARGUMENT);
+		$this->assertEquals($option, $option->setDefaultValue(10));
+		$this->assertEquals(10, $option->getArgument()->getDefaultValue());
+	}
+
+	public function testSetValidation()
+	{
+		$option = new Option('a', null, Getopt::OPTIONAL_ARGUMENT);
+		$this->assertEquals($option, $option->setValidation('is_numeric'));
+		$this->assertTrue($option->getArgument()->hasValidation());
+	}
 }

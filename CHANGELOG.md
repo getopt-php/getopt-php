@@ -1,3 +1,9 @@
+## 2.1.0 (2014-02-28)
+
+Features:
+* Added setters for default values and validation to Option
+
+
 ## 2.0.0 (2014-01-30)
 
 Features:

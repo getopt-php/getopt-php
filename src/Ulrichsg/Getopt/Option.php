@@ -46,8 +46,32 @@ class Option
         return $this;
     }
 
-    /**
-     * Set the argument object
+	/**
+	 * Defines a default value for the option.
+	 *
+	 * @param mixed $value
+     * @return Option this object (for chaining calls)
+	 */
+	public function setDefaultValue($value)
+	{
+		$this->argument->setDefaultValue($value);
+		return $this;
+	}
+
+	/**
+	 * Defines a validation function for the option.
+	 *
+	 * @param callable $function
+	 * @return Option this object (for chaining calls)
+	 */
+	public function setValidation($function)
+	{
+		$this->argument->setValidation($function);
+		return $this;
+	}
+
+	/**
+     * Sets the argument object directly.
      *
      * @param Argument $arg
      * @return Option this object (for chaining calls)
