@@ -10,12 +10,22 @@ title: Default Option Values
 {% highlight php startinline %}
 $getopt = new Getopt(array(
     new Option('n', null, Getopt::REQUIRED_ARGUMENT)
-        ->setArgument(new Argument(10))
+        ->setDefaultValue(10)
 ));
 {% endhighlight %}
 
-<p><strong>Note:</strong> The <tt>Argument</tt> class also provides other functionality, such as
-	<a href="argument-validation.html">argument validation</a>.</p>
+<h2>Alternative</h2>
+
+<p>If you want an option to have both a default value and a
+	<a href="argument-validation.html">validation function</a>, you can set them at the same time
+	by creating an <tt>Argument</tt> object directly:</p>
+
+{% highlight php startinline %}
+$getopt = new Getopt(array(
+    new Option('n', null, Getopt::REQUIRED_ARGUMENT)
+        ->setArgument(new Argument(10, 'is_numeric'))
+));
+{% endhighlight %}
 
 <h2>The Legacy Way</h2>
 

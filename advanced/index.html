@@ -13,7 +13,7 @@ title: Advanced Features
 $getopt = new Getopt(array(
     new Option('o', 'option', Getopt::REQUIRED_ARGUMENT)
         ->setDescription('Description of option')
-        ->setArgument(new Argument('Default value'))
+        ->setDefaultValue('default')
 ));
 {% endhighlight %}
 

@@ -10,12 +10,12 @@ title: Installation
 {% highlight json %}
 {
     "require": {
-        "ulrichsg/getopt-php": "2.0.*"
+        "ulrichsg/getopt-php": "{{ site.release-major-minor }}.*"
     }
 }
 {% endhighlight %}
 
-<p>Replace <tt>2.0.*</tt> by the release number you want to use (a list of releases is available on
+<p>Replace <tt>{{ site.release-major-minor }}.*</tt> by the release number you want to use (a list of releases is available on
 <a href="https://packagist.org/packages/ulrichsg/getopt-php">Packagist</a>).</p>
 
 <p>If not using Composer, you can download the desired release from GitHub and integrate it into your application manually.

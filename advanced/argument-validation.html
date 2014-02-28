@@ -10,15 +10,24 @@ title: Argument Validation
 {% highlight php startinline %}
 $getopt = new Getopt(array(
     new Option('a', null, Getopt::REQUIRED_ARGUMENT)
-        ->setArgument(new Argument(null, function($value) {
+        ->setValidation(function($value) {
             return ($value > 9000);
-        }))
+        })
 ));
 {% endhighlight %}
 
 <p>If the validation returns <tt>false</tt>, an <tt>UnexpectedValueException</tt> is thrown. This is the same type
 	thrown for any other errors related to user input, so you don't have to handle it separately.</p>
 
-<p><strong>Note:</strong> The validation function is the second argument of the <tt>Argument</tt> constructor because
-	the first one is used for the <a href="default-values.html">default value</a> &ndash; making it very easy to
-	combine these two.</p>
+<h2>Alternative</h2>
+
+<p>If you want an option to have both a validation function and a
+	<a href="default-values.html">default value</a>, you can set them at the same time
+	by creating an <tt>Argument</tt> object directly:</p>
+
+{% highlight php startinline %}
+$getopt = new Getopt(array(
+    new Option('n', null, Getopt::REQUIRED_ARGUMENT)
+        ->setArgument(new Argument(10, 'is_numeric'))
+));
+{% endhighlight %}
