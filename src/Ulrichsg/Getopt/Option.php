@@ -35,6 +35,74 @@ class Option
     }
 
     /**
+     * Option helper - static constructor helper function
+     * @param string $short
+     * @param string $long
+     * @param int $mode defaults to Getopt::NO_ARGUMENT
+     * @return \Ulrichsg\Getopt\Option
+     */
+    public static function Create($short = NULL, $long = NULL, $mode = Getopt::NO_ARGUMENT) {
+      $opt = new Option($short, $long, $mode);
+      return $opt;
+    }
+    /**
+     * Option helper - Creates Option with REQUIRED_ARGUMENT
+     * @param string $short
+     * @param string $long
+     * @return \Ulrichsg\Getopt\Option
+     */    
+    public static function CreateArgReq($short = NULL, $long = NULL) {
+      $opt = new Option($short, $long, Getopt::REQUIRED_ARGUMENT);
+      return $opt;
+    }
+    /**
+     * Option helper - Creates Option with OPTIONAL_ARGUMENT
+     * @param string $short
+     * @param string $long
+     * @return \Ulrichsg\Getopt\Option
+     */
+    public static function CreateArgOpt($short = NULL, $long = NULL) {
+      $opt = new Option($short, $long, Getopt::OPTIONAL_ARGUMENT);
+      return $opt;
+    }  
+    /**
+     * Option helper - Creates Option with short option only
+     * @param string $short
+     * @param int $mode - defaults to Getopt::NO_ARGUMENT
+     * @return \Ulrichsg\Getopt\Option
+     */
+    public static function CreateShort($short, $mode = Getopt::NO_ARGUMENT) {
+      $opt = new Option($short, null, $mode);
+      return $opt;
+    }
+    public static function CreateShortReq($short) {
+      $opt = new Option($short, null, Getopt::REQUIRED_ARGUMENT);
+      return $opt;
+    }    
+    public static function CreateShortOpt($short) {
+      $opt = new Option($short, null, Getopt::OPTIONAL_ARGUMENT);
+      return $opt;
+    }
+    /**
+     * Option helper - Creates Option with long option only
+     * @param unknown $long
+     * @param unknown $mode
+     * @return \Ulrichsg\Getopt\Option
+     * @example Option::CreateLong('longopt');
+     */
+    public static function CreateLong($long, $mode = Getopt::NO_ARGUMENT) {
+      $opt = new Option(null, $long, $mode);
+      return $opt;
+    }
+    public static function CreateLongReq($long) {
+      $opt = new Option(null, $long, Getopt::REQUIRED_ARGUMENT);
+      return $opt;
+    }    
+    public static function CreateLongOpt($long) {
+      $opt = new Option(null, $long, Getopt::OPTIONAL_ARGUMENT);
+      return $opt;
+    }
+    /**
      * Defines a description for the option. This is only used for generating usage information.
      *
      * @param string $description
