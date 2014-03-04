@@ -12,13 +12,22 @@ class CommandLineParser
 
     private $options = array();
     private $operands = array();
-    
     private $quirksMode = true;
     
+    /**
+     * Returns the state of quirks mode
+     * @return boolean
+     */
     function getQuirksMode() 
     {
       return $this->quirksMode;
     }
+    
+    /**
+     * Sets the state of quirks mode
+     * @param boolean $value
+     * @return boolean
+     */
     function setQuirksMode($value)
     {
       return $this->quirksMode = $value;
