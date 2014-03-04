@@ -26,7 +26,17 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     private $options = array();
     /** @var array */
     private $operands = array();
-
+    
+    private $quirksMode = true;
+    
+    function getQuirksMode() 
+    {
+      return $this->quirksMode;
+    }
+    function setQuirksMode($value)
+    {
+      return $this->quirksMode = $value;
+    }
     /**
      * Creates a new Getopt object.
      *
@@ -82,7 +92,12 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
                     continue;
                 }
                 if ($this->optionsConflict($option, $otherOption)) {
+                  if ( !$this->getQuirksMode() ) {
                     throw new \InvalidArgumentException('Failed to add options due to conflict');
+                  } else {
+                    //quirks mode: ignore existing argument 
+                    continue;
+                  }
                 }
                 if (($option->short() === $otherOption->short()) && ($option->long() === $otherOption->long())) {
                     $duplicates[] = $option;
@@ -126,8 +141,32 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
             $this->scriptName = $_SERVER['PHP_SELF'];
             $arguments = explode(' ', $arguments);
         }
+       
+        if ($this->getQuirksMode())
+          foreach($arguments as $arg) {
+            if (substr($arg,0,1)=='-'){
+              if (substr($arg,0,2)=='--') {
+                $arg=substr($arg,2,strlen($arg));
+                
+                $foundEq = (strpos($arg,'='))!==FALSE;
+                list($name,$value) = explode('=', $foundEq?"$arg=1":"$arg=1");
+                $o = new Option(null, $name, !$foundEq? Getopt::NO_ARGUMENT : Getopt::REQUIRED_ARGUMENT);
+                if ( $foundEq )
+                {
+                  $o->setDefaultValue($value==""?1:$value);
+                }
+                $this->addOptions( array($o, ));
+                
+              } else {
+                $arg=substr($arg,1,strlen($arg));
+                $this->addOptions("$arg");
+              }
+
+            }
+          }
 
         $parser = new CommandLineParser($this->optionList);
+        $parser->setQuirksMode($this->getQuirksMode());
         $parser->parse($arguments);
         $this->options = $parser->getOptions();
         $this->operands = $parser->getOperands();
