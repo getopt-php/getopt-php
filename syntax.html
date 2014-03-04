@@ -1,0 +1,64 @@
+---
+layout: default
+title: Command Line Syntax
+---
+<h1>{{ page.title }}</h1>
+
+<h2>Short Options</h2>
+
+<p>A short option is a letter (A-Z only, no umlauts etc.) or digit prefixed with a single hyphen.
+	Letters are case sensitive, i.e., <tt>-v</tt> and <tt>-V</tt> are different options.
+	If the option has an argument, it must be separated from the option by a space. The following
+	command invokes <tt>program.php</tt> with two short options <tt>a</tt> and <tt>1</tt>, where
+	<tt>a</tt> has the argument <tt>foo</tt> and <tt>1</tt> has no argument:</p>
+
+{% highlight console %}
+$ php program.php -a foo -1
+{% endhighlight %}
+
+<p>Multiple short options can be clustered together if at most one of them has an argument.
+	In this case that option has to come last; the argument is added as usual. The following command
+	is equivalent to the one above:</p>
+
+{% highlight console %}
+$ php program.php -1a foo
+{% endhighlight %}
+
+<p>A short option with no argument may occur repeatedly. The number of repetitions becomes the
+	option's value. The following two commands are thus equivalent except for the
+	<a href="{{ site.baseurl }}/basic/specifying-options.html">option modes</a> they are valid in:</p>
+
+{% highlight console %}
+$ php program.php -vvv  # v must have an optional or no argument
+$ php program.php -v 3  # v must have a mandatory or optional argument
+{% endhighlight %}
+
+<h2>Long Options</h2>
+
+<p>A long option is a sequence of two or more characters (letters, digits, underscore, hyphen)
+	prefixed with two hyphens. The first character must be a letter or digit. Arguments can be
+	separated from the option by either a space or an equals sign:</p>
+
+{% highlight console %}
+$ php program.php --foo --bar baz --quux=1337
+{% endhighlight %}
+
+<h2>Operands</h2>
+
+<p>Anything that is not an option or option's argument is called an operand. The following rules
+	determine what is parsed as an operand:</p>
+
+<ul>
+	<li>As soon as a command line argument is encountered that cannot be parsed as an option or
+		as an option's argument, it and all subsequent command line arguments are parsed as operands.</li>
+	<li>If the command line contains the string <tt> -- </tt>, all arguments after it are parsed as operands.</li>
+</ul>
+
+<p>In both of the following commands, <tt>-a</tt> is parsed as an operand even though it looks like an option.
+	That is because it follows after either <tt>--</tt> or after <tt>foo</tt>, which is itself an operand.
+	Git-style subcommands are not supported yet.</p>
+
+{% highlight console %}
+$ php program.php foo -a
+$ php program.php -- -a
+{% endhighlight %}
