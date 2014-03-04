@@ -27,14 +27,14 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     /** @var array */
     private $operands = array();
 
-    /** @var boolean *
+    /** @var boolean
      * "quirks mode" is referenced in issue #14, as the preferred  
      * method to allow undefined options to be accepted instead
      * of throwing an Exception (default behavior). To enable, 
      * Getopt->setQuirksMode(true) before calling Getopt->parse().
      * During run-time, all option strings will be accepted and added to
      * the list of acceptable options if not already there.
-     * in the future it would be nice to be able to toggle different 
+     * TODO: in the future it would be nice to be able to toggle different 
      * settings for quirks mode.
      * @link https://github.com/ulrichsg/getopt-php/issues/14
      */
@@ -244,6 +244,8 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
 
     /**
      * Returns an usage information text generated from the given options.
+     * - Keep in mind that this is irrelevant when quirks mode is enabled,
+     *  as it allows any options to be passed at runtime. - trick@github
      * @param int $padding Number of characters to pad output of options to
      * @return string
      */
