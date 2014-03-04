@@ -12,7 +12,7 @@ class CommandLineParser
 
     private $options = array();
     private $operands = array();
-    private $quirksMode = true;
+    private $quirksMode;
     
     /**
      * Returns the state of quirks mode
@@ -168,7 +168,7 @@ class CommandLineParser
      * @return void
      */
     private function addOption($string, $value)
-    {
+    {      
         foreach ($this->optionList as $option) {
             if ($option->matches($string)) {
                 if ($option->mode() == Getopt::REQUIRED_ARGUMENT && !mb_strlen($value)) {
@@ -196,16 +196,39 @@ class CommandLineParser
                 return;
             }
         }
-        if (!$this->getQuirksMode()) {
-          //default/original behavior first
-          throw new \UnexpectedValueException("Option '$string' is unknown");
-        } else {
-          //quirks mode 
-          //$this->addLongOption("--$string=1", $i);
-          continue;
+        
+        /* right now quirks mode is limited to allowing the options passed to be
+         * dynamically set at runtime. 
+        * The current state of quirks mode is passed in from Getopt->parse().
+        * See Getopt->$quirksMode for a description of quirks mode.
+        */        
+        if ($this->getQuirksMode()) {
+          $short = (mb_strlen($string)==1?$string:NULL);
+          $long  = (mb_strlen($string)>1?$string:NULL);
+          $mode = (mb_strlen($value)==0?Getopt::NO_ARGUMENT:Getopt::REQUIRED_ARGUMENT);
+          if (!isset($this->options[$option->short()]) &&
+              !isset($this->options[$option->long()]))
+          $option = new Option($short,$long, $mode);
+
+          // for optional-argument options, set value to 1 if none was given
+          $value = (mb_strlen($value) > 0) ? $value : 1;
           
-          
-        }
+          //TODO: add quirks-mode support for dynamic argument validation
+          if ($mode!=Getopt::NO_ARGUMENT) {
+            $option->getArgument()->setDefaultValue($value);
+          }
+          if ($option->short()) {
+            $this->options[$option->short()] = $value;
+          }
+          if ($option->long()) {
+            $this->options[$option->long()] = $value;
+          }
+          $this->optionList[] = $option;
+          return true;
+        } // -- end quirks mode argument processing -- //
+        
+        //default/original behavior
+        throw new \UnexpectedValueException("Option '$string' is unknown");
     }
 
     /**
