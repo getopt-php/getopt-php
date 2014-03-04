@@ -41,14 +41,14 @@ class OptionParser
                     ."expected a letter$colon, found '$ch' at position ".($i + 1));
             }
             if ($i == $eol || $string[$i + 1] != ':') {
-                $options[] = Option::CreateShort($ch, Getopt::NO_ARGUMENT); //new Option($ch, null, Getopt::NO_ARGUMENT);
+                $options[] = new Option($ch, null, Getopt::NO_ARGUMENT);
                 $nextCanBeColon = true;
             } elseif ($i < $eol - 1 && $string[$i + 2] == ':') {
-                $options[] = Option::CreateShortOpt($ch); //new Option($ch, null, Getopt::OPTIONAL_ARGUMENT);
+                $options[] = new Option($ch, null, Getopt::OPTIONAL_ARGUMENT);
                 $i += 2;
                 $nextCanBeColon = false;
             } else {
-                $options[] = Option::CreateShortReq($ch); //new Option($ch, null, Getopt::REQUIRED_ARGUMENT);
+                $options[] = new Option($ch, null, Getopt::REQUIRED_ARGUMENT);
                 ++$i;
                 $nextCanBeColon = true;
             }
