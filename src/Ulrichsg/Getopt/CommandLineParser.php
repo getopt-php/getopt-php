@@ -12,6 +12,26 @@ class CommandLineParser
 
     private $options = array();
     private $operands = array();
+    private $quirksMode = true;
+    
+    /**
+     * Returns the state of quirks mode
+     * @return boolean
+     */
+    function getQuirksMode() 
+    {
+      return $this->quirksMode;
+    }
+    
+    /**
+     * Sets the state of quirks mode
+     * @param boolean $value
+     * @return boolean
+     */
+    function setQuirksMode($value)
+    {
+      return $this->quirksMode = $value;
+    }
 
     /**
      * Creates a new instance.
@@ -176,7 +196,16 @@ class CommandLineParser
                 return;
             }
         }
-        throw new \UnexpectedValueException("Option '$string' is unknown");
+        if (!$this->getQuirksMode()) {
+          //default/original behavior first
+          throw new \UnexpectedValueException("Option '$string' is unknown");
+        } else {
+          //quirks mode 
+          //$this->addLongOption("--$string=1", $i);
+          continue;
+          
+          
+        }
     }
 
     /**

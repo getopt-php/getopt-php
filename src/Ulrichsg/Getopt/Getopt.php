@@ -27,6 +27,21 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     /** @var array */
     private $operands = array();
 
+    /** @var boolean *
+     * "quirks mode" is referenced in issue #14, as the preferred  
+     * method to allow undefined options to be accepted instead
+     * of throwing an Exception (default behavior). To enable, 
+     * Getopt->setQuirksMode(true) before calling Getopt->parse().
+     * During run-time, all option strings will be accepted and added to
+     * the list of acceptable options if not already there.
+     * in the future it would be nice to be able to toggle different 
+     * settings for quirks mode.
+     * @link https://github.com/ulrichsg/getopt-php/issues/14
+     */
+    private $quirksMode = false;
+    
+
+    
     /**
      * Creates a new Getopt object.
      *
@@ -82,7 +97,12 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
                     continue;
                 }
                 if ($this->optionsConflict($option, $otherOption)) {
+                  if ( !$this->getQuirksMode() ) {
                     throw new \InvalidArgumentException('Failed to add options due to conflict');
+                  } else {
+                    //quirks mode: ignore existing argument 
+                    continue;
+                  }
                 }
                 if (($option->short() === $otherOption->short()) && ($option->long() === $otherOption->long())) {
                     $duplicates[] = $option;
@@ -126,8 +146,46 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
             $this->scriptName = $_SERVER['PHP_SELF'];
             $arguments = explode(' ', $arguments);
         }
-
+       
+        /* right now quirks mode is limited to allowing the options passed to be
+         * dynamically set at runtime.  if the argument is a flag (prefix: '-|--'),
+         * parse it and call addOptions with a new Getopt\Option.
+         * This also passes the current state of quirks mode into the 
+         * CommandLineParser class.
+         * See Getopt->$quirksMode for a description of quirks mode.
+        */ 
+        if ($this->getQuirksMode())
+          foreach($arguments as $arg) {
+            if (substr($arg,0,1)=='-'){
+              if (substr($arg,0,2)=='--') {
+                //add a long option
+                $arg=substr($arg,2,strlen($arg));
+                
+                $foundEq = (strpos($arg,'='))!==FALSE;
+                list($name,$value) = explode('=', $foundEq?"$arg=1":"$arg=1");
+                $o = new Option(null, $name, 
+                    !$foundEq?Getopt::NO_ARGUMENT: Getopt::REQUIRED_ARGUMENT);
+                if ( $foundEq )
+                {
+                  //the option was passed with a value, so
+                  //set it as the default value. REQUIRED_ARGUMENT state
+                  //is set during Getopt\Option creation.
+                  
+                  //force '1' instead of empty values ("--myarg=")
+                  $o->setDefaultValue($value==""?1:$value);
+                }
+                $this->addOptions( array($o) );
+              } else {
+                //add a short option
+                $arg=substr($arg,1,strlen($arg)); //strip off leading '-'
+                $this->addOptions("$arg");
+              }
+            } //end flag testing
+          } //end foreach arguments
+        // -- end quirks mode argument processing --
+        
         $parser = new CommandLineParser($this->optionList);
+        $parser->setQuirksMode($this->getQuirksMode());
         $parser->parse($arguments);
         $this->options = $parser->getOptions();
         $this->operands = $parser->getOperands();
@@ -219,6 +277,23 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         return $helpText;
     }
 
+    /**
+     * Returns the state of "quirks mode". see Getopt->$quirksMode for a full description.
+     * @return boolean
+     */
+    function getQuirksMode()
+    {
+      return $this->quirksMode;
+    }
+    
+    /**
+     * Sets the state of quirks mode. see Getopt->$quirksMode for a full description.
+     * @param boolean $value
+     */
+    function setQuirksMode($value)
+    {
+      return $this->quirksMode = $value;
+    }
 
     /*
      * Interface support functions
