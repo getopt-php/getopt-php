@@ -201,6 +201,7 @@ class CommandLineParser
          * dynamically set at runtime. 
         * The current state of quirks mode is passed in from Getopt->parse().
         * See Getopt->$quirksMode for a description of quirks mode.
+        * TODO: this code is a copy of the code above.  refactor to only have one copy.
         */        
         if ($this->getQuirksMode()) {
           $short = (mb_strlen($string)==1?$string:NULL);

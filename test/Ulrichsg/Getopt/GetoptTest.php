@@ -159,6 +159,8 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
     }
 
     public function testHelpTextWithoutDescriptions()
+    
+    
     {
         $getopt = new Getopt(array(
             array('a', 'alpha', Getopt::NO_ARGUMENT),
@@ -177,4 +179,17 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $getopt->getHelpText());
     }
+    
+    public function testQuirksModeNoErrorOnUndefined()
+    {
+      //$this->setExpectedException('\InvalidArgumentException');
+      $getopt = new Getopt(array(
+          array('v', 'version')
+      ));
+      $getopt->setQuirksMode(true);
+      $getopt->addOptions(array(
+          array('v', 'verbose')
+      ));
+      $getopt->parse('-v --long --undef -v');
+    }    
 }

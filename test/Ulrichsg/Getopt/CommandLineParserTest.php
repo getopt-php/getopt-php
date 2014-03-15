@@ -303,4 +303,22 @@ class CommandLineParserTest extends \PHPUnit_Framework_TestCase
         $parser = new CommandLineParser(array($option));
         $parser->parse('-a nonnumeric');
     }
+    
+    public function testQuirksModeUndefinedOption()
+    {
+      $parser = new CommandLineParser(array(
+          new Option('a', null)
+      ));
+      $parser->setQuirksMode(true);
+      $parser->parse('-b --long');      
+    }
+
+    public function testQuirksModeEnabled() {
+      $this->setExpectedException('UnexpectedValueException');
+      $parser = new CommandLineParser(array(
+          new Option('a', null)
+      ));
+      $parser->setQuirksMode(false);
+      $parser->parse('-b');
+    }
 }
