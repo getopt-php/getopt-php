@@ -47,7 +47,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     /** @var array 
      * Updated to stored multiple settings in an array.
      *
-     * "quirks mode" is referenced in issue #14, as the preferred  
+     * "quirks mode" is referenced in issues #14 and #28, as the preferred  
      * method to allow undefined options to be accepted instead
      * of throwing an Exception (default behavior). To enable, 
      * Getopt->setQuirksMode(true) before calling Getopt->parse().
@@ -57,13 +57,14 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      * Added support for multiple quirks mode settings:
      *    - QUIRKS_MODE_ALLOW_UNDEFINED_OPTIONS - allow undefined options to be passed to the script.
      *        when enabled, it is the original quirk mMode behavior.
-     *
+     *    - QUIRKS_MODE_REQUIRED_OPERAND_COUNT - require # operands to be passed
+     (
      * @example $obj->setQuirksMode(GetOpt::QUIRKS_MODE_ALLOW_UNDEFINED_OPTIONS,true);
      *
      * @link https://github.com/ulrichsg/getopt-php/issues/28
      * @link https://github.com/ulrichsg/getopt-php/issues/14
      */
-    private $quirksMode = array();
+    protected $quirksMode = array();
     
 
     
@@ -175,7 +176,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         }
        
         $parser = new CommandLineParser($this->optionList);
-        $parser->setQuirksModes($this->getQuirksModes());
+        //$parser->setQuirksModes($this->getQuirksModes());
         $parser->parse($arguments);
         $this->options = $parser->getOptions();
         $this->operands = $parser->getOperands();
@@ -297,7 +298,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      */
     function setQuirksMode($setting, $value)
     {
-      return $this->quirksMode[$setting] = $value;
+      $this->quirksMode[$setting] = $value;
     }
 
     /**
