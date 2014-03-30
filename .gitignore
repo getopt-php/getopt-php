@@ -1,6 +1,10 @@
 bin
-build
+build/**
+.settings/**
+vendor/**
+
 composer.lock
 vendor
 nbproject
 _site
+php_errors.log
