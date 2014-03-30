@@ -180,6 +180,7 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $getopt->getHelpText());
     }
     
+    //@group quirks-mode
     public function testQuirksModeNoErrorOnUndefined()
     {
       //$this->setExpectedException('\InvalidArgumentException');

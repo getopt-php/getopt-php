@@ -93,7 +93,7 @@ class Option
      */
     public function matches($string)
     {
-        return ($string === $this->short) || ($string === $this->long);
+        return ($string === $this->short()) || ($string === $this->long());
     }
 
     public function short()

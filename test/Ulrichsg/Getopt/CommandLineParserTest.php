@@ -304,6 +304,7 @@ class CommandLineParserTest extends \PHPUnit_Framework_TestCase
         $parser->parse('-a nonnumeric');
     }
     
+    //@group quirks-_mode
     public function testQuirksModeUndefinedOption()
     {
       $parser = new CommandLineParser(array(
@@ -313,6 +314,7 @@ class CommandLineParserTest extends \PHPUnit_Framework_TestCase
       $parser->parse('-b --long');      
     }
 
+    //@group quirks-mode
     public function testQuirksModeEnabled() {
       $this->setExpectedException('UnexpectedValueException');
       $parser = new CommandLineParser(array(

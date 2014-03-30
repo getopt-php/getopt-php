@@ -10,11 +10,28 @@ namespace Ulrichsg\Getopt;
  * @license MIT
  * @link    http://ulrichsg.github.io/getopt-php
  */
+
+
 class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
 {
     const NO_ARGUMENT = 0;
     const REQUIRED_ARGUMENT = 1;
     const OPTIONAL_ARGUMENT = 2;
+
+    /**
+     * Quirks mode settings
+     *    - QUIRKS_MODE_ALLOW_UNDEFINED_OPTIONS - allow undefed options to be 
+     *        passed to the script withput any errors.
+     *    - QUIRKS_MODE_REQUIRED_OPERAND_COUNT - require specified # of operands to 
+     *        be passed to the script, otherwise throw an Exception.
+     *
+     *
+     *  TODO define more settings for quirks mode
+     *
+     * All setting names must be a unique integer value.
+     */
+    const QUIRKS_MODE_ALLOW_UNDEFINED_OPTIONS = 101;
+    const QUIRKS_MODE_REQUIRED_OPERAND_COUNT  = 102;
 
     /** @var OptionParser */
     private $optionParser;
@@ -27,18 +44,26 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     /** @var array */
     private $operands = array();
 
-    /** @var boolean
+    /** @var array 
+     * Updated to stored multiple settings in an array.
+     *
      * "quirks mode" is referenced in issue #14, as the preferred  
      * method to allow undefined options to be accepted instead
      * of throwing an Exception (default behavior). To enable, 
      * Getopt->setQuirksMode(true) before calling Getopt->parse().
      * During run-time, all option strings will be accepted and added to
      * the list of acceptable options if not already there.
-     * TODO: in the future it would be nice to be able to toggle different 
-     * settings for quirks mode.
+     *
+     * Added support for multiple quirks mode settings:
+     *    - QUIRKS_MODE_ALLOW_UNDEFINED_OPTIONS - allow undefined options to be passed to the script.
+     *        when enabled, it is the original quirk mMode behavior.
+     *
+     * @example $obj->setQuirksMode(GetOpt::QUIRKS_MODE_ALLOW_UNDEFINED_OPTIONS,true);
+     *
+     * @link https://github.com/ulrichsg/getopt-php/issues/28
      * @link https://github.com/ulrichsg/getopt-php/issues/14
      */
-    private $quirksMode;
+    private $quirksMode = array();
     
 
     
@@ -91,6 +116,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     {
         /** @var Option[] $mergedList */
         $mergedList = array_merge($this->optionList, $options);
+ 
         $duplicates = array();
         foreach ($mergedList as $option) {
             foreach ($mergedList as $otherOption) {
@@ -98,7 +124,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
                     continue;
                 }
                 if ($this->optionsConflict($option, $otherOption)) {
-                  if ( !$this->getQuirksMode() ) {
+                  if ( !$this->getQuirksMode(QUIRKS_MODE_ALLOW_UNDEFINED_OPTIONS) ) {
                     throw new \InvalidArgumentException('Failed to add options due to conflict');
                   } else {
                     //quirks mode: ignore existing argument 
@@ -149,10 +175,18 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         }
        
         $parser = new CommandLineParser($this->optionList);
-        $parser->setQuirksMode($this->getQuirksMode());
+        $parser->setQuirksModes($this->getQuirksModes());
         $parser->parse($arguments);
         $this->options = $parser->getOptions();
         $this->operands = $parser->getOperands();
+
+        if ($this->getQuirksMode(Getopt::QUIRKS_MODE_REQUIRED_OPERAND_COUNT)) {
+          //print_r($this->operands);
+          if (count($this->operands) != $this->getQuirksMode(Getopt::QUIRKS_MODE_REQUIRED_OPERAND_COUNT)) 
+            throw new \InvalidArgumentException(
+              $this->getQuirksMode(Getopt::QUIRKS_MODE_REQUIRED_OPERAND_COUNT)." operands are required to be passed"
+            );
+        }
     }
 
     /**
@@ -247,18 +281,41 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      * Returns the state of "quirks mode". see Getopt->$quirksMode for a full description.
      * @return boolean
      */
-    function getQuirksMode()
+    function getQuirksMode($setting)
     {
-      return $this->quirksMode;
+      if (!isset($this->quirksMode[$setting])) 
+        return false;
+      $value = $this->quirksMode[$setting];
+      if (($value == false || $value == "" || $value == null || $value == 0))
+        return false;
+      return ( $value );
     }
-    
+
     /**
      * Sets the state of quirks mode. see Getopt->$quirksMode for a full description.
      * @param boolean $value
      */
-    function setQuirksMode($value)
+    function setQuirksMode($setting, $value)
     {
-      return $this->quirksMode = $value;
+      return $this->quirksMode[$setting] = $value;
+    }
+
+    /**
+     * returns the quirksMode settings array 
+     * @return array 
+     */
+    function getQuirksModes()
+    {
+      return $this->quirksMode;
+    }
+
+    /**
+     * sets the quirksMode settings array 
+     * @param array 
+     */
+    function setQuirksModes(array $modeSettings)
+    {
+      $this->quirksMode = $modeSettings;
     }
 
     /*

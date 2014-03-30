@@ -12,26 +12,50 @@ class CommandLineParser
 
     private $options = array();
     private $operands = array();
-    private $quirksMode;
+    private $quirksMode = array();
     
     /**
-     * Returns the state of quirks mode
+     * Returns the state of a quirks mode setting
      * @return boolean
      */
-    function getQuirksMode() 
+    function getQuirksMode($setting) 
     {
-      return $this->quirksMode;
+      if (!isset($this->quirksMode[$setting])) 
+        return false;
+      $value = $this->quirksMode[$setting];
+      if (($value == false || $value == "" || $value == null || $value == 0))
+        return false;
+      return ( $value );
     }
     
     /**
-     * Sets the state of quirks mode
+     * Sets the state of a quirks mode setting
      * @param boolean $value
      * @return boolean
      */
-    function setQuirksMode($value)
+    function setQuirksMode($setting, $value)
     {
-      return $this->quirksMode = $value;
+      return $this->quirksMode[$setting] = $value;
     }
+
+    /**
+     * returns the quirksMode settings array 
+     * @return array 
+     */
+    function getQuirksModes()
+    {
+      return $this->quirksMode;
+    }
+
+    /**
+     * sets the quirksMode settings array 
+     * @param array 
+     */
+    function setQuirksModes(array $modeSettings)
+    {
+      $this->quirksMode = $modeSettings;
+    }
+
 
     /**
      * Creates a new instance.
@@ -53,33 +77,37 @@ class CommandLineParser
         if (!is_array($arguments)) {
             $arguments = explode(' ', $arguments);
         }
-        $operands = array();
+        //$operands = array();
         $numArgs = count($arguments);
         for ($i = 0; $i < $numArgs; ++$i) {
             $arg = trim($arguments[$i]);
             if (empty($arg)) {
                 continue;
             }
-            if ($arg == '--' || mb_substr($arg, 0, 1) != '-') {
+            $prefix = mb_substr($arg, 0, 2);
+
+            if ($arg == '--' || $prefix[0] !== "-") {//mb_substr($arg, 0, 1) != '-') {
                 // no more options, treat the remaining arguments as operands
-                $firstOperandIndex = ($arg == '--') ? $i + 1 : $i;
-                $operands = array_slice($arguments, $firstOperandIndex);
+                $firstOperandIndex = ($arg == '--') ? $i+1: $i-1;
+                $this->operands = array_slice($arguments, $firstOperandIndex);
                 break;
             }
-            if (mb_substr($arg, 0, 2) == '--') {
-                $this->addLongOption($arguments, $i);
-            } else {
+
+            //swapped if/then values for better branch prediction
+            if ($prefix !== "--") {// mb_substr($arg, 0, 2) == '--') {
                 $this->addShortOption($arguments, $i);
+            } else {
+                $this->addLongOption($arguments, $i);
             }
         } // endfor
 
         $this->addDefaultValues();
 
         // remove '--' from operands array
-        foreach ($operands as $operand) {
-            if ($operand !== '--') {
-                $this->operands[] = $operand;
-            }
+
+        foreach ($this->operands as &$operand) {
+            if ($operand == '--') 
+                unset($operand);
         }
     }
 
@@ -203,29 +231,40 @@ class CommandLineParser
         * See Getopt->$quirksMode for a description of quirks mode.
         * TODO: this code is a copy of the code above.  refactor to only have one copy.
         */        
-        if ($this->getQuirksMode()) {
-          $short = (mb_strlen($string)==1?$string:NULL);
-          $long  = (mb_strlen($string)>1?$string:NULL);
-          $mode = (mb_strlen($value)==0?Getopt::NO_ARGUMENT:Getopt::REQUIRED_ARGUMENT);
-          if (!isset($this->options[$option->short()]) &&
-              !isset($this->options[$option->long()]))
-          $option = new Option($short,$long, $mode);
-
-          // for optional-argument options, set value to 1 if none was given
-          $value = (mb_strlen($value) > 0) ? $value : 1;
-          
-          //TODO: add quirks-mode support for dynamic argument validation
-          if ($mode!=Getopt::NO_ARGUMENT) {
+        if ($this->getQuirksMode(Getopt::QUIRKS_MODE_ALLOW_UNDEFINED_OPTIONS)) {
+          $slen = mb_strlen($string);
+          $vlen = mb_strlen($value);
+          $short = ($slen==1?$string:NULL);
+          $long  = ($slen>1?$string:NULL);
+          //$mode = ($vlen==0?Getopt::NO_ARGUMENT:Getopt::REQUIRED_ARGUMENT);          
+          if ($vlen == 0) {
+            $mode = Getopt::NO_ARGUMENT;
+            $value = 1;
+          } else {
+            $mode = Getopt::REQUIRED_ARGUMENT;
+            $value = $value;
             $option->getArgument()->setDefaultValue($value);
           }
+          
+          //if (!isset($this->options[$option->short()]) &&
+          //    !isset($this->options[$option->long()]))
+          $option = new Option($short, $long, $mode);
+
+          // for optional-argument options, set value to 1 if none was given
+          //$value = ($vlen > 0) ? $value : 1;
+          
+          //TODO: add quirks-mode support for dynamic argument validation
+          //if ($mode!=Getopt::NO_ARGUMENT) { }
+
           if ($option->short()) {
-            $this->options[$option->short()] = $value;
+            $this->options[$short] = $value;
           }
           if ($option->long()) {
-            $this->options[$option->long()] = $value;
+            $this->options[$long] = $value;
           }
+
           $this->optionList[] = $option;
-          return true;
+          return true;//count($this->optionList);
         } // -- end quirks mode argument processing -- //
         
         //default/original behavior
@@ -243,11 +282,14 @@ class CommandLineParser
                     && !isset($this->options[$option->short()])
                     && !isset($this->options[$option->long()])
             ) {
+            
                 if ($option->short()) {
-                    $this->addOption($option->short(), $option->getArgument()->getDefaultValue());
+                  $this->options[$option->short()] = $option->getArgument()->getDefaultValue();
+                  //$this->addOption($option->short(), $option->getArgument()->getDefaultValue());
                 }
                 if ($option->long()) {
-                    $this->addOption($option->long(), $option->getArgument()->getDefaultValue());
+                  $this->options[$option->long()] =  $option->getArgument()->getDefaultValue();
+                    //$this->addOption($option->long(), $option->getArgument()->getDefaultValue());
                 }
             }
         }
@@ -263,7 +305,7 @@ class CommandLineParser
     {
         foreach ($this->optionList as $option) {
             if ($option->matches($name)) {
-                return $option->mode() != Getopt::NO_ARGUMENT;
+                return $option->mode() === Getopt::NO_ARGUMENT;
             }
         }
         return false;
@@ -278,7 +320,8 @@ class CommandLineParser
     private function splitString($string)
     {
         $result = array();
-        for ($i = 0; $i < mb_strlen($string, "UTF-8"); ++$i) {
+        $len = mb_strlen($string, "UTF-8");
+        for ($i = 0; $i < $len; ++$i) {
             $result[] = mb_substr($string, $i, 1, "UTF-8");
         }
         return $result;
