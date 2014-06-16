@@ -52,7 +52,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     /**
      * Sets the name used for the operand(s) in getHelpText's output to $name
      *
-     * @param string $name name to use in getHelpText's output instead of "operands"
+     * @param string $name Name to use in getHelpText's output instead of "operands"
      */
     public function setOperandName($name) {
         $this->operandName = (String)$name;
