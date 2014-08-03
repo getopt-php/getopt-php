@@ -84,15 +84,6 @@ class Option
         $this->argument = $arg;
         return $this;
     }
-    
-    /**
-     * Fluent interface for constructor so options can be added during construction
-     * @see Options::__construct()
-     */
-    public static function create($short, $long, $mode = Getopt::NO_ARGUMENT)
-    {
-    	return new self($short, $long, $mode);
-    }
 
     /**
      * Returns true if the given string is equal to either the short or the long name.
@@ -133,6 +124,15 @@ class Option
     public function getArgument()
     {
         return $this->argument;
+    }
+    
+    /**
+     * Fluent interface for constructor so options can be added during construction
+     * @see Options::__construct()
+     */
+    public static function create($short, $long, $mode = Getopt::NO_ARGUMENT)
+    {
+    	return new self($short, $long, $mode);
     }
 
     private function setShort($short)
