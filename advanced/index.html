@@ -17,6 +17,17 @@ $getopt = new Getopt(array(
 ));
 {% endhighlight %}
 
+<p>Note that chaining methods directly off the constructor (<tt>new Option(...)->set...</tt>) only works in PHP 5.4
+and above. As of Getopt 2.2, users restricted to PHP 5.3 can use the static <tt>create()</tt> method instead:</p>
+
+{% highlight php startinline %}
+$getopt = new Getopt(array(
+    Option::create('o', 'option', Getopt::REQUIRED_ARGUMENT)
+        ->setDescription('Description of option')
+        ->setDefaultValue('default')
+));
+{% endhighlight %}
+
 <h2>Topics</h2>
 
 <dl>

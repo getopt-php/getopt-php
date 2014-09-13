@@ -30,3 +30,13 @@ Options:
 	<li>You can change the padding of the description texts by passing the desired number to <tt>getHelpText()</tt>.
 		The default is 25.</li>
 </ul>
+
+<h2>Customizing the Message</h2>
+
+<p>You can change the first line of the help text to whatever you want like this:</p>
+
+{% highlight php startinline %}
+$getopt->setBanner("My custom help message for %s\n");
+{% endhighlight %}
+
+The (optional) placeholder <tt>%s</tt> will be replaced by the program name.
