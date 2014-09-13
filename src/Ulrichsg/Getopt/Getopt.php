@@ -26,6 +26,8 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     private $options = array();
     /** @var array */
     private $operands = array();
+    /** @var string */
+    private $banner =  "Usage: %s [options] [operands]\n";
 
     /**
      * Creates a new Getopt object.
@@ -185,13 +187,36 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     }
 
     /**
+     * Returns the banner string
+     *
+     * @return string
+     */
+    public function getBanner()
+    {
+        return $this->banner;
+    }
+
+    /**
+     * Set the banner string
+     *
+     * @param string $banner    The banner string; will be passed to sprintf(), can include %s for current scripts name.
+     *                          Be sure to include a trailing line feed.
+     * @return Getopt
+     */
+    public function setBanner($banner)
+    {
+        $this->banner = $banner;
+        return $this;
+    }
+
+    /**
      * Returns an usage information text generated from the given options.
      * @param int $padding Number of characters to pad output of options to
      * @return string
      */
     public function getHelpText($padding = 25)
     {
-        $helpText = sprintf("Usage: %s [options] [operands]\n", $this->scriptName);
+        $helpText = sprintf($this->getBanner(), $this->scriptName);
         $helpText .= "Options:\n";
         foreach ($this->optionList as $option) {
             $mode = '';

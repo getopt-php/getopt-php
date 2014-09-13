@@ -177,4 +177,23 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $getopt->getHelpText());
     }
+
+    public function testHelpTextNoParse()
+    {
+        $getopt = new Getopt();
+        $expected = "Usage:  [options] [operands]\nOptions:\n";
+        $this->assertSame($expected, $getopt->getHelpText());
+    }
+
+    public function testHelpTextWithCustomBanner()
+    {
+        $script = $_SERVER['PHP_SELF'];
+        
+        $getopt = new Getopt();
+        $getopt->setBanner("My custom Banner %s\n");
+        $this->assertSame("My custom Banner \nOptions:\n", $getopt->getHelpText());
+
+        $getopt->parse();
+        $this->assertSame("My custom Banner $script\nOptions:\n", $getopt->getHelpText());
+    }
 }
