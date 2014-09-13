@@ -1,3 +1,10 @@
+## 2.2.0 (2014-09-13)
+
+Features:
+* Added method to customize the help message (courtesy of @mfn)
+* Option now has a static create method for call chaining in PHP 5.3 (courtesy of @kamermans)
+
+
 ## 2.1.0 (2014-02-28)
 
 Features:
