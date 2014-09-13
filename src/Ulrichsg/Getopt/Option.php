@@ -125,6 +125,15 @@ class Option
     {
         return $this->argument;
     }
+    
+    /**
+     * Fluent interface for constructor so options can be added during construction
+     * @see Options::__construct()
+     */
+    public static function create($short, $long, $mode = Getopt::NO_ARGUMENT)
+    {
+    	return new self($short, $long, $mode);
+    }
 
     private function setShort($short)
     {
