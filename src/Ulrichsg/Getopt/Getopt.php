@@ -26,6 +26,8 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     private $options = array();
     /** @var array */
     private $operands = array();
+    /** @var string */
+    private $operandName = "operands";
 
     /**
      * Creates a new Getopt object.
@@ -47,6 +49,19 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         }
     }
 
+    /**
+     * Sets the name used for the operand(s) in getHelpText's output to $name
+     *
+     * @param string $name Name to use in getHelpText's output instead of "operands"
+     */
+    public function setOperandName($name) {
+        $this->operandName = (String)$name;
+    }
+
+    public function getOperandName() {
+        return $this->operandName;
+    }
+  
     /**
      * Extends the list of known options. Takes the same argument types as the constructor.
      *
@@ -191,7 +206,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      */
     public function getHelpText($padding = 25)
     {
-        $helpText = sprintf("Usage: %s [options] [operands]\n", $this->scriptName);
+        $helpText = sprintf("Usage: %s [options] [%s]\n", $this->scriptName, $this->operandName);
         $helpText .= "Options:\n";
         foreach ($this->optionList as $option) {
             $mode = '';
