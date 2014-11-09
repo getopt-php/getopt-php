@@ -11,7 +11,7 @@ title: Advanced Features
 
 {% highlight php startinline %}
 $getopt = new Getopt(array(
-    new Option('o', 'option', Getopt::REQUIRED_ARGUMENT)
+    (new Option('o', 'option', Getopt::REQUIRED_ARGUMENT))
         ->setDescription('Description of option')
         ->setDefaultValue('default')
 ));
