@@ -193,7 +193,7 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
         $getopt->setBanner("My custom Banner %s\n");
         $this->assertSame("My custom Banner \nOptions:\n", $getopt->getHelpText());
 
-        $getopt->parse();
+        $getopt->parse('');
         $this->assertSame("My custom Banner $script\nOptions:\n", $getopt->getHelpText());
     }
 }
