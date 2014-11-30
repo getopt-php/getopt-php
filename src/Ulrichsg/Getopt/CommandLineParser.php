@@ -40,7 +40,7 @@ class CommandLineParser
             if (empty($arg)) {
                 continue;
             }
-            if ($arg == '--' || mb_substr($arg, 0, 1) != '-') {
+            if (($arg === '--') || ($arg === '-') || (mb_substr($arg, 0, 1) !== '-')){
                 // no more options, treat the remaining arguments as operands
                 $firstOperandIndex = ($arg == '--') ? $i + 1 : $i;
                 $operands = array_slice($arguments, $firstOperandIndex);
@@ -95,7 +95,7 @@ class CommandLineParser
                 if ($j < count($options) - 1
                         || !(
                                 $i < $numArgs - 1
-                                && mb_substr($arguments[$i + 1], 0, 1) != '-'
+                                && ((mb_substr($arguments[$i + 1], 0, 1) !== '-') || ($arguments[$i + 1] === '-'))
                                 && $this->optionHasArgument($ch)
                         )
                 ) {
@@ -108,7 +108,7 @@ class CommandLineParser
             }
         } else {
             if ($i < $numArgs - 1
-                    && mb_substr($arguments[$i + 1], 0, 1) != '-'
+                    && ((mb_substr($arguments[$i + 1], 0, 1) !== '-') || ($arguments[$i + 1] === '-'))
                     && $this->optionHasArgument($option)
             ) {
                 $value = $arguments[$i + 1];
@@ -125,7 +125,7 @@ class CommandLineParser
         $option = mb_substr($arguments[$i], 2);
         if (strpos($option, '=') === false) {
             if ($i < count($arguments) - 1
-                    && mb_substr($arguments[$i + 1], 0, 1) != '-'
+                    && ((mb_substr($arguments[$i + 1], 0, 1) !== '-') || ($arguments[$i + 1] === '-'))
                     && $this->optionHasArgument($option)
             ) {
                 $value = $arguments[$i + 1];
