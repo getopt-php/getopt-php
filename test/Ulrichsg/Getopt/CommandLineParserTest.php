@@ -276,6 +276,27 @@ class CommandLineParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('baz', $operands[2]);
     }
 
+    public function testInterleavedArgumentsAndOperands()
+    {
+        $parser = new CommandLineParser(array(
+            new Option('a', null, Getopt::REQUIRED_ARGUMENT),
+            new Option('b', null, Getopt::REQUIRED_ARGUMENT),
+            new Option('c', null, Getopt::REQUIRED_ARGUMENT)
+        ));
+        $parser->parse('-a 0 foo -b 1 bar baz foobar -c 3');
+
+        $options = $parser->getOptions();
+        $this->assertEquals('0', $options['a']);
+        $this->assertEquals('1', $options['b']);
+        $this->assertEquals('3', $options['c']);
+        $operands = $parser->getOperands();
+        $this->assertCount(4, $operands);
+        $this->assertEquals('foo', $operands[0]);
+        $this->assertEquals('bar', $operands[1]);
+        $this->assertEquals('baz', $operands[2]);
+        $this->assertEquals('foobar', $operands[3]);
+    }
+
     public function testParseWithArgumentValidation()
     {
         $validation = 'is_numeric';
