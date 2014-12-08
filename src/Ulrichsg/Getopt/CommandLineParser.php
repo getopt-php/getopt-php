@@ -13,14 +13,17 @@ class CommandLineParser
     private $options = array();
     private $operands = array();
 
+    private $allowUnexpected = false;
+
     /**
      * Creates a new instance.
      *
      * @param Option[] $optionList the list of allowed options
      */
-    public function __construct(array $optionList)
+    public function __construct(array $optionList, $allowUnexpected = false)
     {
         $this->optionList = $optionList;
+        $this->allowUnexpected = $allowUnexpected;
     }
 
     /**
@@ -176,7 +179,9 @@ class CommandLineParser
                 return;
             }
         }
-        throw new \UnexpectedValueException("Option '$string' is unknown");
+        if(!$this->allowUnexpected) {
+            throw new \UnexpectedValueException("Option '$string' is unknown");
+        }
     }
 
     /**

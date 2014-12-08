@@ -29,6 +29,8 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     /** @var string */
     private $banner =  "Usage: %s [options] [operands]\n";
 
+    public $allowUnexpected=false;
+
     /**
      * Creates a new Getopt object.
      *
@@ -129,7 +131,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
             $arguments = explode(' ', $arguments);
         }
 
-        $parser = new CommandLineParser($this->optionList);
+        $parser = new CommandLineParser($this->optionList, $this->allowUnexpected);
         $parser->parse($arguments);
         $this->options = $parser->getOptions();
         $this->operands = $parser->getOperands();
