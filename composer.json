@@ -1,5 +1,5 @@
 {
-    "name": "ulrichsg/getopt-php",
+    "name": "RiccaGroup/getopt-php",
     "type": "library",
     "description": "Command line arguments parser for PHP 5.3",
     "homepage": "http://ulrichsg.github.io/getopt-php",
