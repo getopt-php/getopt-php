@@ -225,10 +225,10 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
                     $mode = '';
                     break;
                 case self::REQUIRED_ARGUMENT:
-                    $mode = "<arg>";
+                    $mode = "<".$option->getArgument()->getDescription().">";
                     break;
                 case self::OPTIONAL_ARGUMENT:
-                    $mode = "[<arg>]";
+                    $mode = "[<".$option->getArgument()->getDescription().">]";
                     break;
             }
             $short = ($option->short()) ? '-'.$option->short() : '';
