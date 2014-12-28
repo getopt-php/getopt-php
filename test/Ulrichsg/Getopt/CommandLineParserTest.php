@@ -276,6 +276,41 @@ class CommandLineParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('baz', $operands[2]);
     }
 
+    public function testSingleHyphenValue()
+    {
+        $parser = new CommandLineParser(array(
+            new Option('a', 'alpha', Getopt::REQUIRED_ARGUMENT)
+        ));
+
+        $parser->parse('-a -');
+
+        $options = $parser->getOptions();
+        $this->assertEquals('-', $options['a']);
+        $operands = $parser->getOperands();
+        $this->assertCount(0, $operands);
+
+        $parser->parse('--alpha -');
+
+        $options = $parser->getOptions();
+        $this->assertEquals('-', $options['a']);
+        $operands = $parser->getOperands();
+        $this->assertCount(0, $operands);
+    }
+    
+    public function testSingleHyphenOperand()
+    {
+        $parser = new CommandLineParser(array(
+            new Option('a', null, Getopt::REQUIRED_ARGUMENT)
+        ));
+        $parser->parse('-a 0 -');
+
+        $options = $parser->getOptions();
+        $this->assertEquals('0', $options['a']);
+        $operands = $parser->getOperands();
+        $this->assertCount(1, $operands);
+        $this->assertEquals('-', $operands[0]);
+    }
+
     public function testParseWithArgumentValidation()
     {
         $validation = 'is_numeric';
