@@ -40,11 +40,14 @@ class CommandLineParser
             if (empty($arg)) {
                 continue;
             }
-            if ($arg == '--' || mb_substr($arg, 0, 1) != '-') {
+            if ($arg == '--') {
                 // no more options, treat the remaining arguments as operands
-                $firstOperandIndex = ($arg == '--') ? $i + 1 : $i;
-                $operands = array_slice($arguments, $firstOperandIndex);
+                $firstOperandIndex = $i + 1;
+                $operands = array_merge($operands, array_slice($arguments, $firstOperandIndex));
                 break;
+            } else if (mb_substr($arg, 0, 1) != '-') {
+                $operands[] = $arg;
+                continue;
             }
             if (mb_substr($arg, 0, 2) == '--') {
                 $this->addLongOption($arguments, $i);
