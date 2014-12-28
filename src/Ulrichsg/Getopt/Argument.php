@@ -9,7 +9,7 @@ class Argument
     /** @var callable */
     private $validation;
     /** @var string */
-    private $description;
+    private $name;
 
     /**
      * Creates a new argument.
@@ -18,7 +18,7 @@ class Argument
      * @param callable|null $validation a validation function (optional)
      * @throws \InvalidArgumentException
      */
-    public function __construct($default = null, $validation = null, $description = "arg")
+    public function __construct($default = null, $validation = null, $name = "arg")
     {
         if (!is_null($default)) {
             $this->setDefaultValue($default);
@@ -26,7 +26,7 @@ class Argument
         if (!is_null($validation)) {
             $this->setValidation($validation);
         }
-        $this->description = $description;
+        $this->name = $name;
     }
 
     /**
@@ -104,12 +104,12 @@ class Argument
     }
 
     /**
-     * Retrieve the descriptopm
+     * Retrieve the argument name
      *
      * @return string
      */
-    public function getDescription()
+    public function getName()
     {
-        return $this->description;
+        return $this->name;
     }
 }
