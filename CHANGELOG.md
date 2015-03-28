@@ -1,3 +1,12 @@
+## 2.3.0 (2015-03-28)
+
+Features:
+* Optional argument descriptions (courtesy of @sabl0r)
+
+Bugfixes:
+* Passing a single hyphen as an option value works now (courtesy of @tistre)
+
+
 ## 2.2.0 (2014-09-13)
 
 Features:
