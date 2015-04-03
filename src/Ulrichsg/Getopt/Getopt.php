@@ -83,10 +83,10 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
                 if (($option === $otherOption) || in_array($otherOption, $duplicates)) {
                     continue;
                 }
-                if ($this->optionsConflict($option, $otherOption)) {
+                if ($option->conflictsWith($otherOption)) {
                     throw new \InvalidArgumentException('Failed to add options due to conflict');
                 }
-                if (($option->short() === $otherOption->short()) && ($option->long() === $otherOption->long())) {
+                if ($option->equals($otherOption)) {
                     $duplicates[] = $option;
                 }
             }
@@ -97,15 +97,6 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
             }
         }
         $this->optionList = array_values($mergedList);
-    }
-
-    private function optionsConflict(Option $option1, Option $option2) {
-        if ((is_null($option1->short()) && is_null($option2->short()))
-                || (is_null($option1->long()) && is_null($option2->long()))) {
-            return false;
-        }
-        return ((($option1->short() === $option2->short()) && ($option1->long() !== $option2->long()))
-                || (($option1->short() !== $option2->short()) && ($option1->long() === $option2->long())));
     }
 
     /**

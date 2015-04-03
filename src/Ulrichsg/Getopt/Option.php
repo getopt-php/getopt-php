@@ -35,6 +35,15 @@ class Option
     }
 
     /**
+     * Fluent interface for constructor so options can be added during construction
+     * @see Options::__construct()
+     */
+    public static function create($short, $long, $mode = Getopt::NO_ARGUMENT)
+    {
+        return new self($short, $long, $mode);
+    }
+
+    /**
      * Defines a description for the option. This is only used for generating usage information.
      *
      * @param string $description
@@ -46,31 +55,31 @@ class Option
         return $this;
     }
 
-	/**
-	 * Defines a default value for the option.
-	 *
-	 * @param mixed $value
+    /**
+     * Defines a default value for the option.
+     *
+     * @param mixed $value
      * @return Option this object (for chaining calls)
-	 */
-	public function setDefaultValue($value)
-	{
-		$this->argument->setDefaultValue($value);
-		return $this;
-	}
+     */
+    public function setDefaultValue($value)
+    {
+        $this->argument->setDefaultValue($value);
+        return $this;
+    }
 
-	/**
-	 * Defines a validation function for the option.
-	 *
-	 * @param callable $function
-	 * @return Option this object (for chaining calls)
-	 */
-	public function setValidation($function)
-	{
-		$this->argument->setValidation($function);
-		return $this;
-	}
+    /**
+     * Defines a validation function for the option.
+     *
+     * @param callable $function
+     * @return Option this object (for chaining calls)
+     */
+    public function setValidation($function)
+    {
+        $this->argument->setValidation($function);
+        return $this;
+    }
 
-	/**
+    /**
      * Sets the argument object directly.
      *
      * @param Argument $arg
@@ -96,6 +105,32 @@ class Option
         return ($string === $this->short) || ($string === $this->long);
     }
 
+    /**
+     * Returns true if the given option is considered a duplicate of this one.
+     *
+     * @param Option $other
+     * @return bool
+     */
+    public function equals(Option $other) {
+        return ($this->short() === $other->short() && $this->long() === $other->long());
+    }
+
+    /**
+     * Returns true if the given option cannot appear in the same option list as this one due to a name conflict.
+     *
+     * @param Option $other
+     * @return bool
+     */
+    public function conflictsWith(Option $other)
+    {
+        if ((is_null($this->short()) && is_null($other->short()))
+                || (is_null($this->long()) && is_null($other->long()))) {
+            return false;
+        }
+        return ((($this->short() === $other->short()) && ($this->long() !== $other->long()))
+                || (($this->short() !== $other->short()) && ($this->long() === $other->long())));
+    }
+
     public function short()
     {
         return $this->short;
@@ -118,21 +153,12 @@ class Option
 
     /**
      * Retrieve the argument object
-     * 
+     *
      * @return Argument
      */
     public function getArgument()
     {
         return $this->argument;
-    }
-    
-    /**
-     * Fluent interface for constructor so options can be added during construction
-     * @see Options::__construct()
-     */
-    public static function create($short, $long, $mode = Getopt::NO_ARGUMENT)
-    {
-    	return new self($short, $long, $mode);
     }
 
     private function setShort($short)
