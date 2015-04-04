@@ -18,16 +18,14 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
 
     /** @var OptionParser */
     private $optionParser;
-    /** @var string */
-    private $scriptName;
     /** @var Option[] */
     private $optionList = array();
     /** @var array */
     private $options = array();
     /** @var array */
     private $operands = array();
-    /** @var string */
-    private $banner =  "Usage: %s [options] [operands]\n";
+    /** @var HelpTextFormatter */
+    private $helpTextFormatter;
 
     /**
      * Creates a new Getopt object.
@@ -47,6 +45,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         if ($options !== null) {
             $this->addOptions($options);
         }
+        $this->helpTextFormatter = new DefaultHelpTextFormatter();
     }
 
     /**
@@ -111,14 +110,15 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     public function parse($arguments = null)
     {
         $this->options = array();
+        $scriptName = $_SERVER['PHP_SELF'];
         if (!isset($arguments)) {
             global $argv;
             $arguments = $argv;
-            $this->scriptName = array_shift($arguments); // $argv[0] is the script's name
+            $scriptName = array_shift($arguments); // $argv[0] is the script's name
         } elseif (is_string($arguments)) {
-            $this->scriptName = $_SERVER['PHP_SELF'];
             $arguments = explode(' ', $arguments);
         }
+        $this->helpTextFormatter->setScriptName($scriptName);
 
         $parser = new CommandLineParser($this->optionList);
         $parser->parse($arguments);
@@ -184,7 +184,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      */
     public function getBanner()
     {
-        return $this->banner;
+        return $this->helpTextFormatter->getBanner();
     }
 
     /**
@@ -196,43 +196,13 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      */
     public function setBanner($banner)
     {
-        $this->banner = $banner;
+        $this->helpTextFormatter->setBanner($banner);
         return $this;
     }
 
-    /**
-     * Returns an usage information text generated from the given options.
-     * @param int $padding Number of characters to pad output of options to
-     * @return string
-     */
     public function getHelpText($padding = 25)
     {
-        $helpText = sprintf($this->getBanner(), $this->scriptName);
-        $helpText .= "Options:\n";
-        foreach ($this->optionList as $option) {
-            $mode = '';
-            switch ($option->mode()) {
-                case self::NO_ARGUMENT:
-                    $mode = '';
-                    break;
-                case self::REQUIRED_ARGUMENT:
-                    $mode = "<".$option->getArgument()->getName().">";
-                    break;
-                case self::OPTIONAL_ARGUMENT:
-                    $mode = "[<".$option->getArgument()->getName().">]";
-                    break;
-            }
-            $short = ($option->short()) ? '-'.$option->short() : '';
-            $long = ($option->long()) ? '--'.$option->long() : '';
-            if ($short && $long) {
-                $options = $short.', '.$long;
-            } else {
-                $options = $short ? : $long;
-            }
-            $padded = str_pad(sprintf("  %s %s", $options, $mode), $padding);
-            $helpText .= sprintf("%s %s\n", $padded, $option->getDescription());
-        }
-        return $helpText;
+        return $this->helpTextFormatter->getHelpText($this->optionList, $padding);
     }
 
 

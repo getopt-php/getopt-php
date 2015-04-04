@@ -157,43 +157,4 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $getopt->getHelpText());
     }
-
-    public function testHelpTextWithoutDescriptions()
-    {
-        $getopt = new Getopt(array(
-            array('a', 'alpha', Getopt::NO_ARGUMENT),
-            array(null, 'beta', Getopt::OPTIONAL_ARGUMENT),
-            array('c', null, Getopt::REQUIRED_ARGUMENT)
-        ));
-        $getopt->parse('');
-
-        $script = $_SERVER['PHP_SELF'];
-
-        $expected = "Usage: $script [options] [operands]\n";
-        $expected .= "Options:\n";
-        $expected .= "  -a, --alpha             \n";
-        $expected .= "  --beta [<arg>]          \n";
-        $expected .= "  -c <arg>                \n";
-
-        $this->assertEquals($expected, $getopt->getHelpText());
-    }
-
-    public function testHelpTextNoParse()
-    {
-        $getopt = new Getopt();
-        $expected = "Usage:  [options] [operands]\nOptions:\n";
-        $this->assertSame($expected, $getopt->getHelpText());
-    }
-
-    public function testHelpTextWithCustomBanner()
-    {
-        $script = $_SERVER['PHP_SELF'];
-        
-        $getopt = new Getopt();
-        $getopt->setBanner("My custom Banner %s\n");
-        $this->assertSame("My custom Banner \nOptions:\n", $getopt->getHelpText());
-
-        $getopt->parse('');
-        $this->assertSame("My custom Banner $script\nOptions:\n", $getopt->getHelpText());
-    }
 }
