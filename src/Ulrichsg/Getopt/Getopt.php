@@ -20,12 +20,10 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     private $optionParser;
     /** @var Option[] */
     private $optionList = array();
-    /** @var array */
-    private $options = array();
-    /** @var array */
-    private $operands = array();
     /** @var HelpTextFormatter */
     private $helpTextFormatter;
+    /** @var Result */
+    private $result = null;
 
     /**
      * Creates a new Getopt object.
@@ -109,7 +107,6 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      */
     public function parse($arguments = null)
     {
-        $this->options = array();
         $scriptName = $_SERVER['PHP_SELF'];
         if (!isset($arguments)) {
             global $argv;
@@ -121,9 +118,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         $this->helpTextFormatter->setScriptName($scriptName);
 
         $parser = new CommandLineParser($this->optionList);
-        $parser->parse($arguments);
-        $this->options = $parser->getOptions();
-        $this->operands = $parser->getOperands();
+        $this->result = $parser->parse($arguments);
     }
 
     /**
@@ -143,7 +138,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      */
     public function getOption($name)
     {
-        return isset($this->options[$name]) ? $this->options[$name] : null;
+        return isset($this->result) ? $this->result->getOption($name) : null;
     }
 
     /**
@@ -153,7 +148,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      */
     public function getOptions()
     {
-        return $this->options;
+        return isset($this->result) ? $this->result->getOptions() : array();
     }
 
     /**
@@ -163,7 +158,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      */
     public function getOperands()
     {
-        return $this->operands;
+        return isset($this->result) ? $this->result->getOperands() : array();
     }
 
     /**
@@ -174,7 +169,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      */
     public function getOperand($i)
     {
-        return ($i < count($this->operands)) ? $this->operands[$i] : null;
+        return isset($this->result) ? $this->result->getOperand($i) : null;
     }
 
     /**
@@ -212,12 +207,13 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
 
     public function count()
     {
-        return count($this->options);
+        return isset($this->result) ? count($this->result->getOptions()) : 0;
     }
 
     public function offsetExists($offset)
     {
-        return isset($this->options[$offset]);
+        $options = $this->getOptions();
+        return isset($options[$offset]);
     }
 
     public function offsetGet($offset)
@@ -240,7 +236,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         // For options that have both short and long names, $this->options has two entries.
         // We don't want this when iterating, so we have to filter the duplicates out.
         $filteredOptions = array();
-        foreach ($this->options as $name => $value) {
+        foreach ($this->getOptions() as $name => $value) {
             $keep = true;
             foreach ($this->optionList as $option) {
                 if ($option->long() == $name && !is_null($option->short())) {

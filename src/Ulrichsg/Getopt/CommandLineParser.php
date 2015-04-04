@@ -27,6 +27,7 @@ class CommandLineParser
      * Parses the given arguments and converts them into options and operands.
      *
      * @param mixed $arguments a string or an array with one argument per element
+     * @return Result
      */
     public function parse($arguments)
     {
@@ -61,6 +62,8 @@ class CommandLineParser
                 $this->operands[] = $operand;
             }
         }
+
+        return new Result($this->getOptions(), $this->getOperands());
     }
 
     /**
