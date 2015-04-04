@@ -116,4 +116,27 @@ class Getoptv2 extends Getopt implements \Countable, \ArrayAccess, \IteratorAggr
         }
         return new \ArrayIterator($filteredOptions);
     }
+
+    /**
+     * Returns the banner string
+     *
+     * @return string
+     */
+    public function getBanner()
+    {
+        return $this->helpTextFormatter->getBanner();
+    }
+
+    /**
+     * Set the banner string
+     *
+     * @param string $banner    The banner string; will be passed to sprintf(), can include %s for current scripts name.
+     *                          Be sure to include a trailing line feed.
+     * @return Getopt
+     */
+    public function setBanner($banner)
+    {
+        $this->helpTextFormatter->setBanner($banner);
+        return $this;
+    }
 }

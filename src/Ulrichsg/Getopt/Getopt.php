@@ -21,7 +21,7 @@ class Getopt
     /** @var Option[] */
     protected $optionList = array();
     /** @var HelpTextFormatter */
-    private $helpTextFormatter;
+    protected $helpTextFormatter;
 
     /**
      * Creates a new Getopt object.
@@ -120,27 +120,9 @@ class Getopt
         return $parser->parse($arguments);
     }
 
-    /**
-     * Returns the banner string
-     *
-     * @return string
-     */
-    public function getBanner()
+    public function setHelpTextFormatter(HelpTextFormatter $formatter)
     {
-        return $this->helpTextFormatter->getBanner();
-    }
-
-    /**
-     * Set the banner string
-     *
-     * @param string $banner    The banner string; will be passed to sprintf(), can include %s for current scripts name.
-     *                          Be sure to include a trailing line feed.
-     * @return Getopt
-     */
-    public function setBanner($banner)
-    {
-        $this->helpTextFormatter->setBanner($banner);
-        return $this;
+        $this->helpTextFormatter = $formatter;
     }
 
     public function getHelpText($padding = 25)
