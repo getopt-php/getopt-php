@@ -10,9 +10,6 @@ class CommandLineParser
     /** @var Option[] */
     private $optionList;
 
-    private $options = array();
-    private $operands = array();
-
     /**
      * Creates a new instance.
      *
@@ -34,6 +31,7 @@ class CommandLineParser
         if (!is_array($arguments)) {
             $arguments = explode(' ', $arguments);
         }
+        $options = array();
         $operands = array();
         $numArgs = count($arguments);
         for ($i = 0; $i < $numArgs; ++$i) {
@@ -48,65 +46,37 @@ class CommandLineParser
                 break;
             }
             if (mb_substr($arg, 0, 2) == '--') {
-                $this->addLongOption($arguments, $i);
+                $options = $this->addLongOption($options, $arguments, $i);
             } else {
-                $this->addShortOption($arguments, $i);
+                $options = $this->addShortOption($options, $arguments, $i);
             }
         } // endfor
 
-        $this->addDefaultValues();
-
-        // remove '--' from operands array
-        foreach ($operands as $operand) {
-            if ($operand !== '--') {
-                $this->operands[] = $operand;
-            }
-        }
-
-        return new Result($this->getOptions(), $this->getOperands());
+        $options = $this->addDefaultValues($options);
+        $operands = array_values(array_diff($operands, array('--')));
+        return new Result($options, $operands);
     }
 
-    /**
-     * Returns the options created by a previous invocation of parse().
-     *
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
-    }
-
-
-    /**
-     * Returns the operands created by a previous invocation of parse(),
-     *
-     * @return array
-     */
-    public function getOperands()
-    {
-        return $this->operands;
-    }
-
-    private function addShortOption($arguments, &$i)
+    private function addShortOption(array $options, $arguments, &$i)
     {
         $numArgs = count($arguments);
         $option = mb_substr($arguments[$i], 1);
         if (mb_strlen($option) > 1) {
             // multiple options strung together
-            $options = $this->splitString($option, 1);
-            foreach ($options as $j => $ch) {
-                if ($j < count($options) - 1
+            $optParts = $this->splitString($option, 1);
+            foreach ($optParts as $j => $ch) {
+                if ($j < count($optParts) - 1
                         || !(
                                 $i < $numArgs - 1
                                 && ((mb_substr($arguments[$i + 1], 0, 1) !== '-') || ($arguments[$i + 1] === '-'))
                                 && $this->optionHasArgument($ch)
                         )
                 ) {
-                    $this->addOption($ch, null);
+                    $options = $this->addOption($options, $ch, null);
                 } else { // e.g. `ls -sw 100`
                     $value = $arguments[$i + 1];
                     ++$i;
-                    $this->addOption($ch, $value);
+                    $options = $this->addOption($options, $ch, $value);
                 }
             }
         } else {
@@ -119,11 +89,12 @@ class CommandLineParser
             } else {
                 $value = null;
             }
-            $this->addOption($option, $value);
+            $options = $this->addOption($options, $option, $value);
         }
+        return $options;
     }
 
-    private function addLongOption($arguments, &$i)
+    private function addLongOption(array $options, $arguments, &$i)
     {
         $option = mb_substr($arguments[$i], 2);
         if (strpos($option, '=') === false) {
@@ -139,18 +110,19 @@ class CommandLineParser
         } else {
             list($option, $value) = explode('=', $option, 2);
         }
-        $this->addOption($option, $value);
+        return $this->addOption($options, $option, $value);
     }
 
     /**
      * Add an option to the list of known options.
      *
+     * @param Option[] $options
      * @param string $string the option's name
      * @param string $value the option's value (or null)
      * @throws \UnexpectedValueException
-     * @return void
+     * @return Option[]
      */
-    private function addOption($string, $value)
+    private function addOption(array $options, $string, $value)
     {
         foreach ($this->optionList as $option) {
             if ($option->matches($string)) {
@@ -164,19 +136,19 @@ class CommandLineParser
                 }
                 // for no-argument options, check if they are duplicate
                 if ($option->mode() == Getopt::NO_ARGUMENT) {
-                    $oldValue = isset($this->options[$string]) ? $this->options[$string] : null;
+                    $oldValue = isset($options[$string]) ? $options[$string] : null;
                     $value = is_null($oldValue) ? 1 : $oldValue + 1;
                 }
                 // for optional-argument options, set value to 1 if none was given
                 $value = (mb_strlen($value) > 0) ? $value : 1;
                 // add both long and short names (if they exist) to the option array to facilitate lookup
                 if ($option->short()) {
-                    $this->options[$option->short()] = $value;
+                    $options[$option->short()] = $value;
                 }
                 if ($option->long()) {
-                    $this->options[$option->long()] = $value;
+                    $options[$option->long()] = $value;
                 }
-                return;
+                return $options;
             }
         }
         throw new \UnexpectedValueException("Option '$string' is unknown");
@@ -185,22 +157,26 @@ class CommandLineParser
     /**
      * If there are options with default values that were not overridden by the parsed option string,
      * add them to the list of known options.
+     *
+     * @param Option[] $options
+     * @return Option[]
      */
-    private function addDefaultValues()
+    private function addDefaultValues(array $options)
     {
         foreach ($this->optionList as $option) {
             if ($option->getArgument()->hasDefaultValue()
-                    && !isset($this->options[$option->short()])
-                    && !isset($this->options[$option->long()])
+                    && !isset($options[$option->short()])
+                    && !isset($options[$option->long()])
             ) {
                 if ($option->short()) {
-                    $this->addOption($option->short(), $option->getArgument()->getDefaultValue());
+                    $options = $this->addOption($options, $option->short(), $option->getArgument()->getDefaultValue());
                 }
                 if ($option->long()) {
-                    $this->addOption($option->long(), $option->getArgument()->getDefaultValue());
+                    $options = $this->addOption($options, $option->long(), $option->getArgument()->getDefaultValue());
                 }
             }
         }
+        return $options;
     }
 
     /**
