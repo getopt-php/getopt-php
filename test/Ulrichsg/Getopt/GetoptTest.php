@@ -16,10 +16,10 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $getopt->parse('-a aparam -s sparam --long longparam');
-        $this->assertEquals('aparam', $getopt->getOption('a'));
-        $this->assertEquals('longparam', $getopt->getOption('long'));
-        $this->assertEquals('sparam', $getopt->getOption('s'));
+        $result = $getopt->parse('-a aparam -s sparam --long longparam');
+        $this->assertEquals('aparam', $result->getOption('a'));
+        $this->assertEquals('longparam', $result->getOption('long'));
+        $this->assertEquals('sparam', $result->getOption('s'));
     }
 
     public function testAddOptionsChooseShortOrLongAutomatically()
@@ -32,9 +32,9 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $getopt->parse('-s --long longparam');
-        $this->assertEquals('longparam', $getopt->getOption('long'));
-        $this->assertEquals('1', $getopt->getOption('s'));
+        $result = $getopt->parse('-s --long longparam');
+        $this->assertEquals('longparam', $result->getOption('long'));
+        $this->assertEquals('1', $result->getOption('s'));
     }
 
     public function testAddOptionsUseDefaultArgumentType()
@@ -46,11 +46,11 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $getopt->parse('-l something');
-        $this->assertEquals('something', $getopt->getOption('l'));
+        $result = $getopt->parse('-l something');
+        $this->assertEquals('something', $result->getOption('l'));
 
-        $getopt->parse('--long someOtherThing');
-        $this->assertEquals('someOtherThing', $getopt->getOption('long'));
+        $result = $getopt->parse('--long someOtherThing');
+        $this->assertEquals('someOtherThing', $result->getOption('long'));
     }
 
     public function testAddOptionsFailsOnInvalidArgument()
@@ -68,10 +68,10 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
         $getopt->addOptions(array(
             array('a', null, Getopt::NO_ARGUMENT)
         ));
-        $getopt->parse('-a foo');
+        $result = $getopt->parse('-a foo');
 
-        $this->assertEquals(1, $getopt->getOption('a'));
-        $this->assertEquals('foo', $getopt->getOperand(0));
+        $this->assertEquals(1, $result->getOption('a'));
+        $this->assertEquals('foo', $result->getOperand(0));
     }
 
     public function testAddOptionsFailsOnConflict()
@@ -91,51 +91,8 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
         $argv = array('foo.php', '-a');
 
         $getopt = new Getopt('a');
-        $getopt->parse();
-        $this->assertEquals(1, $getopt->getOption('a'));
-    }
-
-    public function testAccessMethods()
-    {
-        $getopt = new Getopt('a');
-        $getopt->parse('-a foo');
-
-        $options = $getopt->getOptions();
-        $this->assertCount(1, $options);
-        $this->assertEquals(1, $options['a']);
-        $this->assertEquals(1, $getopt->getOption('a'));
-
-        $operands = $getopt->getOperands();
-        $this->assertCount(1, $operands);
-        $this->assertEquals('foo', $operands[0]);
-        $this->assertEquals('foo', $getopt->getOperand(0));
-    }
-
-    public function testCountable()
-    {
-        $getopt = new Getopt('abc');
-        $getopt->parse('-abc');
-        $this->assertEquals(3, count($getopt));
-    }
-
-    public function testArrayAccess()
-    {
-        $getopt = new Getopt('q');
-        $getopt->parse('-q');
-        $this->assertEquals(1, $getopt['q']);
-    }
-
-    public function testIterable()
-    {
-        $getopt = new Getopt(array(
-            array(null, 'alpha', Getopt::NO_ARGUMENT),
-            array('b', 'beta', Getopt::REQUIRED_ARGUMENT)
-        ));
-        $getopt->parse('--alpha -b foo');
-        $expected = array('alpha' => 1, 'b' => 'foo'); // 'beta' should not occur
-        foreach ($getopt as $option => $value) {
-            $this->assertEquals($expected[$option], $value);
-        }
+        $result = $getopt->parse();
+        $this->assertEquals(1, $result->getOption('a'));
     }
 
     public function testHelpText()
