@@ -2,6 +2,8 @@
 
 namespace Ulrichsg\Getopt;
 
+use Ulrichsg\Getopt\Util\String;
+
 /**
  * Parses command line arguments according to a list of allowed options.
  */
@@ -39,18 +41,18 @@ class CommandLineParser
             if (empty($arg)) {
                 continue;
             }
-            if (($arg === '--') || ($arg === '-') || (mb_substr($arg, 0, 1) !== '-')){
+            if (($arg === '--') || ($arg === '-') || !String::startsWith($arg, '-')){
                 // no more options, treat the remaining arguments as operands
                 $firstOperandIndex = ($arg == '--') ? $i + 1 : $i;
                 $operands = array_slice($arguments, $firstOperandIndex);
                 break;
             }
-            if (mb_substr($arg, 0, 2) == '--') {
+            if (String::startsWith($arg, '--')) {
                 $options = $this->addLongOption($options, $arguments, $i);
             } else {
                 $options = $this->addShortOption($options, $arguments, $i);
             }
-        } // endfor
+        }
 
         $options = $this->addDefaultValues($options);
         $operands = array_values(array_diff($operands, array('--')));
@@ -59,56 +61,44 @@ class CommandLineParser
 
     private function addShortOption(array $options, $arguments, &$i)
     {
-        $numArgs = count($arguments);
-        $option = mb_substr($arguments[$i], 1);
-        if (mb_strlen($option) > 1) {
+        $nextArg = $this->nextElement($arguments, $i);
+        $option = String::substr($arguments[$i], 1);
+        if (String::length($option) > 1) {
             // multiple options strung together
-            $optParts = $this->splitString($option, 1);
-            foreach ($optParts as $j => $ch) {
-                if ($j < count($optParts) - 1
-                        || !(
-                                $i < $numArgs - 1
-                                && ((mb_substr($arguments[$i + 1], 0, 1) !== '-') || ($arguments[$i + 1] === '-'))
-                                && $this->optionHasArgument($ch)
-                        )
-                ) {
-                    $options = $this->addOption($options, $ch, null);
-                } else { // e.g. `ls -sw 100`
-                    $value = $arguments[$i + 1];
+            $flags = String::split($option);
+            foreach ($flags as $j => $flag) {
+                if ($j === count($flags) - 1 && $this->canBeArgument($nextArg) && $this->optionHasArgument($flag)) {
+                    // e.g. `ls -sw 100`
+                    $options = $this->addOption($options, $flag, $nextArg);
                     ++$i;
-                    $options = $this->addOption($options, $ch, $value);
+                } else {
+                    $options = $this->addOption($options, $flag, null);
                 }
             }
         } else {
-            if ($i < $numArgs - 1
-                    && ((mb_substr($arguments[$i + 1], 0, 1) !== '-') || ($arguments[$i + 1] === '-'))
-                    && $this->optionHasArgument($option)
-            ) {
-                $value = $arguments[$i + 1];
+            if ($this->canBeArgument($nextArg) && $this->optionHasArgument($option)) {
+                $options = $this->addOption($options, $option, $nextArg);
                 ++$i;
             } else {
-                $value = null;
+                $options = $this->addOption($options, $option, null);
             }
-            $options = $this->addOption($options, $option, $value);
         }
         return $options;
     }
 
     private function addLongOption(array $options, $arguments, &$i)
     {
-        $option = mb_substr($arguments[$i], 2);
-        if (strpos($option, '=') === false) {
-            if ($i < count($arguments) - 1
-                    && ((mb_substr($arguments[$i + 1], 0, 1) !== '-') || ($arguments[$i + 1] === '-'))
-                    && $this->optionHasArgument($option)
-            ) {
-                $value = $arguments[$i + 1];
+        $option = String::substr($arguments[$i], 2);
+        if (String::contains($option, '=')) {
+            list($option, $value) = explode('=', $option, 2);
+        } else {
+            $nextArg = $this->nextElement($arguments, $i);
+            if ($this->canBeArgument($nextArg) && $this->optionHasArgument($option)) {
+                $value = $nextArg;
                 ++$i;
             } else {
                 $value = null;
             }
-        } else {
-            list($option, $value) = explode('=', $option, 2);
         }
         return $this->addOption($options, $option, $value);
     }
@@ -125,31 +115,32 @@ class CommandLineParser
     private function addOption(array $options, $string, $value)
     {
         foreach ($this->optionList as $option) {
-            if ($option->matches($string)) {
-                if ($option->mode() == Getopt::REQUIRED_ARGUMENT && !mb_strlen($value)) {
-                    throw new \UnexpectedValueException("Option '$string' must have a value");
-                }
-                if ($option->getArgument()->hasValidation()) {
-                    if ((mb_strlen($value) > 0) && !$option->getArgument()->validates($value)) {
-                        throw new \UnexpectedValueException("Option '$string' has an invalid value");
-                    }
-                }
-                // for no-argument options, check if they are duplicate
-                if ($option->mode() == Getopt::NO_ARGUMENT) {
-                    $oldValue = isset($options[$string]) ? $options[$string] : null;
-                    $value = is_null($oldValue) ? 1 : $oldValue + 1;
-                }
-                // for optional-argument options, set value to 1 if none was given
-                $value = (mb_strlen($value) > 0) ? $value : 1;
-                // add both long and short names (if they exist) to the option array to facilitate lookup
-                if ($option->short()) {
-                    $options[$option->short()] = $value;
-                }
-                if ($option->long()) {
-                    $options[$option->long()] = $value;
-                }
-                return $options;
+            if (!$option->matches($string)) {
+                continue;
             }
+            if ($option->mode() == Getopt::REQUIRED_ARGUMENT && String::length($value) === 0) {
+                throw new \UnexpectedValueException("Option '$string' must have a value");
+            }
+            if ($option->getArgument()->hasValidation()) {
+                if ((String::length($value) > 0) && !$option->getArgument()->validates($value)) {
+                    throw new \UnexpectedValueException("Option '$string' has an invalid value");
+                }
+            }
+            // for no-argument options, check if they are duplicate (eg. '-vvv')
+            if ($option->mode() == Getopt::NO_ARGUMENT) {
+                $oldValue = isset($options[$string]) ? $options[$string] : null;
+                $value = is_null($oldValue) ? 1 : $oldValue + 1;
+            }
+            // for optional-argument options, set value to 1 if none was given
+            $value = (String::length($value) > 0) ? $value : 1;
+            // add both long and short names (if they exist) to the option array to facilitate lookup
+            if ($option->short()) {
+                $options[$option->short()] = $value;
+            }
+            if ($option->long()) {
+                $options[$option->long()] = $value;
+            }
+            return $options;
         }
         throw new \UnexpectedValueException("Option '$string' is unknown");
     }
@@ -195,18 +186,13 @@ class CommandLineParser
         return false;
     }
 
-    /**
-     * Split the string into individual characters,
-     *
-     * @param string $string string to split
-     * @return array
-     */
-    private function splitString($string)
+    private function nextElement(array $array, $index)
     {
-        $result = array();
-        for ($i = 0; $i < mb_strlen($string, "UTF-8"); ++$i) {
-            $result[] = mb_substr($string, $i, 1, "UTF-8");
-        }
-        return $result;
+        return ($index < count($array) - 1) ? $array[$index + 1] : null;
+    }
+
+    private function canBeArgument($string)
+    {
+        return !is_null($string) && (($string === '-') || !String::startsWith($string, '-'));
     }
 }
