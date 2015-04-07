@@ -31,8 +31,11 @@ class CommandLineParser
     public function parse($arguments)
     {
         if (!is_array($arguments)) {
-            $arguments = explode(' ', $arguments);
+            $tokenizer = new Tokenizer();
+            // $arguments = explode(' ', $arguments);
+            $arguments = $tokenizer->tokenize($arguments);
         }
+        echo json_encode($arguments)."\n";
         $options = array();
         $operands = array();
         $numArgs = count($arguments);

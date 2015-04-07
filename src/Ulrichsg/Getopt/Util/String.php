@@ -4,6 +4,14 @@ namespace Ulrichsg\Getopt\Util;
 
 class String
 {
+    public static function at($string, $pos)
+    {
+        if ($pos >= self::length($string)) {
+            return null;
+        }
+        return $string[$pos];
+    }
+
     public static function length($string)
     {
         return mb_strlen($string, "UTF-8");
@@ -37,5 +45,13 @@ class String
     public static function contains($string, $substr)
     {
         return mb_strpos($string, $substr, null, "UTF-8");
+    }
+
+    public static function isSpaceOrEnd($string, $pos)
+    {
+        if ($pos >= self::length($string)) {
+            return true;
+        }
+        return ctype_space($string[$pos]);
     }
 }

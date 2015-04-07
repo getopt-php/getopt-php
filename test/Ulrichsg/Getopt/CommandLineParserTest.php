@@ -80,6 +80,17 @@ class CommandLineParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('value', $result->getOption('a'));
     }
 
+    public function testParseShortOptionWithQuotedArgument()
+    {
+        $this->markTestSkipped();
+        $parser = new CommandLineParser(array(
+                new Option('a', null, Getopt::REQUIRED_ARGUMENT)
+        ));
+        $result = $parser->parse('-a "hello world"');
+
+        $this->assertEquals('hello world', $result->getOption('a'));
+    }
+
     public function testParseZeroArgument()
     {
         $parser = new CommandLineParser(array(
@@ -201,6 +212,7 @@ class CommandLineParserTest extends \PHPUnit_Framework_TestCase
 
     public function testParseLongOptionWithValueStartingWithHyphen()
     {
+        //$this->markTestSkipped();
         $parser = new CommandLineParser(array(
             new Option('o', 'option', Getopt::REQUIRED_ARGUMENT)
         ));
