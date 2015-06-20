@@ -92,18 +92,23 @@ class CommandLineParser
             // multiple options strung together
             $options = $this->splitString($option, 1);
             foreach ($options as $j => $ch) {
-                if ($j < count($options) - 1
-                        || !(
-                                $i < $numArgs - 1
-                                && ((mb_substr($arguments[$i + 1], 0, 1) !== '-') || ($arguments[$i + 1] === '-'))
-                                && $this->optionHasArgument($ch)
-                        )
-                ) {
+                // If a required argument is encountered, treat the rest of the
+                // string (or the next argument, if it's the last character) as
+                // its value
+                if ($this->optionHasArgument($ch)) {
+                    if ($j < count($options) - 1) {
+                        // Required argument in the middle of the string, treat
+                        // the remainder as the argument; e.g. `ssh -vvvp222`
+                        $value = implode('', array_slice($options, $j + 1));
+                        $this->addOption($ch, $value);
+                    } else {
+                        // Required argument was last, e.g. `ssh -vvvp 222`
+                        $value = isset($arguments[$i + 1]) ? $arguments[$i + 1] : null;
+                        $this->addOption($ch, $value);
+                    }
+                    break;
+                } else {
                     $this->addOption($ch, null);
-                } else { // e.g. `ls -sw 100`
-                    $value = $arguments[$i + 1];
-                    ++$i;
-                    $this->addOption($ch, $value);
                 }
             }
         } else {

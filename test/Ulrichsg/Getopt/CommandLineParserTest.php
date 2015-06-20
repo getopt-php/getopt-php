@@ -145,6 +145,27 @@ class CommandLineParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('b', $operands[0]);
     }
 
+    public function testParsedRequiredArumentWithNoSpace()
+    {
+        $parser = new CommandLineParser(array(
+            new Option('p', null, Getopt::REQUIRED_ARGUMENT)
+        ));
+        $parser->parse('-ppassword');
+        $options = $parser->getOptions();
+        $this->assertEquals('password', $options['p']);
+    }
+    public function testParseCollapsedRequiredArgumentWithNoSpace()
+    {
+        $parser = new CommandLineParser(array(
+            new Option('v', null),
+            new Option('p', null, Getopt::REQUIRED_ARGUMENT)
+        ));
+        $parser->parse('-vvvppassword');
+        $options = $parser->getOptions();
+        $this->assertEquals('password', $options['p']);
+        $this->assertEquals(3, $options['v']);
+    }
+
     public function testParseOperandsOnly()
     {
         $parser = new CommandLineParser(array(
