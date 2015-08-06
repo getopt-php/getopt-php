@@ -165,6 +165,16 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     {
         return $this->options;
     }
+    
+    /**
+     * Returns the list of known Options. Useful for introspection over Getopt instances;
+     * retreive actual option values with {@link getOptions()}.
+     * 
+     * @return Option[] Array of all Option objects that have been added.
+     */
+    public function getKnownOptions() {
+      return $this->optionList;
+    }
 
     /**
      * Returns the list of operands. Must be invoked after parse().
