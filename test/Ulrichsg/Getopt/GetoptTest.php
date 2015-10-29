@@ -196,4 +196,12 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
         $getopt->parse('');
         $this->assertSame("My custom Banner $script\nOptions:\n", $getopt->getHelpText());
     }
+
+    public function testScriptName()
+    {
+        $script = $_SERVER['PHP_SELF'];
+        $getopt = new Getopt();
+        $getopt->parse('');
+        $this->assertEquals($script, $getopt->getScriptName());
+    }
 }

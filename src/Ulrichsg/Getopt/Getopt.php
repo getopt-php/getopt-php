@@ -244,6 +244,16 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         return $helpText;
     }
 
+    /**
+     * Returns current script name
+     *
+     * @return string
+     */
+    public function getScriptName()
+    {
+        return $this->scriptName;
+    }
+
 
     /*
      * Interface support functions
