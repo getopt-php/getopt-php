@@ -223,9 +223,10 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     /**
      * Returns an usage information text generated from the given options.
      * @param int $padding Number of characters to pad output of options to
+     * @param int $terminalCols If provided, option descriptions will wrap to fit the given width terminal.
      * @return string
      */
-    public function getHelpText($padding = 25)
+    public function getHelpText($padding = 25, $terminalCols = NULL)
     {
         $helpText = sprintf($this->getBanner(), $this->scriptName);
         $helpText .= "Options:\n";
@@ -250,7 +251,12 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
                 $options = $short ? : $long;
             }
             $padded = str_pad(sprintf("  %s %s", $options, $mode), $padding);
-            $helpText .= sprintf("%s %s\n", $padded, $option->getDescription());
+            $desc = $option->getDescription();
+            if ($terminalCols && is_numeric($terminalCols) && $terminalCols > $padding) {
+                $wrapBreak = sprintf('%-' . ($padding + 2) . 's', "\n");
+                $desc = wordwrap($desc, $terminalCols - $padding - 1, $wrapBreak);
+            }
+            $helpText .= sprintf("%s %s\n", $padded, $desc);
         }
         return $helpText;
     }
