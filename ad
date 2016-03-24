@@ -1,0 +1,49 @@
+[1mdiff --git a/src/Ulrichsg/Getopt/CommandLineParser.php b/src/Ulrichsg/Getopt/CommandLineParser.php[m
+[1mold mode 100644[m
+[1mnew mode 100755[m
+[1mindex 7c8abad..040a7f9[m
+[1m--- a/src/Ulrichsg/Getopt/CommandLineParser.php[m
+[1m+++ b/src/Ulrichsg/Getopt/CommandLineParser.php[m
+[36m@@ -13,15 +13,16 @@[m [mclass CommandLineParser[m
+     private $options = array();[m
+     private $operands = array();[m
+ [m
+[31m-	/** @var bool True to throw "Option X is unknow" exception, False to allow undefined options */[m
+[32m+[m	[32m/** @var bool True to throw "Option X is unknown" exception, False to allow undefined options */[m
+ 	public $strict = true;[m
+ [m
+     /**[m
+      * Creates a new instance.[m
+      *[m
+      * @param Option[] $optionList the list of allowed options[m
+[32m+[m[32m     * @param bool $strict True to throw "Option X is unknown" exception, False to allow undefined options[m
+      */[m
+[31m-    public function __construct(array $optionList)[m
+[32m+[m[32m    public function __construct(array $optionList, $strict = true)[m
+     {[m
+         $this->optionList = $optionList;[m
+     }[m
+[1mdiff --git a/src/Ulrichsg/Getopt/Getopt.php b/src/Ulrichsg/Getopt/Getopt.php[m
+[1mindex bd6b7ad..b39ef81 100644[m
+[1m--- a/src/Ulrichsg/Getopt/Getopt.php[m
+[1m+++ b/src/Ulrichsg/Getopt/Getopt.php[m
+[36m@@ -116,8 +116,9 @@[m [mclass Getopt implements \Countable, \ArrayAccess, \IteratorAggregate[m
+      * when the arguments are not well-formed or do not conform to the options passed by the user.[m
+      *[m
+      * @param mixed $arguments optional ARGV array or space separated string[m
+[32m+[m[32m     * @param bool $strict True to throw "Option X is unknown" exception, False to allow unknown options[m
+      */[m
+[31m-    public function parse($arguments = null)[m
+[32m+[m[32m    public function parse($arguments = null, $strict = true)[m
+     {[m
+         $this->options = array();[m
+         if (!isset($arguments)) {[m
+[36m@@ -129,7 +130,7 @@[m [mclass Getopt implements \Countable, \ArrayAccess, \IteratorAggregate[m
+             $arguments = explode(' ', $arguments);[m
+         }[m
+ [m
+[31m-        $parser = new CommandLineParser($this->optionList);[m
+[32m+[m[32m        $parser = new CommandLineParser($this->optionList, $strict);[m
+         $parser->parse($arguments);[m
+         $this->options = $parser->getOptions();[m
+         $this->operands = $parser->getOperands();[m
