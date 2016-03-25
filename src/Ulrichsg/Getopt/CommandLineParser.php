@@ -25,6 +25,7 @@ class CommandLineParser
     public function __construct(array $optionList, $strict = true)
     {
         $this->optionList = $optionList;
+        $this->strict     = $strict;
     }
 
     /**
