@@ -13,14 +13,14 @@ class CommandLineParser
     private $options = array();
     private $operands = array();
 
-	/** @var bool True to throw "Option X is unknown" exception, False to allow undefined options */
+	/** @var bool True to throw "Option X is unknown" exception, False to allow unknown options */
 	public $strict = true;
 
     /**
      * Creates a new instance.
      *
      * @param Option[] $optionList the list of allowed options
-     * @param bool $strict True to throw "Option X is unknown" exception, False to allow undefined options
+     * @param bool $strict True to throw "Option X is unknown" exception, False to allow unknown options
      */
     public function __construct(array $optionList, $strict = true)
     {
