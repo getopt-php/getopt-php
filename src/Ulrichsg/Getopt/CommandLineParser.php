@@ -186,10 +186,10 @@ class CommandLineParser
                 return;
             }
         }
-		
-		if ($this->strict) {
-        	throw new \UnexpectedValueException("Option '$string' is unknown");
-		}
+        
+        if ($this->strict) {
+            throw new \UnexpectedValueException("Option '$string' is unknown");
+        }
     }
 
     /**
