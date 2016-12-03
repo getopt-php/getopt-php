@@ -95,6 +95,13 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, $getopt->getOption('a'));
     }
 
+    public function testParseWithArrayArgument()
+    {
+        $getopt = new Getopt('a');
+        $getopt->parse(array('foo.php', '-a'));
+        $this->assertEquals(1, $getopt->getOption('a'));
+    }
+
     public function testAccessMethods()
     {
         $getopt = new Getopt('a');
