@@ -17,17 +17,17 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     const OPTIONAL_ARGUMENT = 2;
 
     /** @var OptionParser */
-    private $optionParser;
+    protected $optionParser;
     /** @var string */
-    private $scriptName;
+    protected $scriptName;
     /** @var Option[] */
-    private $optionList = array();
+    protected $optionList = array();
     /** @var array */
-    private $options = array();
+    protected $options = array();
     /** @var array */
-    private $operands = array();
+    protected $operands = array();
     /** @var string */
-    private $banner =  "Usage: %s [options] [operands]\n";
+    protected $banner =  "Usage: %s [options] [operands]\n";
 
     /**
      * Creates a new Getopt object.
@@ -73,7 +73,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      * @param Option[] $options The list of new options
      * @throws \InvalidArgumentException
      */
-    private function mergeOptions(array $options)
+    protected function mergeOptions(array $options)
     {
         /** @var Option[] $mergedList */
         $mergedList = array_merge($this->optionList, $options);
@@ -99,7 +99,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         $this->optionList = array_values($mergedList);
     }
 
-    private function optionsConflict(Option $option1, Option $option2) {
+    protected function optionsConflict(Option $option1, Option $option2) {
         if ((is_null($option1->short()) && is_null($option2->short()))
                 || (is_null($option1->long()) && is_null($option2->long()))) {
             return false;
