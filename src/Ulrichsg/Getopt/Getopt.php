@@ -124,9 +124,8 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
             global $argv;
             $arguments = $argv;
             $this->scriptName = array_shift($arguments); // $argv[0] is the script's name
-        } elseif (is_string($arguments)) {
+        } elseif (is_string($arguments) && empty($this->scriptName)) {
             $this->scriptName = $_SERVER['PHP_SELF'];
-            $arguments = explode(' ', $arguments);
         }
 
         $parser = new CommandLineParser($this->optionList);
