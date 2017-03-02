@@ -8,5 +8,11 @@ php:
   - 5.3
   - hhvm
 
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
 before_script:
  - composer install
