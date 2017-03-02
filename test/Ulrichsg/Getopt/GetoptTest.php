@@ -181,7 +181,7 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
     public function testHelpTextNoParse()
     {
         $getopt = new Getopt();
-        $expected = "Usage:  [options] [operands]\nOptions:\n";
+        $expected = "Usage:  [options] [operands]\n";
         $this->assertSame($expected, $getopt->getHelpText());
     }
 
@@ -191,9 +191,9 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
         
         $getopt = new Getopt();
         $getopt->setBanner("My custom Banner %s\n");
-        $this->assertSame("My custom Banner \nOptions:\n", $getopt->getHelpText());
+        $this->assertSame("My custom Banner \n", $getopt->getHelpText());
 
         $getopt->parse('');
-        $this->assertSame("My custom Banner $script\nOptions:\n", $getopt->getHelpText());
+        $this->assertSame("My custom Banner $script\n", $getopt->getHelpText());
     }
 }
