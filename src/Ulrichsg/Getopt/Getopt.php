@@ -50,6 +50,16 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     }
 
     /**
+     * Set the scriptName manually
+     *
+     * @param $scriptName
+     */
+    public function setScriptName($scriptName)
+    {
+        $this->scriptName = $scriptName;
+    }
+
+    /**
      * Extends the list of known options. Takes the same argument types as the constructor.
      *
      * @param mixed $options
@@ -119,10 +129,13 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      */
     public function parse($arguments = null)
     {
+        if (!$this->scriptName && isset($_SERVER['argv'][0])) {
+            $this->scriptName = $_SERVER['argv'][0];
+        }
+
         $this->options = array();
         if (!isset($arguments)) {
-            global $argv;
-            $arguments = $argv;
+            $arguments = isset($_SERVER['argv']) ? $_SERVER['argv'] : [];
             $this->scriptName = array_shift($arguments); // $argv[0] is the script's name
         } elseif (is_string($arguments)) {
             $this->scriptName = $_SERVER['PHP_SELF'];

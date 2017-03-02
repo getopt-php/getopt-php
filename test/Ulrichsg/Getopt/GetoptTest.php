@@ -87,8 +87,7 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
 
     public function testParseUsesGlobalArgvWhenNoneGiven()
     {
-        global $argv;
-        $argv = array('foo.php', '-a');
+        $_SERVER['argv'] = array('foo.php', '-a');
 
         $getopt = new Getopt('a');
         $getopt->parse();
@@ -182,6 +181,14 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
     {
         $getopt = new Getopt();
         $expected = "Usage:  [options] [operands]\nOptions:\n";
+        $this->assertSame($expected, $getopt->getHelpText());
+    }
+
+    public function testHelpTextWithCustomScriptName()
+    {
+        $getopt = new Getopt();
+        $getopt->setScriptName('test');
+        $expected = "Usage: test [options] [operands]\nOptions:\n";
         $this->assertSame($expected, $getopt->getHelpText());
     }
 
