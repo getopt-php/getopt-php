@@ -188,7 +188,7 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
     {
         $getopt = new Getopt();
         $getopt->setScriptName('test');
-        $expected = "Usage: test [options] [operands]\nOptions:\n";
+        $expected = "Usage: test [options] [operands]\n";
         $this->assertSame($expected, $getopt->getHelpText());
     }
 
