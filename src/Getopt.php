@@ -229,29 +229,31 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     public function getHelpText($padding = 25)
     {
         $helpText = sprintf($this->getBanner(), $this->scriptName);
-        $helpText .= "Options:\n";
-        foreach ($this->optionList as $option) {
-            $mode = '';
-            switch ($option->mode()) {
-                case self::NO_ARGUMENT:
-                    $mode = '';
-                    break;
-                case self::REQUIRED_ARGUMENT:
-                    $mode = "<".$option->getArgument()->getName().">";
-                    break;
-                case self::OPTIONAL_ARGUMENT:
-                    $mode = "[<".$option->getArgument()->getName().">]";
-                    break;
+        if (!empty($this->optionList)) {
+            $helpText .= "Options:\n";
+            foreach ($this->optionList as $option) {
+                $mode = '';
+                switch ($option->mode()) {
+                    case self::NO_ARGUMENT:
+                        $mode = '';
+                        break;
+                    case self::REQUIRED_ARGUMENT:
+                        $mode = "<".$option->getArgument()->getName().">";
+                        break;
+                    case self::OPTIONAL_ARGUMENT:
+                        $mode = "[<".$option->getArgument()->getName().">]";
+                        break;
+                }
+                $short = ($option->short()) ? '-'.$option->short() : '';
+                $long = ($option->long()) ? '--'.$option->long() : '';
+                if ($short && $long) {
+                    $options = $short.', '.$long;
+                } else {
+                    $options = $short ? : $long;
+                }
+                $padded = str_pad(sprintf("  %s %s", $options, $mode), $padding);
+                $helpText .= sprintf("%s %s\n", $padded, $option->getDescription());
             }
-            $short = ($option->short()) ? '-'.$option->short() : '';
-            $long = ($option->long()) ? '--'.$option->long() : '';
-            if ($short && $long) {
-                $options = $short.', '.$long;
-            } else {
-                $options = $short ? : $long;
-            }
-            $padded = str_pad(sprintf("  %s %s", $options, $mode), $padding);
-            $helpText .= sprintf("%s %s\n", $padded, $option->getDescription());
         }
         return $helpText;
     }
