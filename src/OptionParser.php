@@ -1,6 +1,6 @@
 <?php
 
-namespace Ulrichsg\Getopt;
+namespace tflori\Getopt;
 
 /**
  * Converts user-given option specifications into Option objects.

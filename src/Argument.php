@@ -1,9 +1,11 @@
 <?php
 
-namespace Ulrichsg\Getopt;
+namespace tflori\Getopt;
 
 class Argument
 {
+    const CLASSNAME = __CLASS__;
+
     /** @var string */
     private $default;
     /** @var callable */

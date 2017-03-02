@@ -1,6 +1,6 @@
 <?php
 
-namespace Ulrichsg\Getopt;
+namespace tflori\Getopt;
 
 /**
  * Parses command line arguments according to a list of allowed options.

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ulrichsg\Getopt;
+namespace tflori\Getopt;
 
 class CommandLineParserTest extends \PHPUnit_Framework_TestCase
 {

@@ -1,12 +1,14 @@
 <?php
 
-namespace Ulrichsg\Getopt;
+namespace tflori\Getopt;
 
 /**
  * Represents an option that Getopt accepts.
  */
 class Option
 {
+    const CLASSNAME = __CLASS__;
+
     private $short;
     private $long;
     private $mode;

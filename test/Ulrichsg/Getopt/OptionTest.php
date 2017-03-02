@@ -1,6 +1,6 @@
 <?php
 
-namespace Ulrichsg\Getopt;
+namespace tflori\Getopt;
 
 class OptionTest extends \PHPUnit_Framework_TestCase
 {
@@ -46,7 +46,7 @@ class OptionTest extends \PHPUnit_Framework_TestCase
     {
         $option = new Option('a', null, Getopt::OPTIONAL_ARGUMENT);
         $this->assertEquals($option, $option->setArgument(new Argument()));
-        $this->assertInstanceof('Ulrichsg\Getopt\Argument', $option->getArgument());
+        $this->assertInstanceof(Argument::CLASSNAME, $option->getArgument());
     }
 
     public function testSetArgumentWrongMode()
