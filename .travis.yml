@@ -1,4 +1,6 @@
 language: php
+dist: trusty
+sudo: false
 php:
   - 7.1
   - 7.0
@@ -7,8 +9,6 @@ php:
   - 5.4
   - 5.3
   - hhvm
-
-sudo: false
 
 cache:
   directories:
