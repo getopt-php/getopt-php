@@ -12,7 +12,7 @@ namespace Ulrichsg\Getopt;
  */
 class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
 {
-    const NO_ARGUMENT = 0;
+    const NO_ARGUMENT       = 0;
     const REQUIRED_ARGUMENT = 1;
     const OPTIONAL_ARGUMENT = 2;
 
@@ -27,7 +27,9 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     /** @var array */
     private $operands = array();
     /** @var string */
-    private $banner =  "Usage: %s [options] [operands]\n";
+    private $banner = "Usage: %s [options] [operands]\n";
+
+    public $allowUnexpected = false;
 
     /**
      * Creates a new Getopt object.
@@ -35,14 +37,14 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      * The argument $options can be either a string in the format accepted by the PHP library
      * function getopt() or an array.
      *
-     * @param mixed $options Array of options, a String, or null (see documentation for details)
-     * @param int $defaultType The default option type to use when omitted (optional)
+     * @param mixed $options     Array of options, a String, or null (see documentation for details)
+     * @param int   $defaultType The default option type to use when omitted (optional)
+     *
      * @throws \InvalidArgumentException
      *
      * @link https://www.gnu.org/s/hello/manual/libc/Getopt.html GNU Getopt manual
      */
-    public function __construct($options = null, $defaultType = Getopt::NO_ARGUMENT)
-    {
+    public function __construct($options = null, $defaultType = Getopt::NO_ARGUMENT) {
         $this->optionParser = new OptionParser($defaultType);
         if ($options !== null) {
             $this->addOptions($options);
@@ -53,10 +55,10 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      * Extends the list of known options. Takes the same argument types as the constructor.
      *
      * @param mixed $options
+     *
      * @throws \InvalidArgumentException
      */
-    public function addOptions($options)
-    {
+    public function addOptions($options) {
         if (is_string($options)) {
             $this->mergeOptions($this->optionParser->parseString($options));
         } elseif (is_array($options)) {
@@ -71,10 +73,10 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      * conflicts.
      *
      * @param Option[] $options The list of new options
+     *
      * @throws \InvalidArgumentException
      */
-    private function mergeOptions(array $options)
-    {
+    private function mergeOptions(array $options) {
         /** @var Option[] $mergedList */
         $mergedList = array_merge($this->optionList, $options);
         $duplicates = array();
@@ -101,9 +103,11 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
 
     private function optionsConflict(Option $option1, Option $option2) {
         if ((is_null($option1->short()) && is_null($option2->short()))
-                || (is_null($option1->long()) && is_null($option2->long()))) {
+            || (is_null($option1->long()) && is_null($option2->long()))
+        ) {
             return false;
         }
+
         return ((($option1->short() === $option2->short()) && ($option1->long() !== $option2->long()))
                 || (($option1->short() !== $option2->short()) && ($option1->long() === $option2->long())));
     }
@@ -117,21 +121,19 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * @param mixed $arguments optional ARGV array or space separated string
      */
-    public function parse($arguments = null)
-    {
-        $this->options = array();
+    public function parse($arguments = null) {
         if (!isset($arguments)) {
             global $argv;
-            $arguments = $argv;
+            $arguments        = $argv;
             $this->scriptName = array_shift($arguments); // $argv[0] is the script's name
         } elseif (is_string($arguments)) {
             $this->scriptName = $_SERVER['PHP_SELF'];
-            $arguments = explode(' ', $arguments);
+            $arguments        = explode(' ', $arguments);
         }
 
-        $parser = new CommandLineParser($this->optionList);
+        $parser = new CommandLineParser($this->optionList, $this->allowUnexpected);
         $parser->parse($arguments);
-        $this->options = $parser->getOptions();
+        $this->options  = array_merge($this->options, $parser->getOptions());
         $this->operands = $parser->getOperands();
     }
 
@@ -148,10 +150,10 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      * </ul>
      *
      * @param string $name The (short or long) option name.
+     *
      * @return mixed
      */
-    public function getOption($name)
-    {
+    public function getOption($name) {
         return isset($this->options[$name]) ? $this->options[$name] : null;
     }
 
@@ -160,8 +162,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * @return array
      */
-    public function getOptions()
-    {
+    public function getOptions() {
         return $this->options;
     }
 
@@ -170,8 +171,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * @return array
      */
-    public function getOperands()
-    {
+    public function getOperands() {
         return $this->operands;
     }
 
@@ -179,10 +179,10 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      * Returns the i-th operand (starting with 0), or null if it does not exist. Must be invoked after parse().
      *
      * @param int $i
+     *
      * @return string
      */
-    public function getOperand($i)
-    {
+    public function getOperand($i) {
         return ($i < count($this->operands)) ? $this->operands[$i] : null;
     }
 
@@ -191,8 +191,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * @return string
      */
-    public function getBanner()
-    {
+    public function getBanner() {
         return $this->banner;
     }
 
@@ -201,21 +200,23 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * @param string $banner    The banner string; will be passed to sprintf(), can include %s for current scripts name.
      *                          Be sure to include a trailing line feed.
+     *
      * @return Getopt
      */
-    public function setBanner($banner)
-    {
+    public function setBanner($banner) {
         $this->banner = $banner;
+
         return $this;
     }
 
     /**
      * Returns an usage information text generated from the given options.
+     *
      * @param int $padding Number of characters to pad output of options to
+     *
      * @return string
      */
-    public function getHelpText($padding = 25)
-    {
+    public function getHelpText($padding = 25) {
         $helpText = sprintf($this->getBanner(), $this->scriptName);
         $helpText .= "Options:\n";
         foreach ($this->optionList as $option) {
@@ -231,16 +232,17 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
                     $mode = "[<".$option->getArgument()->getName().">]";
                     break;
             }
-            $short = ($option->short()) ? '-'.$option->short() : '';
-            $long = ($option->long()) ? '--'.$option->long() : '';
+            $short = ($option->short()) ? '-' . $option->short() : '';
+            $long  = ($option->long()) ? '--' . $option->long() : '';
             if ($short && $long) {
-                $options = $short.', '.$long;
+                $options = $short . ', ' . $long;
             } else {
-                $options = $short ? : $long;
+                $options = $short ?: $long;
             }
             $padded = str_pad(sprintf("  %s %s", $options, $mode), $padding);
             $helpText .= sprintf("%s %s\n", $padded, $option->getDescription());
         }
+
         return $helpText;
     }
 
@@ -249,33 +251,27 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      * Interface support functions
      */
 
-    public function count()
-    {
+    public function count() {
         return count($this->options);
     }
 
-    public function offsetExists($offset)
-    {
+    public function offsetExists($offset) {
         return isset($this->options[$offset]);
     }
 
-    public function offsetGet($offset)
-    {
+    public function offsetGet($offset) {
         return $this->getOption($offset);
     }
 
-    public function offsetSet($offset, $value)
-    {
+    public function offsetSet($offset, $value) {
+        $this->options[$offset] = $value;
+    }
+
+    public function offsetUnset($offset) {
         throw new \LogicException('Getopt is read-only');
     }
 
-    public function offsetUnset($offset)
-    {
-        throw new \LogicException('Getopt is read-only');
-    }
-
-    public function getIterator()
-    {
+    public function getIterator() {
         // For options that have both short and long names, $this->options has two entries.
         // We don't want this when iterating, so we have to filter the duplicates out.
         $filteredOptions = array();
@@ -290,6 +286,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
                 $filteredOptions[$name] = $value;
             }
         }
+
         return new \ArrayIterator($filteredOptions);
     }
 }
