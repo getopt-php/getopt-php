@@ -1,6 +1,6 @@
 <?php
 
-namespace Ulrichsg\Getopt;
+namespace tflori\Getopt;
 
 class OptionParserTest extends \PHPUnit_Framework_TestCase
 {
@@ -18,7 +18,7 @@ class OptionParserTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('array', $options);
         $this->assertCount(4, $options);
         foreach ($options as $option) {
-            $this->assertInstanceOf('Ulrichsg\Getopt\Option', $option);
+            $this->assertInstanceOf(Option::CLASSNAME, $option);
             $this->assertNull($option->long());
             switch ($option->short()) {
                 case 'a':
@@ -73,7 +73,7 @@ class OptionParserTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(3, $options);
         foreach ($options as $option) {
-            $this->assertInstanceOf('Ulrichsg\Getopt\Option', $option);
+            $this->assertInstanceOf(Option::CLASSNAME, $option);
             switch ($option->short()) {
                 case 'a':
                     $this->assertEquals('alpha', $option->long());

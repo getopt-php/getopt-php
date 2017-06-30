@@ -1,6 +1,6 @@
 <?php
 
-namespace Ulrichsg\Getopt;
+namespace tflori\Getopt;
 
 /**
  * Parses command line arguments according to a list of allowed options.
@@ -31,7 +31,7 @@ class CommandLineParser
     public function parse($arguments)
     {
         if (!is_array($arguments)) {
-            $arguments = explode(' ', $arguments);
+            $arguments = $this->parseArgumentString($arguments);
         }
         $operands = array();
         $numArgs = count($arguments);
@@ -234,5 +234,56 @@ class CommandLineParser
             $result[] = mb_substr($string, $i, 1, "UTF-8");
         }
         return $result;
+    }
+
+
+    /**
+     * Prase the command line string and returns an array.
+     *
+     * @param string $argsString
+     * @return array
+     */
+    protected function parseArgumentString($argsString)
+    {
+        $argv = array('');
+        $argsString = trim($argsString);
+        $argc = 0;
+
+        $state = 'n'; // states: n (normal), d (double quoted), s(single quoted)
+        for ($i = 0; $i < strlen($argsString); $i++) {
+            $char = $argsString{$i};
+            switch ($state) {
+                case 'n':
+                    if ($char === '\'') {
+                        $state = 's';
+                    } elseif ($char === '"') {
+                        $state = 'd';
+                    } elseif (in_array($char, array("\n", "\t", ' '))) {
+                        $argc++;
+                        $argv[$argc] = '';
+                    } else {
+                        $argv[$argc] .= $char;
+                    }
+                    break;
+
+                case 's':
+                    if ($char === '\'') {
+                        $state = 'n';
+                    } else {
+                        $argv[$argc] .= $char;
+                    }
+                    break;
+
+                case 'd':
+                    if ($char === '"') {
+                        $state = 'n';
+                    } else {
+                        $argv[$argc] .= $char;
+                    }
+                    break;
+            }
+        }
+
+        return $argv;
     }
 }

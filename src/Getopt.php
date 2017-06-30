@@ -1,6 +1,6 @@
 <?php
 
-namespace Ulrichsg\Getopt;
+namespace tflori\Getopt;
 
 /**
  * Getopt.PHP allows for easy processing of command-line arguments.
@@ -17,17 +17,17 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     const OPTIONAL_ARGUMENT = 2;
 
     /** @var OptionParser */
-    private $optionParser;
+    protected $optionParser;
     /** @var string */
-    private $scriptName;
+    protected $scriptName;
     /** @var Option[] */
-    private $optionList = array();
+    protected $optionList = array();
     /** @var array */
-    private $options = array();
+    protected $options = array();
     /** @var array */
-    private $operands = array();
+    protected $operands = array();
     /** @var string */
-    private $banner =  "Usage: %s [options] [operands]\n";
+    protected $banner =  "Usage: %s [options] [operands]\n";
 
     /**
      * Creates a new Getopt object.
@@ -47,6 +47,16 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         if ($options !== null) {
             $this->addOptions($options);
         }
+    }
+
+    /**
+     * Set the scriptName manually
+     *
+     * @param $scriptName
+     */
+    public function setScriptName($scriptName)
+    {
+        $this->scriptName = $scriptName;
     }
 
     /**
@@ -73,7 +83,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      * @param Option[] $options The list of new options
      * @throws \InvalidArgumentException
      */
-    private function mergeOptions(array $options)
+    protected function mergeOptions(array $options)
     {
         /** @var Option[] $mergedList */
         $mergedList = array_merge($this->optionList, $options);
@@ -99,7 +109,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         $this->optionList = array_values($mergedList);
     }
 
-    private function optionsConflict(Option $option1, Option $option2) {
+    protected function optionsConflict(Option $option1, Option $option2) {
         if ((is_null($option1->short()) && is_null($option2->short()))
                 || (is_null($option1->long()) && is_null($option2->long()))) {
             return false;
@@ -119,14 +129,16 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      */
     public function parse($arguments = null)
     {
+        if (!$this->scriptName && isset($_SERVER['argv'][0])) {
+            $this->scriptName = $_SERVER['argv'][0];
+        }
+
         $this->options = array();
         if (!isset($arguments)) {
-            global $argv;
-            $arguments = $argv;
+            $arguments = isset($_SERVER['argv']) ? $_SERVER['argv'] : array();
             $this->scriptName = array_shift($arguments); // $argv[0] is the script's name
-        } elseif (is_string($arguments)) {
+        } elseif (is_string($arguments) && empty($this->scriptName)) {
             $this->scriptName = $_SERVER['PHP_SELF'];
-            $arguments = explode(' ', $arguments);
         }
 
         $parser = new CommandLineParser($this->optionList);
@@ -217,29 +229,31 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     public function getHelpText($padding = 25)
     {
         $helpText = sprintf($this->getBanner(), $this->scriptName);
-        $helpText .= "Options:\n";
-        foreach ($this->optionList as $option) {
-            $mode = '';
-            switch ($option->mode()) {
-                case self::NO_ARGUMENT:
-                    $mode = '';
-                    break;
-                case self::REQUIRED_ARGUMENT:
-                    $mode = "<".$option->getArgument()->getName().">";
-                    break;
-                case self::OPTIONAL_ARGUMENT:
-                    $mode = "[<".$option->getArgument()->getName().">]";
-                    break;
+        if (!empty($this->optionList)) {
+            $helpText .= "Options:\n";
+            foreach ($this->optionList as $option) {
+                $mode = '';
+                switch ($option->mode()) {
+                    case self::NO_ARGUMENT:
+                        $mode = '';
+                        break;
+                    case self::REQUIRED_ARGUMENT:
+                        $mode = "<".$option->getArgument()->getName().">";
+                        break;
+                    case self::OPTIONAL_ARGUMENT:
+                        $mode = "[<".$option->getArgument()->getName().">]";
+                        break;
+                }
+                $short = ($option->short()) ? '-'.$option->short() : '';
+                $long = ($option->long()) ? '--'.$option->long() : '';
+                if ($short && $long) {
+                    $options = $short.', '.$long;
+                } else {
+                    $options = $short ? : $long;
+                }
+                $padded = str_pad(sprintf("  %s %s", $options, $mode), $padding);
+                $helpText .= sprintf("%s %s\n", $padded, $option->getDescription());
             }
-            $short = ($option->short()) ? '-'.$option->short() : '';
-            $long = ($option->long()) ? '--'.$option->long() : '';
-            if ($short && $long) {
-                $options = $short.', '.$long;
-            } else {
-                $options = $short ? : $long;
-            }
-            $padded = str_pad(sprintf("  %s %s", $options, $mode), $padding);
-            $helpText .= sprintf("%s %s\n", $padded, $option->getDescription());
         }
         return $helpText;
     }
