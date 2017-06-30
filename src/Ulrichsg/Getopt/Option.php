@@ -108,7 +108,12 @@ class Option
 
     public function mode()
     {
-        return $this->mode;
+      return $this->mode & (Getopt::REQUIRED_ARGUMENT | Getopt::OPTIONAL_ARGUMENT);
+    }
+    
+    public function multipleArgument()
+    {
+      return $this->mode & Getopt::MULTIPLE_ARGUMENT;
     }
 
     public function getDescription()
@@ -153,9 +158,11 @@ class Option
 
     private function setMode($mode)
     {
-        if (!in_array($mode, array(Getopt::NO_ARGUMENT, Getopt::OPTIONAL_ARGUMENT, Getopt::REQUIRED_ARGUMENT), true)) {
-            throw new \InvalidArgumentException("Option mode must be one of "
-                ."Getopt::NO_ARGUMENT, Getopt::OPTIONAL_ARGUMENT and Getopt::REQUIRED_ARGUMENT");
+        $valid_modes = array(Getopt::NO_ARGUMENT, Getopt::OPTIONAL_ARGUMENT, Getopt::REQUIRED_ARGUMENT, 
+            Getopt::OPTIONAL_ARGUMENT | GetOpt::MULTIPLE_ARGUMENT, GetOpt::REQUIRED_ARGUMENT | GetOpt::MULTIPLE_ARGUMENT);
+        if (!in_array($mode, $valid_modes, true)) {
+            throw new \InvalidArgumentException("Option mode must be Getopt::OPTIONAL_ARGUMENT or Getopt::REQUIRED_ARGUMENT"
+                ."optinally bitwise-ORed with GetOpt::MULTIPLE_ARGUMENT, or Getopt::NO_ARGUMENT.");
         }
         $this->mode = $mode;
     }

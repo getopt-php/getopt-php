@@ -41,6 +41,12 @@ class OptionTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('InvalidArgumentException');
         new Option(null, 'a', Getopt::REQUIRED_ARGUMENT);
     }
+    
+    public function testConstructMultipleNoArgument()
+    {
+      $this->setExpectedException('InvalidArgumentException');
+      new Option('a', null, Getopt::NO_ARGUMENT | Getopt::MULTIPLE_ARGUMENT);
+    }
 
     public function testSetArgument()
     {

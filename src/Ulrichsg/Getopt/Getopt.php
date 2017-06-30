@@ -15,6 +15,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     const NO_ARGUMENT = 0;
     const REQUIRED_ARGUMENT = 1;
     const OPTIONAL_ARGUMENT = 2;
+    const MULTIPLE_ARGUMENT = 4;
 
     /** @var OptionParser */
     private $optionParser;

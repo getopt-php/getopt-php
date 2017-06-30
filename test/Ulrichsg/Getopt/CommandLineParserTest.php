@@ -359,4 +359,16 @@ class CommandLineParserTest extends \PHPUnit_Framework_TestCase
         $parser = new CommandLineParser(array($option));
         $parser->parse('-a nonnumeric');
     }
+    
+    public function testParseMultipleArgument() 
+    {
+      $parser = new CommandLineParser(array(
+          new Option('a', null, Getopt::REQUIRED_ARGUMENT | Getopt::MULTIPLE_ARGUMENT)
+      ));
+      $parser->parse('-a str1 -a str2');
+      $options = $parser->getOptions();
+      $this->assertCount(2, $options['a']);
+      $this->assertSame('str1', $options['a'][0]);
+      $this->assertSame('str2', $options['a'][1]);
+    }
 }
