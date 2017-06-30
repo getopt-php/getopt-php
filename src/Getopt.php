@@ -1,6 +1,6 @@
 <?php
 
-namespace tflori\Getopt;
+namespace ulrichsg\Getopt;
 
 /**
  * Getopt.PHP allows for easy processing of command-line arguments.

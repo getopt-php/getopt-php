@@ -1,6 +1,6 @@
 <?php
 
-namespace tflori\Getopt;
+namespace ulrichsg\Getopt;
 
 class Argument
 {

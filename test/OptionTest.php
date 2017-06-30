@@ -1,6 +1,6 @@
 <?php
 
-namespace tflori\Getopt;
+namespace ulrichsg\Getopt;
 
 class OptionTest extends \PHPUnit_Framework_TestCase
 {
