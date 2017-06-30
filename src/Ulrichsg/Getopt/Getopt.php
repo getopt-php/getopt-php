@@ -116,8 +116,9 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      * when the arguments are not well-formed or do not conform to the options passed by the user.
      *
      * @param mixed $arguments optional ARGV array or space separated string
+     * @param bool $strict True to throw "Option X is unknown" exception, False to allow unknown options
      */
-    public function parse($arguments = null)
+    public function parse($arguments = null, $strict = true)
     {
         $this->options = array();
         if (!isset($arguments)) {
@@ -129,7 +130,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
             $arguments = explode(' ', $arguments);
         }
 
-        $parser = new CommandLineParser($this->optionList);
+        $parser = new CommandLineParser($this->optionList, $strict);
         $parser->parse($arguments);
         $this->options = $parser->getOptions();
         $this->operands = $parser->getOperands();
