@@ -17,11 +17,11 @@ Features
 Documentation
 -------------
 
-* [Documentation for the current version (2.0+)](http://ulrichsg.github.io/getopt-php/)
+* [Documentation for the current version (2.0+)](https://getopt-php.github.io/getopt-php/)
 
 License
 -------
 
 Getopt.PHP is published under the [MIT License](http://www.opensource.org/licenses/mit-license.php).
 
-[![Build Status](https://travis-ci.org/tflori/getopt-php.png)](https://travis-ci.org/tflori/getopt-php)
+[![Build Status](https://travis-ci.org/getopt-php/getopt-php.png)](https://travis-ci.org/getopt-php/getopt-php)
