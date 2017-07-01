@@ -1,6 +1,6 @@
 <?php
 
-namespace ulrichsg\Getopt;
+namespace Ulrichsg\Getopt;
 
 /**
  * Getopt.PHP allows for easy processing of command-line arguments.

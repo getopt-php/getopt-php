@@ -1,6 +1,6 @@
 <?php
 
-namespace ulrichsg\Getopt;
+namespace Ulrichsg\Getopt;
 
 class ArgumentTest extends \PHPUnit_Framework_TestCase
 {

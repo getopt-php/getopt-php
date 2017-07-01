@@ -22,7 +22,7 @@
     },
     "autoload": {
         "psr-4": {
-            "ulrichsg\\Getopt\\": "src"
+            "Ulrichsg\\Getopt\\": "src"
         }
     }
 }
