@@ -17,7 +17,8 @@ Features
 Documentation
 -------------
 
-* [Documentation for the current version (2.0+)](https://getopt-php.github.io/getopt-php/)
+* [Documentation for the current version (2.0+)](http://getopt-php/.github.io/getopt-php/)
+* [Legacy documentation (1.4)](https://github.com/getopt-php/getopt-php/blob/1.4.1/README.markdown)
 
 License
 -------
