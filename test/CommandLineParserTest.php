@@ -317,7 +317,7 @@ class CommandLineParserTest extends \PHPUnit_Framework_TestCase
         $operands = $parser->getOperands();
         $this->assertCount(0, $operands);
     }
-    
+
     public function testSingleHyphenOperand()
     {
         $parser = new CommandLineParser(array(
@@ -358,5 +358,91 @@ class CommandLineParserTest extends \PHPUnit_Framework_TestCase
         $option->setArgument(new Argument(null, $validation));
         $parser = new CommandLineParser(array($option));
         $parser->parse('-a nonnumeric');
+    }
+
+    public function testStringWithSingleQuotes()
+    {
+        $parser = new CommandLineParser(array(
+            new Option('a', 'optA', Getopt::REQUIRED_ARGUMENT),
+        ));
+
+        $parser->parse('-a \'the value\'');
+        $options = $parser->getOptions();
+
+        self::assertSame('the value', $options['a']);
+    }
+
+    public function testStringWithDoubleQuotes()
+    {
+        $parser = new CommandLineParser(array(
+            new Option('a', 'optA', Getopt::REQUIRED_ARGUMENT),
+        ));
+
+        $parser->parse('-a "the value"');
+        $options = $parser->getOptions();
+
+        self::assertSame('the value', $options['a']);
+    }
+
+    public function testSingleQuotesInString()
+    {
+        $parser = new CommandLineParser(array(
+            new Option('a', 'optA', Getopt::REQUIRED_ARGUMENT),
+        ));
+
+        $parser->parse('-a "the \'"');
+        $options = $parser->getOptions();
+
+        self::assertSame('the \'', $options['a']);
+    }
+
+    public function testDoubleQuotesInString()
+    {
+        $parser = new CommandLineParser(array(
+            new Option('a', 'optA', Getopt::REQUIRED_ARGUMENT),
+        ));
+
+        $parser->parse('-a \'the "\'');
+        $options = $parser->getOptions();
+
+        self::assertSame('the "', $options['a']);
+    }
+
+    public function testQuoteConcatenation()
+    {
+        $parser = new CommandLineParser(array(
+            new Option('a', 'optA', Getopt::REQUIRED_ARGUMENT),
+            new Option('b', 'optB', Getopt::REQUIRED_ARGUMENT),
+        ));
+
+        $parser->parse('-a \'this uses \'"\'"\' inside single quote\' -b "this uses "\'"\'" inside double quote"');
+        $options = $parser->getOptions();
+
+        self::assertSame('this uses \' inside single quote', $options['a']);
+        self::assertSame('this uses " inside double quote', $options['b']);
+    }
+
+    public function testLinefeedAsSeparator()
+    {
+        $parser = new CommandLineParser(array(
+            new Option('a', 'optA', Getopt::REQUIRED_ARGUMENT),
+        ));
+
+        $parser->parse("-a\nvalue");
+        $options = $parser->getOptions();
+
+        self::assertSame('value', $options['a']);
+    }
+
+    public function testTabAsSeparator()
+    {
+        $parser = new CommandLineParser(array(
+            new Option('a', 'optA', Getopt::REQUIRED_ARGUMENT),
+        ));
+
+        $parser->parse("-a\tvalue");
+        $options = $parser->getOptions();
+
+        self::assertSame('value', $options['a']);
     }
 }

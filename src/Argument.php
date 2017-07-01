@@ -4,6 +4,8 @@ namespace Ulrichsg\Getopt;
 
 class Argument
 {
+    const CLASSNAME = __CLASS__;
+
     /** @var string */
     private $default;
     /** @var callable */

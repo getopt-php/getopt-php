@@ -7,6 +7,8 @@ namespace Ulrichsg\Getopt;
  */
 class Option
 {
+    const CLASSNAME = __CLASS__;
+
     private $short;
     private $long;
     private $mode;

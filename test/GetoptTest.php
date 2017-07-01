@@ -87,8 +87,7 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
 
     public function testParseUsesGlobalArgvWhenNoneGiven()
     {
-        global $argv;
-        $argv = array('foo.php', '-a');
+        $_SERVER['argv'] = array('foo.php', '-a');
 
         $getopt = new Getopt('a');
         $getopt->parse();
@@ -181,7 +180,15 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
     public function testHelpTextNoParse()
     {
         $getopt = new Getopt();
-        $expected = "Usage:  [options] [operands]\nOptions:\n";
+        $expected = "Usage:  [options] [operands]\n";
+        $this->assertSame($expected, $getopt->getHelpText());
+    }
+
+    public function testHelpTextWithCustomScriptName()
+    {
+        $getopt = new Getopt();
+        $getopt->setScriptName('test');
+        $expected = "Usage: test [options] [operands]\n";
         $this->assertSame($expected, $getopt->getHelpText());
     }
 
@@ -191,9 +198,9 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
         
         $getopt = new Getopt();
         $getopt->setBanner("My custom Banner %s\n");
-        $this->assertSame("My custom Banner \nOptions:\n", $getopt->getHelpText());
+        $this->assertSame("My custom Banner \n", $getopt->getHelpText());
 
         $getopt->parse('');
-        $this->assertSame("My custom Banner $script\nOptions:\n", $getopt->getHelpText());
+        $this->assertSame("My custom Banner $script\n", $getopt->getHelpText());
     }
 }
