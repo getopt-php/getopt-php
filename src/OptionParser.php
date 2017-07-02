@@ -14,7 +14,8 @@ class OptionParser
      *
      * @param int $defaultMode will be assigned to options when no mode is given for them.
      */
-    public function __construct($defaultMode) {
+    public function __construct($defaultMode)
+    {
         $this->defaultMode = $defaultMode;
     }
 
@@ -30,22 +31,24 @@ class OptionParser
         if (!mb_strlen($string)) {
             throw new \InvalidArgumentException('Option string must not be empty');
         }
-        $options = array();
-        $eol = mb_strlen($string) - 1;
+        $options        = array();
+        $eol            = mb_strlen($string) - 1;
         $nextCanBeColon = false;
         for ($i = 0; $i <= $eol; ++$i) {
             $ch = $string[$i];
             if (!preg_match('/^[A-Za-z0-9]$/', $ch)) {
                 $colon = $nextCanBeColon ? " or ':'" : '';
-                throw new \InvalidArgumentException("Option string is not well formed: "
-                    ."expected a letter$colon, found '$ch' at position ".($i + 1));
+                throw new \InvalidArgumentException(
+                    "Option string is not well formed: "
+                    . "expected a letter$colon, found '$ch' at position " . ($i + 1)
+                );
             }
             if ($i == $eol || $string[$i + 1] != ':') {
-                $options[] = new Option($ch, null, Getopt::NO_ARGUMENT);
+                $options[]      = new Option($ch, null, Getopt::NO_ARGUMENT);
                 $nextCanBeColon = true;
             } elseif ($i < $eol - 1 && $string[$i + 2] == ':') {
-                $options[] = new Option($ch, null, Getopt::OPTIONAL_ARGUMENT);
-                $i += 2;
+                $options[]      = new Option($ch, null, Getopt::OPTIONAL_ARGUMENT);
+                $i              += 2;
                 $nextCanBeColon = false;
             } else {
                 $options[] = new Option($ch, null, Getopt::REQUIRED_ARGUMENT);
@@ -59,9 +62,9 @@ class OptionParser
     /**
      * Processes an option array. The array elements can either be Option objects or arrays conforming to the format
      * (short, long, mode [, description [, default]]). See documentation for details.
-	 *
-	 * Developer note: Please don't add any further elements to the array. Future features should be configured only
-	 * through the Option class's methods.
+     *
+     * Developer note: Please don't add any further elements to the array. Future features should be configured only
+     * through the Option class's methods.
      *
      * @param array $array
      * @return Option[]
@@ -81,7 +84,6 @@ class OptionParser
             } else {
                 throw new \InvalidArgumentException("Invalid option type, must be Option or array");
             }
-
         }
         return $options;
     }
@@ -132,6 +134,6 @@ class OptionParser
             $mode = $row[1];
         }
 
-        return array($short, $long, $mode);
+        return array( $short, $long, $mode );
     }
 }
