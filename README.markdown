@@ -13,6 +13,7 @@ Features
 * Options may take optional or mandatory arguments
 * Two alternative notations for long options with arguments: `--option value` and `--option=value`
 * Collapsed short options with mandatory argument at the end (eg. `-ab 1` instead of `-a -b 1`)
+* Quoted arguments (eg. `--path "/some path/with spcaces"`)
 
 Documentation
 -------------

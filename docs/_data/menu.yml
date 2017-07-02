@@ -1,0 +1,20 @@
+About: /
+Syntax: /syntax.html
+Installation: /installation.html
+
+Basic Usage:
+  index: /basic/
+  sub:
+    Specifying Options: /basic/specifying-options.html
+    Retrieving Values: /basic/retrieving-values.html
+    Usage Information: /basic/usage-information.html
+    Example code: /basic/example-code.html
+
+Advanced Features:
+  index: /advanced/
+  sub:
+    Option Descriptions: /advanced/option-descriptions.html
+    Default Values: /advanced/default-values.html
+    Argument Validation: /advanced/argument-validation.html
+
+Development: /development.html
