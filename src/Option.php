@@ -19,10 +19,11 @@ class Option
      * Creates a new option.
      *
      * @param string $short the option's short name (a single letter or digit) or null for long-only options
-     * @param string $long the option's long name (a string of 2+ letter/digit/_/- characters, starting with a letter
-     *                     or digit) or null for short-only options
-     * @param int $mode whether the option can/must have an argument (one of the constants defined in the Getopt class)
-     *                  (optional, defaults to no argument)
+     * @param string $long  the option's long name (a string of 2+ letter/digit/_/- characters, starting with a letter
+     *                      or digit) or null for short-only options
+     * @param int    $mode  whether the option can/must have an argument (one of the constants defined in the Getopt
+     *                      class)
+     *                      (optional, defaults to no argument)
      * @throws \InvalidArgumentException if both short and long name are null
      */
     public function __construct($short, $long, $mode = Getopt::NO_ARGUMENT)
@@ -48,31 +49,31 @@ class Option
         return $this;
     }
 
-	/**
-	 * Defines a default value for the option.
-	 *
-	 * @param mixed $value
+    /**
+     * Defines a default value for the option.
+     *
+     * @param mixed $value
      * @return Option this object (for chaining calls)
-	 */
-	public function setDefaultValue($value)
-	{
-		$this->argument->setDefaultValue($value);
-		return $this;
-	}
+     */
+    public function setDefaultValue($value)
+    {
+        $this->argument->setDefaultValue($value);
+        return $this;
+    }
 
-	/**
-	 * Defines a validation function for the option.
-	 *
-	 * @param callable $function
-	 * @return Option this object (for chaining calls)
-	 */
-	public function setValidation($function)
-	{
-		$this->argument->setValidation($function);
-		return $this;
-	}
+    /**
+     * Defines a validation function for the option.
+     *
+     * @param callable $function
+     * @return Option this object (for chaining calls)
+     */
+    public function setValidation($function)
+    {
+        $this->argument->setValidation($function);
+        return $this;
+    }
 
-	/**
+    /**
      * Sets the argument object directly.
      *
      * @param Argument $arg
@@ -120,21 +121,22 @@ class Option
 
     /**
      * Retrieve the argument object
-     * 
+     *
      * @return Argument
      */
     public function getArgument()
     {
         return $this->argument;
     }
-    
+
     /**
      * Fluent interface for constructor so options can be added during construction
+     *
      * @see Options::__construct()
      */
     public static function create($short, $long, $mode = Getopt::NO_ARGUMENT)
     {
-    	return new self($short, $long, $mode);
+        return new self($short, $long, $mode);
     }
 
     private function setShort($short)
@@ -155,9 +157,16 @@ class Option
 
     private function setMode($mode)
     {
-        if (!in_array($mode, array(Getopt::NO_ARGUMENT, Getopt::OPTIONAL_ARGUMENT, Getopt::REQUIRED_ARGUMENT), true)) {
-            throw new \InvalidArgumentException("Option mode must be one of "
-                ."Getopt::NO_ARGUMENT, Getopt::OPTIONAL_ARGUMENT and Getopt::REQUIRED_ARGUMENT");
+        if (!in_array(
+            $mode,
+            array( Getopt::NO_ARGUMENT, Getopt::OPTIONAL_ARGUMENT, Getopt::REQUIRED_ARGUMENT ),
+            true
+        )
+        ) {
+            throw new \InvalidArgumentException(
+                "Option mode must be one of "
+                . "Getopt::NO_ARGUMENT, Getopt::OPTIONAL_ARGUMENT and Getopt::REQUIRED_ARGUMENT"
+            );
         }
         $this->mode = $mode;
     }

@@ -56,17 +56,17 @@ class OptionTest extends \PHPUnit_Framework_TestCase
         $option->setArgument(new Argument());
     }
 
-	public function testSetDefaultValue()
-	{
-		$option = new Option('a', null, Getopt::OPTIONAL_ARGUMENT);
-		$this->assertEquals($option, $option->setDefaultValue(10));
-		$this->assertEquals(10, $option->getArgument()->getDefaultValue());
-	}
+    public function testSetDefaultValue()
+    {
+        $option = new Option('a', null, Getopt::OPTIONAL_ARGUMENT);
+        $this->assertEquals($option, $option->setDefaultValue(10));
+        $this->assertEquals(10, $option->getArgument()->getDefaultValue());
+    }
 
-	public function testSetValidation()
-	{
-		$option = new Option('a', null, Getopt::OPTIONAL_ARGUMENT);
-		$this->assertEquals($option, $option->setValidation('is_numeric'));
-		$this->assertTrue($option->getArgument()->hasValidation());
-	}
+    public function testSetValidation()
+    {
+        $option = new Option('a', null, Getopt::OPTIONAL_ARGUMENT);
+        $this->assertEquals($option, $option->setValidation('is_numeric'));
+        $this->assertTrue($option->getArgument()->hasValidation());
+    }
 }

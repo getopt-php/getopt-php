@@ -109,7 +109,8 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         $this->optionList = array_values($mergedList);
     }
 
-    protected function optionsConflict(Option $option1, Option $option2) {
+    protected function optionsConflict(Option $option1, Option $option2)
+    {
         if ((is_null($option1->short()) && is_null($option2->short()))
                 || (is_null($option1->long()) && is_null($option2->long()))) {
             return false;
