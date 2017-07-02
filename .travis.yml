@@ -19,4 +19,11 @@ cache:
     - $HOME/.composer/cache
 
 before_script:
- - composer install
+  - composer install --no-interaction
+  - composer require satooshi/php-coveralls:~0.6@stable
+  - mkdir -p build/logs
+
+script:
+  - composer code-style
+  - vendor/bin/phpunit -c phpunit.xml --coverage-clover=build/logs/clover.xml --coverage-text
+  - sh -c 'if [ "$TRAVIS_PHP_VERSION" = "7.0" ]; then php vendor/bin/coveralls -v; fi;'
