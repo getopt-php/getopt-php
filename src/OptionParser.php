@@ -1,6 +1,6 @@
 <?php
 
-namespace Ulrichsg\Getopt;
+namespace GetOpt;
 
 /**
  * Converts user-given option specifications into Option objects.

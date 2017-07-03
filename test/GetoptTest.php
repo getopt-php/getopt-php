@@ -1,6 +1,6 @@
 <?php
 
-namespace Ulrichsg\Getopt;
+namespace GetOpt;
 
 class GetoptTest extends \PHPUnit_Framework_TestCase
 {

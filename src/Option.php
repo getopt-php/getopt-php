@@ -1,6 +1,6 @@
 <?php
 
-namespace Ulrichsg\Getopt;
+namespace GetOpt;
 
 /**
  * Represents an option that Getopt accepts.

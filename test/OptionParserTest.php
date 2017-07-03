@@ -1,6 +1,6 @@
 <?php
 
-namespace Ulrichsg\Getopt;
+namespace GetOpt;
 
 class OptionParserTest extends \PHPUnit_Framework_TestCase
 {

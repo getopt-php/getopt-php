@@ -1,6 +1,6 @@
 <?php
 
-namespace Ulrichsg\Getopt;
+namespace GetOpt;
 
 /**
  * Parses command line arguments according to a list of allowed options.
