@@ -332,6 +332,60 @@ class CommandLineParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('-', $operands[0]);
     }
 
+    public function testOptionsAfterOperands()
+    {
+        $parser = new CommandLineParser(array(
+            new Option('a', null, Getopt::REQUIRED_ARGUMENT),
+            new Option('b', null, Getopt::REQUIRED_ARGUMENT)
+        ));
+
+        $parser->parse('-a 42 operand -b "don\'t panic"');
+
+        $this->assertEquals(array(
+            'a' => 42,
+            'b' => 'don\'t panic'
+        ), $parser->getOptions());
+        $this->assertEquals(array('operand'), $parser->getOperands());
+    }
+
+    public function testEmptyOperandsAndOptionsWithString()
+    {
+        $parser = new CommandLineParser(array(
+            new Option('a', null, Getopt::REQUIRED_ARGUMENT)
+        ));
+
+        $parser->parse('-a "" ""');
+
+        $this->assertSame(array('a' => ''), $parser->getOptions());
+        $this->assertSame(array(''), $parser->getOperands());
+    }
+
+    public function testEmptyOperandsAndOptionsWithArray()
+    {
+        $parser = new CommandLineParser(array(
+            new Option('a', null, Getopt::REQUIRED_ARGUMENT)
+        ));
+
+        // this is how we get it in $_SERVER['argv']
+        $parser->parse(array(
+            '-a',
+            '',
+            ''
+        ));
+
+        $this->assertSame(array('a' => ''), $parser->getOptions());
+        $this->assertSame(array(''), $parser->getOperands());
+    }
+
+    public function testSpaceOperand()
+    {
+        $parser = new CommandLineParser(array());
+
+        $parser->parse('" "');
+
+        $this->assertSame(array(' '), $parser->getOperands());
+    }
+
     public function testParseWithArgumentValidation()
     {
         $validation = 'is_numeric';
