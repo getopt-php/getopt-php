@@ -12,6 +12,14 @@ class OptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(Getopt::OPTIONAL_ARGUMENT, $option->mode());
     }
 
+    public function testCreate()
+    {
+        $option = Option::create('a', 'az-AZ09_', Getopt::OPTIONAL_ARGUMENT);
+        $this->assertEquals('a', $option->short());
+        $this->assertEquals('az-AZ09_', $option->long());
+        $this->assertEquals(Getopt::OPTIONAL_ARGUMENT, $option->mode());
+    }
+
     public function testConstructEmptyOption()
     {
         $this->setExpectedException('InvalidArgumentException');
