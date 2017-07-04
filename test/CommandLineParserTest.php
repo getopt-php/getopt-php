@@ -332,6 +332,22 @@ class CommandLineParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('-', $operands[0]);
     }
 
+    public function testOptionsAfterOperands()
+    {
+        $parser = new CommandLineParser(array(
+            new Option('a', null, Getopt::REQUIRED_ARGUMENT),
+            new Option('b', null, Getopt::REQUIRED_ARGUMENT)
+        ));
+
+        $parser->parse('-a 42 operand -b "don\'t panic"');
+
+        $this->assertEquals(array(
+            'a' => 42,
+            'b' => 'don\'t panic'
+        ), $parser->getOptions());
+        $this->assertEquals(array('operand'), $parser->getOperands());
+    }
+
     public function testEmptyOperandsAndOptionsWithString()
     {
         $parser = new CommandLineParser(array(

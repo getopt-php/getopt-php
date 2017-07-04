@@ -33,17 +33,23 @@ class CommandLineParser
         if (!is_array($arguments)) {
             $arguments = $this->parseArgumentString($arguments);
         }
-        $operands = array();
+        $operands = &$this->operands;
         $numArgs = count($arguments);
         for ($i = 0; $i < $numArgs; ++$i) {
             $arg = $arguments[$i];
 
-            if (($arg === '--') || ($arg === '-') || (mb_substr($arg, 0, 1) !== '-')) {
-                // no more options, treat the remaining arguments as operands
-                $firstOperandIndex = ($arg == '--') ? $i + 1 : $i;
-                $operands = array_slice($arguments, $firstOperandIndex);
+            if ($arg === '--') {
+                // the rest are operands
+                $operands = array_merge($operands, array_slice($arguments, $i + 1));
                 break;
             }
+
+            if (empty($arg) || $arg === '-' || $arg[0] !== '-') {
+                // this is an operand
+                $operands[] = $arg;
+                continue;
+            }
+
             if (mb_substr($arg, 0, 2) == '--') {
                 $this->addLongOption($arguments, $i);
             } else {
@@ -52,13 +58,6 @@ class CommandLineParser
         } // endfor
 
         $this->addDefaultValues();
-
-        // remove '--' from operands array
-        foreach ($operands as $operand) {
-            if ($operand !== '--') {
-                $this->operands[] = $operand;
-            }
-        }
     }
 
     /**
