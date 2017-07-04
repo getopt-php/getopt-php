@@ -36,10 +36,8 @@ class CommandLineParser
         $operands = array();
         $numArgs = count($arguments);
         for ($i = 0; $i < $numArgs; ++$i) {
-            $arg = trim($arguments[$i]);
-            if (empty($arg)) {
-                continue;
-            }
+            $arg = $arguments[$i];
+
             if (($arg === '--') || ($arg === '-') || (mb_substr($arg, 0, 1) !== '-')) {
                 // no more options, treat the remaining arguments as operands
                 $firstOperandIndex = ($arg == '--') ? $i + 1 : $i;
@@ -156,7 +154,7 @@ class CommandLineParser
     {
         foreach ($this->optionList as $option) {
             if ($option->matches($string)) {
-                if ($option->mode() == Getopt::REQUIRED_ARGUMENT && !mb_strlen($value)) {
+                if ($option->mode() == Getopt::REQUIRED_ARGUMENT && $value === null) {
                     throw new \UnexpectedValueException("Option '$string' must have a value");
                 }
                 if ($option->getArgument()->hasValidation()) {
@@ -170,7 +168,7 @@ class CommandLineParser
                     $value = is_null($oldValue) ? 1 : $oldValue + 1;
                 }
                 // for optional-argument options, set value to 1 if none was given
-                $value = (mb_strlen($value) > 0) ? $value : 1;
+                $value = $value !== null ? $value : 1;
                 // add both long and short names (if they exist) to the option array to facilitate lookup
                 if ($option->short()) {
                     $this->options[$option->short()] = $value;
