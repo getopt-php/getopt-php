@@ -69,7 +69,7 @@ class OptionParser
      * @param array $array
      * @return Option
      */
-    private function parseArray(array $array)
+    public function parseArray(array $array)
     {
         $rowSize = count($array);
         if ($rowSize < 3) {

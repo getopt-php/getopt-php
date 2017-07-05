@@ -9,6 +9,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     const OPTIONAL_ARGUMENT = 2;
     const MULTIPLE_ARGUMENT = 3;
 
+    const SETTINGS_SCRIPT_NAME = 'scriptName';
     const SETTING_DEFAULT_MODE = 'defaultMode';
 
     /** @var OptionParser */
@@ -22,6 +23,9 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     /**@var Option[] */
     protected $options = [];
 
+    /** @var Option[] */
+    protected $optionMapping = [];
+
     /**
      * Creates a new Getopt object.
      *
@@ -33,6 +37,12 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      */
     public function __construct(array $settings = [])
     {
+        $this->set(
+            self::SETTINGS_SCRIPT_NAME,
+            isset($_SERVER['argv'][0]) ? $_SERVER['argv'][0] : (
+                isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : null
+            )
+        );
         foreach ($settings as $setting => $value) {
             $this->set($settings, $value);
         }
@@ -40,11 +50,17 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
 
     public function set($setting, $value)
     {
-        switch ($setting) {
-            default:
-                $this->settings[$setting] = $value;
-        }
+        $this->settings[$setting] = $value;
+//        switch ($setting) {
+//            default:
+//
+//        }
         return $this;
+    }
+
+    public function get($setting)
+    {
+        return isset($this->settings[$setting]) ? $this->settings[$setting] : null;
     }
 
     public function addOptions($options)
@@ -83,9 +99,55 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
             }
         }
 
+        if ($this->getOption($option->short()) || $this->getOption($option->long())) {
+            throw new \InvalidArgumentException('$option`s short and long name have to be unique');
+        }
+
         $this->options[] = $option;
 
         return $this;
+    }
+
+    /**
+     * Get a option by $name
+     *
+     * @param string $name Short or long name of the option
+     * @return Option
+     */
+    public function getOption($name)
+    {
+        if (!isset($this->optionMapping[$name])) {
+            $this->optionMapping[$name] = null;
+            foreach ($this->options as $option) {
+                if ($option->matches($name)) {
+                    $this->optionMapping[$name] = $option;
+                    break;
+                }
+            }
+        }
+
+        return $this->optionMapping[$name];
+    }
+
+    /**
+     * @param array|string|Arguments $arguments
+     */
+    public function process($arguments = null)
+    {
+        if ($arguments === null) {
+            $arguments = isset($_SERVER['argv']) ? array_slice($_SERVER['argv'], 1) : [];
+            $arguments = new Arguments($arguments);
+        } elseif (is_array($arguments)) {
+            $arguments = new Arguments($arguments);
+        } elseif (is_string($arguments)) {
+            $arguments = Arguments::fromString($arguments);
+        } elseif (!$arguments instanceof Arguments) {
+            throw new \InvalidArgumentException(
+                '$arguments has to be an instance of Arguments, an arguments string, an array of arguments or null'
+            );
+        }
+
+
     }
 
     /**
@@ -101,6 +163,15 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
 
         return $this->optionParser;
     }
+
+    // backward compatibility
+
+    public function setScriptName($scriptName)
+    {
+        return $this->set(self::SETTINGS_SCRIPT_NAME, $scriptName);
+    }
+
+    // array functions
 
     /**
      * Retrieve an external iterator
