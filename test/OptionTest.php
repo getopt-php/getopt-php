@@ -77,4 +77,30 @@ class OptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($option, $option->setValidation('is_numeric'));
         $this->assertTrue($option->getArgument()->hasValidation());
     }
+
+    public function testToStringWithoutArgument()
+    {
+        $option = new Option('a', null);
+        $option->setValue(null);
+        $option->setValue(null);
+
+        $this->assertSame('2', (string)$option);
+    }
+
+    public function testToStringWithArgument()
+    {
+        $option = new Option('a', null, Getopt::REQUIRED_ARGUMENT);
+        $option->setValue('valueA');
+
+        $this->assertSame('valueA', (string)$option);
+    }
+
+    public function testToStringWithMultipleArguments()
+    {
+        $option = new Option('a', null, Getopt::MULTIPLE_ARGUMENT);
+        $option->setValue('valueA');
+        $option->setValue('valueB');
+
+        $this->assertSame('valueA,valueB', (string)$option);
+    }
 }

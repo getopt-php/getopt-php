@@ -61,40 +61,43 @@ class OptionParserTest extends \PHPUnit_Framework_TestCase
         $this->parser->parseString('ab:c:::d');
     }
 
-    public function testParseArray()
+    public function provideOptionArrays()
     {
-        $options = $this->parser->parseArray(
-            array(
-                array('a', 'alpha', Getopt::OPTIONAL_ARGUMENT, 'Description', 42),
-                new Option('b', 'beta'),
-                array('c')
-            )
+        return array(
+            array(array('a', 'alpha', Getopt::OPTIONAL_ARGUMENT, 'Description', 42)),
+            array(array('b', 'beta')),
+            array(array('c')),
         );
+    }
 
-        $this->assertCount(3, $options);
-        foreach ($options as $option) {
-            $this->assertInstanceOf(Option::CLASSNAME, $option);
-            switch ($option->short()) {
-                case 'a':
-                    $this->assertEquals('alpha', $option->long());
-                    $this->assertEquals(Getopt::OPTIONAL_ARGUMENT, $option->mode());
-                    $this->assertEquals('Description', $option->getDescription());
-                    $this->assertEquals(42, $option->getArgument()->getDefaultValue());
-                    break;
-                case 'b':
-                    $this->assertEquals('beta', $option->long());
-                    $this->assertEquals(Getopt::NO_ARGUMENT, $option->mode());
-                    $this->assertEquals('', $option->getDescription());
-                    break;
-                case 'c':
-                    $this->assertNull($option->long());
-                    $this->assertEquals(Getopt::REQUIRED_ARGUMENT, $option->mode());
-                    $this->assertEquals('', $option->getDescription());
-                    $this->assertFalse($option->getArgument()->hasDefaultValue());
-                    break;
-                default:
-                    $this->fail('Unexpected option: '.$option->short());
-            }
+    /**
+     * @dataProvider provideOptionArrays
+     */
+    public function testParseArray($array)
+    {
+        $option = $this->parser->parseArray($array);
+
+        $this->assertInstanceOf(Option::CLASSNAME, $option);
+        switch ($option->short()) {
+            case 'a':
+                $this->assertEquals('alpha', $option->long());
+                $this->assertEquals(Getopt::OPTIONAL_ARGUMENT, $option->mode());
+                $this->assertEquals('Description', $option->getDescription());
+                $this->assertEquals(42, $option->getArgument()->getDefaultValue());
+                break;
+            case 'b':
+                $this->assertEquals('beta', $option->long());
+                $this->assertEquals(Getopt::REQUIRED_ARGUMENT, $option->mode());
+                $this->assertEquals('', $option->getDescription());
+                break;
+            case 'c':
+                $this->assertNull($option->long());
+                $this->assertEquals(Getopt::REQUIRED_ARGUMENT, $option->mode());
+                $this->assertEquals('', $option->getDescription());
+                $this->assertFalse($option->getArgument()->hasDefaultValue());
+                break;
+            default:
+                $this->fail('Unexpected option: '.$option->short());
         }
     }
 

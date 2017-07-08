@@ -14,6 +14,7 @@ class Option
     private $mode;
     private $description = '';
     private $argument;
+    private $value = null;
 
     /**
      * Creates a new option.
@@ -26,7 +27,7 @@ class Option
      *                      (optional, defaults to no argument)
      * @throws \InvalidArgumentException if both short and long name are null
      */
-    public function __construct($short, $long, $mode = Getopt::NO_ARGUMENT)
+    public function __construct($short, $long = null, $mode = Getopt::NO_ARGUMENT)
     {
         if (!$short && !$long) {
             throw new \InvalidArgumentException("The short and long name may not both be empty");
@@ -96,6 +97,10 @@ class Option
      */
     public function matches($string)
     {
+        if ($string === null) {
+            return false;
+        }
+
         return ($string === $this->short) || ($string === $this->long);
     }
 
@@ -129,6 +134,55 @@ class Option
         return $this->argument;
     }
 
+    public function setValue($value = null)
+    {
+        if ($value === null && in_array($this->mode, [Getopt::REQUIRED_ARGUMENT, Getopt::MULTIPLE_ARGUMENT])) {
+            throw new \UnexpectedValueException(sprintf(
+                'Option \'%s\' must have a value',
+                $this->long() ?: $this->short()
+            ));
+        }
+
+        if ($value !== null && $this->mode !== Getopt::NO_ARGUMENT) {
+            if ($this->getArgument()->hasValidation() && !$this->getArgument()->validates($value)) {
+                throw new \UnexpectedValueException(sprintf(
+                    'Option \'%s\' has an invalid value',
+                    $this->long() ?: $this->short()
+                ));
+            }
+
+            if ($this->mode === Getopt::MULTIPLE_ARGUMENT) {
+                $this->value = $this->value === null ? array($value) : array_merge($this->value, array($value));
+            } else {
+                $this->value = $value;
+            }
+        } elseif ($this->mode() !== Getopt::OPTIONAL_ARGUMENT || !is_string($this->value)) {
+            $this->value = $this->value === null ? 1 : $this->value + 1;
+        }
+    }
+
+    public function getValue()
+    {
+        switch ($this->mode) {
+            case Getopt::OPTIONAL_ARGUMENT:
+            case Getopt::REQUIRED_ARGUMENT:
+                return $this->value === null ? $this->argument->getDefaultValue() : $this->value;
+
+            case Getopt::MULTIPLE_ARGUMENT:
+                return $this->value === null ? array($this->argument->getDefaultValue()) : $this->value;
+
+            case Getopt::NO_ARGUMENT:
+            default:
+                return $this->value;
+        }
+    }
+
+    public function __toString()
+    {
+        $value = $this->getValue();
+        return !is_array($value) ? $value . '' : implode(',', $value);
+    }
+
     /**
      * Fluent interface for constructor so options can be added during construction
      *
@@ -157,16 +211,19 @@ class Option
 
     private function setMode($mode)
     {
-        if (!in_array(
-            $mode,
-            array( Getopt::NO_ARGUMENT, Getopt::OPTIONAL_ARGUMENT, Getopt::REQUIRED_ARGUMENT ),
-            true
-        )
-        ) {
-            throw new \InvalidArgumentException(
-                "Option mode must be one of "
-                . "Getopt::NO_ARGUMENT, Getopt::OPTIONAL_ARGUMENT and Getopt::REQUIRED_ARGUMENT"
-            );
+        if (!in_array($mode, array(
+            Getopt::NO_ARGUMENT,
+            Getopt::OPTIONAL_ARGUMENT,
+            Getopt::REQUIRED_ARGUMENT,
+            Getopt::MULTIPLE_ARGUMENT,
+        ), true)) {
+            throw new \InvalidArgumentException(sprintf(
+                'Option mode must be one of %s, %s, %s and %s',
+                'Getopt::NO_ARGUMENT',
+                'Getopt::OPTIONAL_ARGUMENT',
+                'Getopt::REQUIRED_ARGUMENT',
+                'Getopt::MULTIPLE_ARGUMENT'
+            ));
         }
         $this->mode = $mode;
     }
