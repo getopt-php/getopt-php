@@ -20,9 +20,9 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     protected $help;
 
     /** @var array */
-    protected $settings = [
+    protected $settings = array(
         self::SETTING_DEFAULT_MODE => self::NO_ARGUMENT
-    ];
+    );
 
     /**@var Option[] */
     protected $options = array();
