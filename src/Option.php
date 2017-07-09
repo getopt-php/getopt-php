@@ -136,7 +136,7 @@ class Option
 
     public function setValue($value = null)
     {
-        if ($value === null && in_array($this->mode, [Getopt::REQUIRED_ARGUMENT, Getopt::MULTIPLE_ARGUMENT])) {
+        if ($value === null && in_array($this->mode, array(Getopt::REQUIRED_ARGUMENT, Getopt::MULTIPLE_ARGUMENT))) {
             throw new \UnexpectedValueException(sprintf(
                 'Option \'%s\' must have a value',
                 $this->long() ?: $this->short()
