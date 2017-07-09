@@ -158,9 +158,9 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
 
         $expected = "Usage: $script [options] [operands]\n";
         $expected .= "Options:\n";
-        $expected .= "  -a, --alpha             Short and long options with no argument\n";
-        $expected .= "  --beta [<arg>]          Long option only with an optional argument\n";
-        $expected .= "  -c <arg>                Short option only with a mandatory argument\n";
+        $expected .= "  -a, --alpha     Short and long options with no argument     \n";
+        $expected .= "  --beta [<arg>]  Long option only with an optional argument  \n";
+        $expected .= "  -c <arg>        Short option only with a mandatory argument \n";
 
         $this->assertEquals($expected, $getopt->getHelpText());
     }
@@ -178,9 +178,9 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
 
         $expected = "Usage: $script [options] [operands]\n";
         $expected .= "Options:\n";
-        $expected .= "  -a, --alpha             \n";
-        $expected .= "  --beta [<arg>]          \n";
-        $expected .= "  -c <arg>                \n";
+        $expected .= "  -a, --alpha      \n";
+        $expected .= "  --beta [<arg>]   \n";
+        $expected .= "  -c <arg>         \n";
 
         $this->assertEquals($expected, $getopt->getHelpText());
     }

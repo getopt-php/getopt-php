@@ -22,23 +22,23 @@ class Arguments
      *
      * Stores operands using $addOperand callback.
      *
-     * @param Getopt   $getopt
-     * @param callable $addOperand
+     * @param Getopt $getopt
+     * @param string $operands
      * @return bool
      */
-    public function process(Getopt $getopt, callable $addOperand)
+    public function process(Getopt $getopt, &$operands)
     {
         while (($arg = array_shift($this->arguments)) !== null) {
             if ($this->isMeta($arg)) {
                 // everything from here are operands
                 foreach ($this->arguments as $argument) {
-                    $addOperand($argument);
+                    $operands[] = $argument;
                 }
                 break;
             }
 
             if ($this->isValue($arg)) {
-                $addOperand($arg);
+                $operands[] = $arg;
             }
 
             if ($this->isLongOption($arg)) {

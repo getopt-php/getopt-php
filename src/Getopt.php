@@ -135,23 +135,23 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
             );
         }
 
-        $arguments->process($this, function ($operand) {
-            $this->operands[] = $operand;
-        });
+        $arguments->process($this, $this->operands);
     }
 
     /**
      * Returns an usage information text generated from the given options.
-     * @param int $padding Number of characters to pad output of options to
+     *
+     * The $padding got removed due to refactoring. Help is an own class now. You can change the layout by using a
+     * custom template.
+     *
      * @return string
      */
-    public function getHelpText($padding = 25)
+    public function getHelpText()
     {
-        return $this->getHelp()->getText(
+        return $this->getHelp()->render(
             $this->get(self::SETTING_SCRIPT_NAME),
             $this->options,
-            $this->get(self::SETTING_BANNER),
-            $padding
+            $this->get(self::SETTING_BANNER)
         );
     }
 
@@ -196,7 +196,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      */
     public function getOptions()
     {
-        $result = [];
+        $result = array();
 
         foreach ($this->options as $option) {
             $value = $option->getValue();
@@ -305,7 +305,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
 
     public function getIterator()
     {
-        $result = [];
+        $result = array();
 
         foreach ($this->options as $option) {
             if ($value = $option->getValue()) {

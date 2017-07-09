@@ -8,10 +8,7 @@ class Help
     protected $usageTemplate;
 
     /** @var string */
-    protected $optionTemplate;
-
-    /** @var int */
-    protected $padding = 25;
+    protected $optionsTemplate;
 
     /**
      * Create a Help object
@@ -21,7 +18,7 @@ class Help
     public function __construct(array $settings = array())
     {
         $this->usageTemplate = __DIR__ . '/../resources/usage.php';
-        $this->optionTemplate = __DIR__ . '/../resources/option.php';
+        $this->optionsTemplate = __DIR__ . '/../resources/options.php';
     }
 
     /**
@@ -30,20 +27,18 @@ class Help
      * @param string $scriptName
      * @param string $options
      * @param string $banner
-     * @param string $padding
      * @return string
      */
-    public function getText($scriptName, $options, $banner = null, $padding = null)
+    public function render($scriptName, $options, $banner = null)
     {
-        $padding = $padding ?: $this->padding;
-        $usage = trim(include($this->usageTemplate));
-        $rows = array($usage);
+        $rows = array();
 
+        // we always append the usage
+        $rows = array_merge($rows, include($this->usageTemplate));
+
+        // when we have options we add them too
         if (!empty($options)) {
-            $rows[] = 'Options:';
-            foreach ($options as $option) {
-                $rows[] = include($this->optionTemplate);
-            }
+            $rows = array_merge($rows, include($this->optionsTemplate));
         }
 
         return implode(PHP_EOL, $rows) . PHP_EOL;
