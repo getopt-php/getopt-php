@@ -7,11 +7,25 @@ class Arguments
     /** @var string[] */
     protected $arguments;
 
+    /**
+     * Create an Arguments object
+     *
+     * @param array $arguments
+     */
     public function __construct(array $arguments)
     {
         $this->arguments = $arguments;
     }
 
+    /**
+     * Process the arguments for $getopt
+     *
+     * Stores operands using $addOperand callback.
+     *
+     * @param Getopt   $getopt
+     * @param callable $addOperand
+     * @return bool
+     */
     public function process(Getopt $getopt, callable $addOperand)
     {
         while (($arg = array_shift($this->arguments)) !== null) {
@@ -73,26 +87,56 @@ class Arguments
         return true;
     }
 
+    /**
+     * Check if $arg is an option
+     *
+     * @param string $arg
+     * @return bool
+     */
     protected function isOption($arg)
     {
         return !$this->isValue($arg) && !$this->isMeta($arg);
     }
 
+    /**
+     * Check if $arg is a value
+     *
+     * @param string $arg
+     * @return bool
+     */
     protected function isValue($arg)
     {
         return (empty($arg) || $arg === '-' || $arg[0] !== '-');
     }
 
+    /**
+     * Check if $arg is meta '--'
+     *
+     * @param string $arg
+     * @return bool
+     */
     protected function isMeta($arg)
     {
         return $arg && $arg === '--';
     }
 
+    /**
+     * Check if $arg is a long option
+     *
+     * @param $arg
+     * @return bool
+     */
     protected function isLongOption($arg)
     {
         return $this->isOption($arg) && $arg[1] === '-';
     }
 
+    /**
+     * Get the long option name from $arg
+     *
+     * @param string $arg
+     * @return string
+     */
     protected function longName($arg)
     {
         $name = substr($arg, 2);
@@ -100,6 +144,12 @@ class Arguments
         return $p ? substr($name, 0, $p) : $name;
     }
 
+    /**
+     * Get all short option names from $arg
+     *
+     * @param string $arg
+     * @return string[] (single character string multi byte safe)
+     */
     protected function shortNames($arg)
     {
         if (!$this->isOption($arg) || $this->isLongOption($arg)) {
@@ -111,6 +161,17 @@ class Arguments
         }, range(1, mb_strlen($arg) -1));
     }
 
+    /**
+     * Get the value for an option
+     *
+     * $name might be the short name to separate the value from the argument in `-abcppassword`.
+     *
+     * Returns the value inside $arg or the next argument when it is a value.
+     *
+     * @param string $arg
+     * @param string $name
+     * @return string
+     */
     protected function value($arg, $name = null)
     {
         $p = strpos($arg, $this->isLongOption($arg) ? '=' : $name);
@@ -138,10 +199,10 @@ class Arguments
         $argc = 0;
 
         if (empty($argsString)) {
-            return new self([]);
+            return new self(array());
         }
 
-        $state = 'n'; // states: n (normal), d (double quoted), s(single quoted)
+        $state = 'n'; // states: n (normal), d (double quoted), s (single quoted)
         for ($i = 0; $i < strlen($argsString); $i++) {
             $char = $argsString{$i};
             switch ($state) {
@@ -161,6 +222,9 @@ class Arguments
                 case 's':
                     if ($char === '\'') {
                         $state = 'n';
+                    } elseif ($char === '\\') {
+                        $i++;
+                        $argv[$argc] .= $argsString{$i};
                     } else {
                         $argv[$argc] .= $char;
                     }
@@ -169,6 +233,9 @@ class Arguments
                 case 'd':
                     if ($char === '"') {
                         $state = 'n';
+                    } elseif ($char === '\\') {
+                        $i++;
+                        $argv[$argc] .= $argsString{$i};
                     } else {
                         $argv[$argc] .= $char;
                     }

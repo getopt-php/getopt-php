@@ -307,7 +307,7 @@ class ArgumentsTest extends TestCase
 
         $this->getopt->process('-a value1 -a value2');
 
-        $this->assertEquals(['value1', 'value2'], $this->getopt->getOption('a'));
+        $this->assertEquals(array('value1', 'value2'), $this->getopt->getOption('a'));
     }
 
     public function testDoubleHyphenNotInOperands()
@@ -498,11 +498,18 @@ class ArgumentsTest extends TestCase
             new Option('b', 'optB', Getopt::REQUIRED_ARGUMENT),
         ));
 
-        $this->getopt->process('-a \'this uses \'"\'"\' inside single quote\' -b "this uses "\'"\'" inside double quote"');
+        $this->getopt->process('-a \'\'"\'"\' inside single quote\' -b ""\'"\'" inside double quote"');
         $options = $this->getopt->getOptions();
 
-        self::assertSame('this uses \' inside single quote', $options['a']);
-        self::assertSame('this uses " inside double quote', $options['b']);
+        self::assertSame('\' inside single quote', $options['a']);
+        self::assertSame('" inside double quote', $options['b']);
+    }
+
+    public function testQuoteEscaping()
+    {
+        $this->getopt->process('-- "this \\" is a double quote"');
+
+        self::assertSame('this " is a double quote', $this->getopt->getOperand(0));
     }
 
     public function testLinefeedAsSeparator()

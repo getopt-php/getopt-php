@@ -5,14 +5,34 @@ namespace GetOpt;
 class Help
 {
     /** @var string */
-    protected $usageTemplate = __DIR__ . '/../resources/usage.php';
+    protected $usageTemplate;
 
     /** @var string */
-    protected $optionTemplate = __DIR__ . '/../resources/option.php';
+    protected $optionTemplate;
 
     /** @var int */
     protected $padding = 25;
 
+    /**
+     * Create a Help object
+     *
+     * @param array $settings
+     */
+    public function __construct(array $settings = array())
+    {
+        $this->usageTemplate = __DIR__ . '/../resources/usage.php';
+        $this->optionTemplate = __DIR__ . '/../resources/option.php';
+    }
+
+    /**
+     * Get the help text for $options
+     *
+     * @param string $scriptName
+     * @param string $options
+     * @param string $banner
+     * @param string $padding
+     * @return string
+     */
     public function getText($scriptName, $options, $banner = null, $padding = null)
     {
         $padding = $padding ?: $this->padding;
