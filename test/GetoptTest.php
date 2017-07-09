@@ -40,9 +40,9 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
 
     public function testAddOptionsUseDefaultArgumentType()
     {
-        $getopt = new Getopt(null, [
+        $getopt = new Getopt(null, array(
             Getopt::SETTING_DEFAULT_MODE => Getopt::REQUIRED_ARGUMENT
-        ]);
+        ));
         $getopt->addOptions(
             array(
                 array('l', 'long')
@@ -204,7 +204,7 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
 
     public function testThrowsWithInvalidParameter()
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->setExpectedException('InvalidArgumentException');
         $getopt = new Getopt();
 
         $getopt->process(42);
@@ -220,7 +220,7 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
 
     public function testThrowsForUnparsableString()
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->setExpectedException('InvalidArgumentException');
         $getopt = new Getopt();
 
         $getopt->addOption('');
@@ -228,7 +228,7 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
 
     public function testThrowsForInvalidParameter()
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->setExpectedException('InvalidArgumentException');
         $getopt = new Getopt();
 
         $getopt->addOption(42);
@@ -247,7 +247,7 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
 
     public function testRestirctsArraySet()
     {
-        $this->setExpectedException(\LogicException::class);
+        $this->setExpectedException('LogicException');
         $getopt = new Getopt();
 
         $getopt['a'] = 'test';
@@ -255,7 +255,7 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
 
     public function testRestirctsArrayUnset()
     {
-        $this->setExpectedException(\LogicException::class);
+        $this->setExpectedException('LogicException');
         $getopt = new Getopt();
         $getopt->addOption('a');
         $getopt->process('-a');
