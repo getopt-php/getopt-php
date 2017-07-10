@@ -2,7 +2,9 @@
 
 namespace GetOpt;
 
-class OptionParserTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class OptionParserTest extends TestCase
 {
     /** @var OptionParser */
     private $parser;

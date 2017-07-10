@@ -2,7 +2,9 @@
 
 namespace GetOpt;
 
-class GetoptTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class GetoptTest extends TestCase
 {
     public function testAddOptions()
     {
@@ -63,15 +65,13 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
         $getopt->addOptions(new Option('a', 'alpha'));
     }
 
-    public function testAddOptionsOverwritesExistingOptions()
+    public function testChangeModeAfterwards()
     {
         $getopt = new Getopt(array(
-            array('a', null, Getopt::NO_ARGUMENT)
+            array('a', null, Getopt::REQUIRED_ARGUMENT)
         ));
-//        $getopt->addOptions(array(
-//            array('a', null, Getopt::NO_ARGUMENT)
-//        ));
 
+        $getopt->getOption('a', true)->setMode(Getopt::NO_ARGUMENT);
         $getopt->parse('-a foo');
 
         $this->assertEquals(1, $getopt->getOption('a'));

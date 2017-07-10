@@ -18,10 +18,10 @@ class ArgumentsTest extends TestCase
     {
         $this->getopt->process(Arguments::fromString('something'));
 
-        $this->assertCount(0, $this->getopt->getOptions());
+        self::assertCount(0, $this->getopt->getOptions());
         $operands = $this->getopt->getOperands();
-        $this->assertCount(1, $operands);
-        $this->assertEquals('something', $operands[0]);
+        self::assertCount(1, $operands);
+        self::assertEquals('something', $operands[0]);
     }
 
     public function testParseUnknownOption()
@@ -58,8 +58,8 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-ab');
 
         $options = $this->getopt->getOptions();
-        $this->assertEquals(1, $options['a']);
-        $this->assertEquals(1, $options['b']);
+        self::assertEquals(1, $options['a']);
+        self::assertEquals(1, $options['b']);
     }
 
     public function testParseCumulativeOption()
@@ -72,8 +72,8 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-a -b -a -a');
 
         $options = $this->getopt->getOptions();
-        $this->assertEquals(3, $options['a']);
-        $this->assertEquals(1, $options['b']);
+        self::assertEquals(3, $options['a']);
+        self::assertEquals(1, $options['b']);
     }
 
     public function testParseCumulativeOptionShort()
@@ -86,8 +86,8 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-abaa');
 
         $options = $this->getopt->getOptions();
-        $this->assertEquals(3, $options['a']);
-        $this->assertEquals(1, $options['b']);
+        self::assertEquals(3, $options['a']);
+        self::assertEquals(1, $options['b']);
     }
 
     public function testParseShortOptionWithArgument()
@@ -99,7 +99,7 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-a value');
 
         $options = $this->getopt->getOptions();
-        $this->assertEquals('value', $options['a']);
+        self::assertEquals('value', $options['a']);
     }
 
     public function testParseZeroArgument()
@@ -111,7 +111,7 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-a 0');
 
         $options = $this->getopt->getOptions();
-        $this->assertEquals('0', $options['a']);
+        self::assertEquals('0', $options['a']);
     }
 
     public function testParseNumericOption()
@@ -124,8 +124,8 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-a 2 -2');
 
         $options = $this->getopt->getOptions();
-        $this->assertEquals('2', $options['a']);
-        $this->assertEquals(1, $options['2']);
+        self::assertEquals('2', $options['a']);
+        self::assertEquals(1, $options['2']);
     }
 
     public function testParseCollapsedShortOptionsRequiredArgumentMissing()
@@ -147,8 +147,8 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-ab value');
 
         $options = $this->getopt->getOptions();
-        $this->assertEquals(1, $options['a']);
-        $this->assertEquals('value', $options['b']);
+        self::assertEquals(1, $options['a']);
+        self::assertEquals('value', $options['b']);
     }
 
     public function testParseNoArgumentOptionAndOperand()
@@ -159,10 +159,10 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-a b');
 
         $options = $this->getopt->getOptions();
-        $this->assertEquals(1, $options['a']);
+        self::assertEquals(1, $options['a']);
         $operands = $this->getopt->getOperands();
-        $this->assertCount(1, $operands);
-        $this->assertEquals('b', $operands[0]);
+        self::assertCount(1, $operands);
+        self::assertEquals('b', $operands[0]);
     }
 
     public function testParsedRequiredArgumentWithNoSpace()
@@ -172,7 +172,7 @@ class ArgumentsTest extends TestCase
         ));
         $this->getopt->process('-ppassword');
         $options = $this->getopt->getOptions();
-        $this->assertEquals('password', $options['p']);
+        self::assertEquals('password', $options['p']);
     }
     public function testParseCollapsedRequiredArgumentWithNoSpace()
     {
@@ -182,8 +182,8 @@ class ArgumentsTest extends TestCase
         ));
         $this->getopt->process('-vvvppassword');
         $options = $this->getopt->getOptions();
-        $this->assertEquals('password', $options['p']);
-        $this->assertEquals(3, $options['v']);
+        self::assertEquals('password', $options['p']);
+        self::assertEquals(3, $options['v']);
     }
 
     public function testParseOperandsOnly()
@@ -194,11 +194,11 @@ class ArgumentsTest extends TestCase
         ));
         $this->getopt->process('-- -a -b');
 
-        $this->assertCount(0, $this->getopt->getOptions());
+        self::assertCount(0, $this->getopt->getOptions());
         $operands = $this->getopt->getOperands();
-        $this->assertCount(2, $operands);
-        $this->assertEquals('-a', $operands[0]);
-        $this->assertEquals('-b', $operands[1]);
+        self::assertCount(2, $operands);
+        self::assertEquals('-a', $operands[0]);
+        self::assertEquals('-b', $operands[1]);
     }
 
     public function testParseLongOptionWithoutArgument()
@@ -209,7 +209,7 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('--option');
 
         $options = $this->getopt->getOptions();
-        $this->assertEquals(1, $options['option']);
+        self::assertEquals(1, $options['option']);
     }
 
     public function testParseLongOptionWithoutArgumentAndOperand()
@@ -220,10 +220,10 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('--option something');
 
         $options = $this->getopt->getOptions();
-        $this->assertEquals(1, $options['option']);
+        self::assertEquals(1, $options['option']);
         $operands = $this->getopt->getOperands();
-        $this->assertCount(1, $operands);
-        $this->assertEquals('something', $operands[0]);
+        self::assertCount(1, $operands);
+        self::assertEquals('something', $operands[0]);
     }
 
     public function testParseLongOptionWithArgument()
@@ -234,8 +234,8 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('--option value');
 
         $options = $this->getopt->getOptions();
-        $this->assertEquals('value', $options['option']);
-        $this->assertEquals('value', $options['o']);
+        self::assertEquals('value', $options['option']);
+        self::assertEquals('value', $options['o']);
     }
 
     public function testParseLongOptionWithEqualsSignAndArgument()
@@ -246,10 +246,10 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('--option=value something');
 
         $options = $this->getopt->getOptions();
-        $this->assertEquals('value', $options['option']);
+        self::assertEquals('value', $options['option']);
         $operands = $this->getopt->getOperands();
-        $this->assertCount(1, $operands);
-        $this->assertEquals('something', $operands[0]);
+        self::assertCount(1, $operands);
+        self::assertEquals('something', $operands[0]);
     }
 
     public function testParseLongOptionWithValueStartingWithHyphen()
@@ -260,7 +260,7 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('--option=-value');
 
         $options = $this->getopt->getOptions();
-        $this->assertEquals('-value', $options['option']);
+        self::assertEquals('-value', $options['option']);
     }
 
     public function testParseNoValueStartingWithHyphenRequired()
@@ -282,8 +282,8 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-a -b');
 
         $options = $this->getopt->getOptions();
-        $this->assertEquals(1, $options['a']);
-        $this->assertEquals(1, $options['b']);
+        self::assertEquals(1, $options['a']);
+        self::assertEquals(1, $options['b']);
     }
 
     public function testParseOptionWithDefaultValue()
@@ -296,9 +296,9 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-a 12');
 
         $options = $this->getopt->getOptions();
-        $this->assertEquals(12, $options['a']);
-        $this->assertEquals(20, $options['b']);
-        $this->assertEquals(20, $options['beta']);
+        self::assertEquals(12, $options['a']);
+        self::assertEquals(20, $options['b']);
+        self::assertEquals(20, $options['beta']);
     }
 
     public function testMultipleArgumentOptions()
@@ -307,7 +307,7 @@ class ArgumentsTest extends TestCase
 
         $this->getopt->process('-a value1 -a value2');
 
-        $this->assertEquals(array('value1', 'value2'), $this->getopt->getOption('a'));
+        self::assertEquals(array('value1', 'value2'), $this->getopt->getOption('a'));
     }
 
     public function testDoubleHyphenNotInOperands()
@@ -318,12 +318,12 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-a 0 foo -- bar baz');
 
         $options = $this->getopt->getOptions();
-        $this->assertEquals('0', $options['a']);
+        self::assertEquals('0', $options['a']);
         $operands = $this->getopt->getOperands();
-        $this->assertCount(3, $operands);
-        $this->assertEquals('foo', $operands[0]);
-        $this->assertEquals('bar', $operands[1]);
-        $this->assertEquals('baz', $operands[2]);
+        self::assertCount(3, $operands);
+        self::assertEquals('foo', $operands[0]);
+        self::assertEquals('bar', $operands[1]);
+        self::assertEquals('baz', $operands[2]);
     }
 
     public function testSingleHyphenValue()
@@ -335,16 +335,16 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-a -');
 
         $options = $this->getopt->getOptions();
-        $this->assertEquals('-', $options['a']);
+        self::assertEquals('-', $options['a']);
         $operands = $this->getopt->getOperands();
-        $this->assertCount(0, $operands);
+        self::assertCount(0, $operands);
 
         $this->getopt->process('--alpha -');
 
         $options = $this->getopt->getOptions();
-        $this->assertEquals('-', $options['a']);
+        self::assertEquals('-', $options['a']);
         $operands = $this->getopt->getOperands();
-        $this->assertCount(0, $operands);
+        self::assertCount(0, $operands);
     }
 
     public function testSingleHyphenOperand()
@@ -355,10 +355,10 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-a 0 -');
 
         $options = $this->getopt->getOptions();
-        $this->assertEquals('0', $options['a']);
+        self::assertEquals('0', $options['a']);
         $operands = $this->getopt->getOperands();
-        $this->assertCount(1, $operands);
-        $this->assertEquals('-', $operands[0]);
+        self::assertCount(1, $operands);
+        self::assertEquals('-', $operands[0]);
     }
 
     public function testOptionsAfterOperands()
@@ -370,11 +370,11 @@ class ArgumentsTest extends TestCase
 
         $this->getopt->process('-a 42 operand -b "don\'t panic"');
 
-        $this->assertEquals(array(
+        self::assertEquals(array(
             'a' => 42,
             'b' => 'don\'t panic'
         ), $this->getopt->getOptions());
-        $this->assertEquals(array('operand'), $this->getopt->getOperands());
+        self::assertEquals(array('operand'), $this->getopt->getOperands());
     }
 
     public function testEmptyOperandsAndOptionsWithString()
@@ -385,8 +385,8 @@ class ArgumentsTest extends TestCase
 
         $this->getopt->process('-a "" ""');
 
-        $this->assertSame(array('a' => ''), $this->getopt->getOptions());
-        $this->assertSame(array(''), $this->getopt->getOperands());
+        self::assertSame(array('a' => ''), $this->getopt->getOptions());
+        self::assertSame(array(''), $this->getopt->getOperands());
     }
 
     public function testEmptyOperandsAndOptionsWithArray()
@@ -402,8 +402,8 @@ class ArgumentsTest extends TestCase
             ''
         ));
 
-        $this->assertSame(array('a' => ''), $this->getopt->getOptions());
-        $this->assertSame(array(''), $this->getopt->getOperands());
+        self::assertSame(array('a' => ''), $this->getopt->getOptions());
+        self::assertSame(array(''), $this->getopt->getOperands());
     }
 
     public function testSpaceOperand()
@@ -412,7 +412,7 @@ class ArgumentsTest extends TestCase
 
         $this->getopt->process('" "');
 
-        $this->assertSame(array(' '), $this->getopt->getOperands());
+        self::assertSame(array(' '), $this->getopt->getOperands());
     }
 
     public function testParseWithArgumentValidation()
@@ -428,9 +428,9 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-a 1 -b 2 -c');
 
         $options = $this->getopt->getOptions();
-        $this->assertSame('1', $options['a']);
-        $this->assertSame('2', $options['b']);
-        $this->assertSame(1, $options['c']);
+        self::assertSame('1', $options['a']);
+        self::assertSame('2', $options['b']);
+        self::assertSame(1, $options['c']);
     }
 
     public function testParseInvalidArgument()
@@ -505,11 +505,18 @@ class ArgumentsTest extends TestCase
         self::assertSame('" inside double quote', $options['b']);
     }
 
-    public function testQuoteEscaping()
+    public function testQuoteEscapingDoubleQuote()
     {
         $this->getopt->process('-- "this \\" is a double quote"');
 
         self::assertSame('this " is a double quote', $this->getopt->getOperand(0));
+    }
+
+    public function testQuoteEscapingSingleQuote()
+    {
+        $this->getopt->process("-- 'this \\' is a single quote'");
+
+        self::assertSame("this ' is a single quote", $this->getopt->getOperand(0));
     }
 
     public function testLinefeedAsSeparator()
