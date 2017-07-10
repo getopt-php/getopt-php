@@ -35,9 +35,8 @@ foreach ($options as $option) {
     );
 }
 
-$screenWidth = @getenv('COLUMNS') ?: @exec('tput cols 2>/dev/null');
-$screenWidth = $screenWidth ?: 90;
-$screenWidth = min(array(120, $screenWidth));
+$screenWidth = defined('COLUMNS') ? COLUMNS : @getenv('COLUMNS') ?: @exec('tput cols 2>/dev/null') ?: 90;
+$screenWidth = min(array(120, $screenWidth)); // max 120
 foreach ($data as $dataRow) {
     $row = sprintf('  % -' . $definitionWidth . 's  %s', $dataRow[0], $dataRow[1]);
 

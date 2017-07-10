@@ -187,6 +187,7 @@ class GetoptTest extends TestCase
 
     public function testHelpTextWithLongDescriptions()
     {
+        defined('COLUMNS') || define('COLUMNS', 90);
         $getopt = new Getopt(array(
             array('a', 'alpha', Getopt::NO_ARGUMENT, 'Short and long options with no argument and a very long text ' .
                                                      'that exceeds the length of the row'),
