@@ -158,9 +158,9 @@ class GetoptTest extends TestCase
 
         $expected = "Usage: $script [options] [operands]\n";
         $expected .= "Options:\n";
-        $expected .= "  -a, --alpha     Short and long options with no argument     \n";
-        $expected .= "  --beta [<arg>]  Long option only with an optional argument  \n";
-        $expected .= "  -c <arg>        Short option only with a mandatory argument \n";
+        $expected .= "  -a, --alpha     Short and long options with no argument\n";
+        $expected .= "  --beta [<arg>]  Long option only with an optional argument\n";
+        $expected .= "  -c <arg>        Short option only with a mandatory argument\n";
 
         $this->assertEquals($expected, $getopt->getHelpText());
     }
@@ -178,9 +178,31 @@ class GetoptTest extends TestCase
 
         $expected = "Usage: $script [options] [operands]\n";
         $expected .= "Options:\n";
-        $expected .= "  -a, --alpha      \n";
-        $expected .= "  --beta [<arg>]   \n";
-        $expected .= "  -c <arg>         \n";
+        $expected .= "  -a, --alpha     \n";
+        $expected .= "  --beta [<arg>]  \n";
+        $expected .= "  -c <arg>        \n";
+
+        $this->assertEquals($expected, $getopt->getHelpText());
+    }
+
+    public function testHelpTextWithLongDescriptions()
+    {
+        $getopt = new Getopt(array(
+            array('a', 'alpha', Getopt::NO_ARGUMENT, 'Short and long options with no argument and a very long text ' .
+                                                     'that exceeds the length of the row'),
+            array(null, 'beta', Getopt::OPTIONAL_ARGUMENT, 'Long option only with an optional argument'),
+            array('c', null, Getopt::REQUIRED_ARGUMENT, 'Short option only with a mandatory argument')
+        ));
+        $getopt->parse('');
+
+        $script = $_SERVER['PHP_SELF'];
+
+        $expected = "Usage: $script [options] [operands]\n" .
+                    "Options:\n" .
+                    "  -a, --alpha     Short and long options with no argument and a very long text that\n" .
+                    "                  exceeds the length of the row\n" .
+                    "  --beta [<arg>]  Long option only with an optional argument\n" .
+                    "  -c <arg>        Short option only with a mandatory argument\n";
 
         $this->assertEquals($expected, $getopt->getHelpText());
     }
@@ -191,15 +213,6 @@ class GetoptTest extends TestCase
         $getopt->setScriptName('test');
         $expected = "Usage: test [options] [operands]\n";
         $this->assertSame($expected, $getopt->getHelpText());
-    }
-
-    public function testHelpTextWithCustomBanner()
-    {
-        $script = $_SERVER['PHP_SELF'];
-        
-        $getopt = new Getopt();
-        $getopt->setBanner("My custom Banner %s\n");
-        $this->assertSame("My custom Banner $script\n", $getopt->getHelpText());
     }
 
     public function testThrowsWithInvalidParameter()

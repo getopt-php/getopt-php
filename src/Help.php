@@ -2,7 +2,7 @@
 
 namespace GetOpt;
 
-class Help
+class Help implements HelpInterface
 {
     /** @var string */
     protected $usageTemplate;
@@ -22,25 +22,65 @@ class Help
     }
 
     /**
-     * Get the help text for $options
-     *
-     * @param string $scriptName
-     * @param string $options
-     * @param string $banner
      * @return string
      */
-    public function render($scriptName, $options, $banner = null)
+    public function getUsageTemplate()
     {
-        $rows = array();
+        return $this->usageTemplate;
+    }
 
+    /**
+     * @param string $usageTemplate
+     */
+    public function setUsageTemplate($usageTemplate)
+    {
+        $this->usageTemplate = $usageTemplate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOptionsTemplate()
+    {
+        return $this->optionsTemplate;
+    }
+
+    /**
+     * @param string $optionsTemplate
+     */
+    public function setOptionsTemplate($optionsTemplate)
+    {
+        $this->optionsTemplate = $optionsTemplate;
+    }
+
+    /**
+     * Get the help text for $options
+     *
+     * @param Getopt $getopt
+     * @return string
+     */
+    public function render(Getopt $getopt)
+    {
         // we always append the usage
-        $rows = array_merge($rows, include($this->usageTemplate));
+        $helpText = $this->renderTemplate($this->usageTemplate, array('getopt' => $getopt));
 
         // when we have options we add them too
+        $options = $getopt->getOptions(true);
         if (!empty($options)) {
-            $rows = array_merge($rows, include($this->optionsTemplate));
+            $helpText .= $this->renderTemplate($this->optionsTemplate, array(
+                'getopt' => $getopt,
+                'options' => $options
+            ));
         }
 
-        return implode(PHP_EOL, $rows) . PHP_EOL;
+        return $helpText;
+    }
+
+    protected function renderTemplate($template, $data)
+    {
+        extract($data, EXTR_SKIP);
+        ob_start();
+        include($template);
+        return ob_get_clean();
     }
 }

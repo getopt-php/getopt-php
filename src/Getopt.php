@@ -16,7 +16,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     /** @var OptionParser */
     protected $optionParser;
 
-    /** @var Help */
+    /** @var HelpInterface */
     protected $help;
 
     /** @var array */
@@ -148,11 +148,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      */
     public function getHelpText()
     {
-        return $this->getHelp()->render(
-            $this->get(self::SETTING_SCRIPT_NAME),
-            $this->options,
-            $this->get(self::SETTING_BANNER)
-        );
+        return $this->getHelp()->render($this);
     }
 
     /**
@@ -180,6 +176,23 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         return $this->optionMapping[$name] !== null ? $this->optionMapping[$name]->getValue() : null;
     }
 
+    /**
+     * Define a custom Help object
+     *
+     * @param HelpInterface $help
+     * @return $this
+     */
+    public function setHelp(HelpInterface $help)
+    {
+        $this->help = $help;
+        return $this;
+    }
+
+    /**
+     * Get the current HelpObject
+     *
+     * @return HelpInterface
+     */
     public function getHelp()
     {
         if (!$this->help) {
@@ -192,10 +205,15 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     /**
      * Returns the list of options. Must be invoked after parse() (otherwise it returns an empty array).
      *
+     * @param bool $objects Wether to return the Option objects
      * @return array
      */
-    public function getOptions()
+    public function getOptions($objects = false)
     {
+        if ($objects) {
+            return $this->options;
+        }
+
         $result = array();
 
         foreach ($this->options as $option) {
