@@ -33,7 +33,7 @@ class OptionTest extends TestCase
     {
         return array(
             array(null, null, Getopt::NO_ARGUMENT),      // long and short are both empty
-            array('&', null, Getopt::NO_ARGUMENT),       // short name must be one of [a-zA-Z0-9?!§$%%#]
+            array('&', null, Getopt::NO_ARGUMENT),       // short name must be one of [a-zA-Z0-9?!§$%#]
             array(null, 'öption', Getopt::NO_ARGUMENT),  // long name may contain only alphanumeric chars, _ and -
             array('a', null, 'no_argument'),             // invalid mode
             array(null, 'a', Getopt::NO_ARGUMENT)        // long name must be at least 2 characters long
