@@ -241,21 +241,21 @@ class Option
             ));
         }
 
-        if ($value !== null && $this->mode !== Getopt::NO_ARGUMENT) {
-            if ($this->getArgument()->hasValidation() && !$this->getArgument()->validates($value)) {
-                throw new \UnexpectedValueException(sprintf(
-                    'Option \'%s\' has an invalid value',
-                    $this->long() ?: $this->short()
-                ));
-            }
+        if ($value === null || $this->mode() === Getopt::NO_ARGUMENT) {
+            $value = $this->value === null ? 1 : $this->value + 1;
+        }
 
-            if ($this->mode === Getopt::MULTIPLE_ARGUMENT) {
-                $this->value = $this->value === null ? array($value) : array_merge($this->value, array($value));
-            } else {
-                $this->value = $value;
-            }
-        } elseif ($this->mode() !== Getopt::OPTIONAL_ARGUMENT || !is_string($this->value)) {
-            $this->value = $this->value === null ? 1 : $this->value + 1;
+        if ($this->getArgument()->hasValidation() && !$this->getArgument()->validates($value)) {
+            throw new \UnexpectedValueException(sprintf(
+                'Option \'%s\' has an invalid value',
+                $this->long() ?: $this->short()
+            ));
+        }
+
+        if ($this->mode === Getopt::MULTIPLE_ARGUMENT) {
+            $this->value = $this->value === null ? array($value) : array_merge($this->value, array($value));
+        } else {
+            $this->value = $value;
         }
     }
 

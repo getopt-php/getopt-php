@@ -542,4 +542,18 @@ class ArgumentsTest extends TestCase
 
         self::assertSame('value', $options['a']);
     }
+
+    public function testExplictArguments()
+    {
+        $getopt = $this->getopt;
+        $this->getopt->addOptions(array(
+            Option::create('a'),
+            Option::create('b')->setValidation(function () use ($getopt) {
+                return is_null($getopt->getOption('a'));
+            })
+        ));
+
+        $this->setExpectedException('UnexpectedValueException');
+        $this->getopt->process('-a -b');
+    }
 }
