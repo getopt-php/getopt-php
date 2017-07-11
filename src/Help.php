@@ -23,6 +23,7 @@ class Help implements HelpInterface
 
     /**
      * @return string
+     * @codeCoverageIgnore trivial
      */
     public function getUsageTemplate()
     {
@@ -31,6 +32,7 @@ class Help implements HelpInterface
 
     /**
      * @param string $usageTemplate
+     * @codeCoverageIgnore trivial
      */
     public function setUsageTemplate($usageTemplate)
     {
@@ -39,6 +41,7 @@ class Help implements HelpInterface
 
     /**
      * @return string
+     * @codeCoverageIgnore trivial
      */
     public function getOptionsTemplate()
     {
@@ -47,6 +50,7 @@ class Help implements HelpInterface
 
     /**
      * @param string $optionsTemplate
+     * @codeCoverageIgnore trivial
      */
     public function setOptionsTemplate($optionsTemplate)
     {

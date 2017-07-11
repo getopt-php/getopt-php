@@ -6,7 +6,7 @@ class Argument
 {
     const CLASSNAME = __CLASS__;
 
-    /** @var int|float|string|bool */
+    /** @var mixed */
     private $default;
     /** @var callable */
     private $validation;
@@ -16,7 +16,7 @@ class Argument
     /**
      * Creates a new argument.
      *
-     * @param int|float|string|bool|null $default Default value or NULL
+     * @param mixed $default Default value or NULL
      * @param callable|null $validation a validation function (optional)
      * @throws \InvalidArgumentException
      */
@@ -34,7 +34,7 @@ class Argument
     /**
      * Set the default value
      *
-     * @param int|float|string|bool $value
+     * @param mixed $value The value has to be a scalar value
      * @return Argument this object (for chaining calls)
      * @throws \InvalidArgumentException
      */
@@ -98,7 +98,7 @@ class Argument
     /**
      * Retrieve the default value
      *
-     * @return string|int|null
+     * @return mixed
      */
     public function getDefaultValue()
     {

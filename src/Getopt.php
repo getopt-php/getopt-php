@@ -11,7 +11,6 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
 
     const SETTING_SCRIPT_NAME  = 'scriptName';
     const SETTING_DEFAULT_MODE = 'defaultMode';
-    const SETTING_BANNER       = 'banner';
 
     /** @var OptionParser */
     protected $optionParser;
@@ -39,6 +38,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      * The argument $options can be either a string in the format accepted by the PHP library
      * function getopt() or an array.
      *
+     * @param array $options
      * @param array $settings
      * @link https://www.gnu.org/s/hello/manual/libc/Getopt.html GNU Getopt manual
      */
@@ -59,21 +59,53 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         }
     }
 
+    /**
+     * Set $setting to $value
+     *
+     * @param string $setting
+     * @param mixed $value
+     * @return Getopt
+     */
     public function set($setting, $value)
     {
         $this->settings[$setting] = $value;
-//        switch ($setting) {
-//            default:
-//
-//        }
         return $this;
     }
 
+    /**
+     * Get the current value of $setting
+     *
+     * @param string $setting
+     * @return mixed
+     */
     public function get($setting)
     {
         return isset($this->settings[$setting]) ? $this->settings[$setting] : null;
     }
 
+    /**
+     * Add $options to the list of options
+     *
+     * $options can be a string as for phps `getopt()` function, an array of Option instances or an array of arrays.
+     *
+     * You can also mix Option instances and arrays. Eg.:
+     * $getopt->addOptions([
+     *   ['?', 'help', Getopt::NO_ARGUMENT, 'Show this help'],
+     *   new Option('v', 'verbose'),
+     *   (new Option(null, 'version'))->setDescription('Print version and exit'),
+     *   Option::create('q', 'quiet')->setDescription('Don\'t write any output')
+     *   new Option(
+     *     'c',
+     *     'config',
+     *     Getopt::REQUIRED_ARGUMENT,
+     *     new Argument(getenv('HOME') . '/.myapp.inc', 'file_exists', 'file')
+     *   )
+     * ]);
+     *
+     * @see OptionParser::parseArray() fo see how to use arrays
+     * @param string|array|Option[] $options
+     * @return Getopt
+     */
     public function addOptions($options)
     {
         if (is_string($options)) {
@@ -91,6 +123,17 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         return $this;
     }
 
+    /**
+     * Add $option to the list of options
+     *
+     * $option can also be a string in format of phps `getopt()` function. But only the first option will be added.
+     *
+     * Otherwise it has to be an array or an Option instance.
+     *
+     * @see Getopt::addOptions() for more details
+     * @param string|array|Option $option
+     * @return Getopt
+     */
     public function addOption($option)
     {
         if (!$option instanceof Option) {
@@ -139,20 +182,9 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * Returns an usage information text generated from the given options.
+     * Get an option by $name
      *
-     * The $padding got removed due to refactoring. Help is an own class now. You can change the layout by using a
-     * custom template.
-     *
-     * @return string
-     */
-    public function getHelpText()
-    {
-        return $this->getHelp()->render($this);
-    }
-
-    /**
-     * Get a option by $name
+     * If $object is set to true it returns the Option instead of the value.
      *
      * @param string $name Short or long name of the option
      * @return Option|mixed
@@ -180,7 +212,8 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      * Define a custom Help object
      *
      * @param HelpInterface $help
-     * @return $this
+     * @return Getopt
+     * @codeCoverageIgnore trivial
      */
     public function setHelp(HelpInterface $help)
     {
@@ -189,7 +222,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * Get the current HelpObject
+     * Get the current Help instance
      *
      * @return HelpInterface
      */
@@ -203,9 +236,26 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     }
 
     /**
+     * Returns an usage information text generated from the given options.
+     *
+     * The $padding got removed due to refactoring. Help is an own class now. You can change the layout by using a
+     * custom template or using a custom help formatter (has to implement HelpInterface)
+     *
+     * @see Help for setting a custom template
+     * @see HelpInterface for creating an custom help formatter
+     * @return string
+     */
+    public function getHelpText()
+    {
+        return $this->getHelp()->render($this);
+    }
+
+    /**
      * Returns the list of options. Must be invoked after parse() (otherwise it returns an empty array).
      *
-     * @param bool $objects Wether to return the Option objects
+     * If $object is set to true it returns an array of Option instances.
+     *
+     * @param bool $objects
      * @return array
      */
     public function getOptions($objects = false)
@@ -294,29 +344,6 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     public function parse($arguments = null)
     {
         $this->process($arguments);
-    }
-
-    /**
-     * Get the current banner if defined
-     *
-     * @return string
-     * @deprecated Use `Help` for formatting the help message
-     */
-    public function getBanner()
-    {
-        return $this->get(self::SETTING_BANNER);
-    }
-
-    /**
-     * Set the banner
-     *
-     * @param string $banner
-     * @return Getopt
-     * @deprecated Use `Help` for formatting the help message
-     */
-    public function setBanner($banner)
-    {
-        return $this->set(self::SETTING_BANNER, $banner);
     }
 
     // array functions
