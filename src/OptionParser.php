@@ -60,51 +60,36 @@ class OptionParser
     }
 
     /**
-     * Processes an option array. The array elements can either be Option objects or arrays conforming to the format
+     * Processes an option array. The array should be conform to the format
      * (short, long, mode [, description [, default]]). See documentation for details.
      *
      * Developer note: Please don't add any further elements to the array. Future features should be configured only
      * through the Option class's methods.
      *
      * @param array $array
-     * @return Option[]
-     * @throws \InvalidArgumentException
+     * @return Option
      */
     public function parseArray(array $array)
     {
         if (empty($array)) {
-            throw new \InvalidArgumentException('No options given');
+            throw new \InvalidArgumentException('Invalid option array (at least a name has to be given)');
         }
-        $options = array();
-        foreach ($array as $row) {
-            if ($row instanceof Option) {
-                $options[] = $row;
-            } elseif (is_array($row)) {
-                $options[] = $this->createOption($row);
-            } else {
-                throw new \InvalidArgumentException("Invalid option type, must be Option or array");
-            }
-        }
-        return $options;
-    }
 
-    /**
-     * @param array $row
-     * @return Option
-     */
-    private function createOption(array $row)
-    {
-        $rowSize = count($row);
+        $rowSize = count($array);
         if ($rowSize < 3) {
-            $row = $this->completeOptionArray($row);
+            $array = $this->completeOptionArray($array);
         }
-        $option = new Option($row[0], $row[1], $row[2]);
+
+        $option = new Option($array[0], $array[1], $array[2]);
+
         if ($rowSize >= 4) {
-            $option->setDescription($row[3]);
+            $option->setDescription($array[3]);
         }
-        if ($rowSize >= 5 && $row[2] != Getopt::NO_ARGUMENT) {
-            $option->setArgument(new Argument($row[4]));
+
+        if ($rowSize >= 5 && $array[2] != Getopt::NO_ARGUMENT) {
+            $option->setArgument(new Argument($array[4]));
         }
+
         return $option;
     }
 

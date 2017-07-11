@@ -2,7 +2,9 @@
 
 namespace GetOpt;
 
-class ArgumentTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class ArgumentTest extends TestCase
 {
     public function testConstructor()
     {

@@ -2,32 +2,35 @@
 
 namespace GetOpt;
 
-/**
- * Getopt.PHP allows for easy processing of command-line arguments.
- * It is a more powerful, object-oriented alternative to PHP's built-in getopt() function.
- *
- * @version 2.1.0
- * @license MIT
- * @link    http://ulrichsg.github.io/getopt-php
- */
 class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
 {
     const NO_ARGUMENT = 0;
     const REQUIRED_ARGUMENT = 1;
     const OPTIONAL_ARGUMENT = 2;
+    const MULTIPLE_ARGUMENT = 3;
+
+    const SETTING_SCRIPT_NAME  = 'scriptName';
+    const SETTING_DEFAULT_MODE = 'defaultMode';
 
     /** @var OptionParser */
     protected $optionParser;
-    /** @var string */
-    protected $scriptName;
-    /** @var Option[] */
-    protected $optionList = array();
+
+    /** @var HelpInterface */
+    protected $help;
+
     /** @var array */
+    protected $settings = array(
+        self::SETTING_DEFAULT_MODE => self::NO_ARGUMENT
+    );
+
+    /**@var Option[] */
     protected $options = array();
-    /** @var array */
+
+    /** @var Option[] */
+    protected $optionMapping = array();
+
+    /** @var string[] */
     protected $operands = array();
-    /** @var string */
-    protected $banner =  "Usage: %s [options] [operands]\n";
 
     /**
      * Creates a new Getopt object.
@@ -35,147 +38,247 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      * The argument $options can be either a string in the format accepted by the PHP library
      * function getopt() or an array.
      *
-     * @param mixed $options Array of options, a String, or null (see documentation for details)
-     * @param int $defaultType The default option type to use when omitted (optional)
-     * @throws \InvalidArgumentException
-     *
+     * @param array $options
+     * @param array $settings
      * @link https://www.gnu.org/s/hello/manual/libc/Getopt.html GNU Getopt manual
      */
-    public function __construct($options = null, $defaultType = Getopt::NO_ARGUMENT)
+    public function __construct($options = null, array $settings = array())
     {
-        $this->optionParser = new OptionParser($defaultType);
         if ($options !== null) {
             $this->addOptions($options);
+        }
+
+        $this->set(
+            self::SETTING_SCRIPT_NAME,
+            isset($_SERVER['argv'][0]) ? $_SERVER['argv'][0] : (
+                isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : null
+            )
+        );
+        foreach ($settings as $setting => $value) {
+            $this->set($setting, $value);
         }
     }
 
     /**
-     * Set the scriptName manually
+     * Set $setting to $value
      *
-     * @param $scriptName
+     * @param string $setting
+     * @param mixed $value
+     * @return Getopt
      */
-    public function setScriptName($scriptName)
+    public function set($setting, $value)
     {
-        $this->scriptName = $scriptName;
+        $this->settings[$setting] = $value;
+        return $this;
     }
 
     /**
-     * Extends the list of known options. Takes the same argument types as the constructor.
+     * Get the current value of $setting
      *
-     * @param mixed $options
-     * @throws \InvalidArgumentException
+     * @param string $setting
+     * @return mixed
+     */
+    public function get($setting)
+    {
+        return isset($this->settings[$setting]) ? $this->settings[$setting] : null;
+    }
+
+    /**
+     * Add $options to the list of options
+     *
+     * $options can be a string as for phps `getopt()` function, an array of Option instances or an array of arrays.
+     *
+     * You can also mix Option instances and arrays. Eg.:
+     * $getopt->addOptions([
+     *   ['?', 'help', Getopt::NO_ARGUMENT, 'Show this help'],
+     *   new Option('v', 'verbose'),
+     *   (new Option(null, 'version'))->setDescription('Print version and exit'),
+     *   Option::create('q', 'quiet')->setDescription('Don\'t write any output')
+     *   new Option(
+     *     'c',
+     *     'config',
+     *     Getopt::REQUIRED_ARGUMENT,
+     *     new Argument(getenv('HOME') . '/.myapp.inc', 'file_exists', 'file')
+     *   )
+     * ]);
+     *
+     * @see OptionParser::parseArray() fo see how to use arrays
+     * @param string|array|Option[] $options
+     * @return Getopt
      */
     public function addOptions($options)
     {
         if (is_string($options)) {
-            $this->mergeOptions($this->optionParser->parseString($options));
-        } elseif (is_array($options)) {
-            $this->mergeOptions($this->optionParser->parseArray($options));
-        } else {
-            throw new \InvalidArgumentException("Getopt(): argument must be string or array");
+            $options = $this->getOptionParser()->parseString($options);
         }
+
+        if (!is_array($options)) {
+            throw new \InvalidArgumentException('Getopt(): argument must be string or array');
+        }
+
+        foreach ($options as $option) {
+            $this->addOption($option);
+        }
+
+        return $this;
     }
 
     /**
-     * Merges new options with the ones already in the Getopt optionList, making sure the resulting list is free of
-     * conflicts.
+     * Add $option to the list of options
      *
-     * @param Option[] $options The list of new options
-     * @throws \InvalidArgumentException
+     * $option can also be a string in format of phps `getopt()` function. But only the first option will be added.
+     *
+     * Otherwise it has to be an array or an Option instance.
+     *
+     * @see Getopt::addOptions() for more details
+     * @param string|array|Option $option
+     * @return Getopt
      */
-    protected function mergeOptions(array $options)
+    public function addOption($option)
     {
-        /** @var Option[] $mergedList */
-        $mergedList = array_merge($this->optionList, $options);
-        $duplicates = array();
-        foreach ($mergedList as $option) {
-            foreach ($mergedList as $otherOption) {
-                if (($option === $otherOption) || in_array($otherOption, $duplicates)) {
-                    continue;
-                }
-                if ($this->optionsConflict($option, $otherOption)) {
-                    throw new \InvalidArgumentException('Failed to add options due to conflict');
-                }
-                if (($option->short() === $otherOption->short()) && ($option->long() === $otherOption->long())) {
-                    $duplicates[] = $option;
+        if (!$option instanceof Option) {
+            if (is_string($option)) {
+                $options = $this->getOptionParser()->parseString($option);
+                // this is addOption - so we use only the first one
+                $option = $options[0];
+            } elseif (is_array($option)) {
+                $option = $this->getOptionParser()->parseArray($option);
+            } else {
+                throw new \InvalidArgumentException(sprintf(
+                    '$option has to be a string, an array or an Option. %s given',
+                    gettype($option)
+                ));
+            }
+        }
+
+        if ($this->getOption($option->short(), true) || $this->getOption($option->long(), true)) {
+            throw new \InvalidArgumentException('$option`s short and long name have to be unique');
+        }
+
+        $this->options[] = $option;
+
+        return $this;
+    }
+
+    /**
+     * @param array|string|Arguments $arguments
+     */
+    public function process($arguments = null)
+    {
+        if ($arguments === null) {
+            $arguments = isset($_SERVER['argv']) ? array_slice($_SERVER['argv'], 1) : array();
+            $arguments = new Arguments($arguments);
+        } elseif (is_array($arguments)) {
+            $arguments = new Arguments($arguments);
+        } elseif (is_string($arguments)) {
+            $arguments = Arguments::fromString($arguments);
+        } elseif (!$arguments instanceof Arguments) {
+            throw new \InvalidArgumentException(
+                '$arguments has to be an instance of Arguments, an arguments string, an array of arguments or null'
+            );
+        }
+
+        $arguments->process($this, $this->operands);
+    }
+
+    /**
+     * Get an option by $name
+     *
+     * If $object is set to true it returns the Option instead of the value.
+     *
+     * @param string $name Short or long name of the option
+     * @return Option|mixed
+     */
+    public function getOption($name, $object = false)
+    {
+        if (!isset($this->optionMapping[$name])) {
+            $this->optionMapping[$name] = null;
+            foreach ($this->options as $option) {
+                if ($option->matches($name)) {
+                    $this->optionMapping[$name] = $option;
+                    break;
                 }
             }
         }
-        foreach ($mergedList as $index => $option) {
-            if (in_array($option, $duplicates)) {
-                unset($mergedList[$index]);
-            }
-        }
-        $this->optionList = array_values($mergedList);
-    }
 
-    protected function optionsConflict(Option $option1, Option $option2)
-    {
-        if ((is_null($option1->short()) && is_null($option2->short()))
-                || (is_null($option1->long()) && is_null($option2->long()))) {
-            return false;
+        if ($object) {
+            return $this->optionMapping[$name];
         }
-        return ((($option1->short() === $option2->short()) && ($option1->long() !== $option2->long()))
-                || (($option1->short() !== $option2->short()) && ($option1->long() === $option2->long())));
+
+        return $this->optionMapping[$name] !== null ? $this->optionMapping[$name]->getValue() : null;
     }
 
     /**
-     * Evaluate the given arguments. These can be passed either as a string or as an array.
-     * If nothing is passed, the running script's command line arguments are used.
+     * Define a custom Help object
      *
-     * An {@link \UnexpectedValueException} or {@link \InvalidArgumentException} is thrown
-     * when the arguments are not well-formed or do not conform to the options passed by the user.
-     *
-     * @param mixed $arguments optional ARGV array or space separated string
+     * @param HelpInterface $help
+     * @return Getopt
+     * @codeCoverageIgnore trivial
      */
-    public function parse($arguments = null)
+    public function setHelp(HelpInterface $help)
     {
-        if (!$this->scriptName && isset($_SERVER['argv'][0])) {
-            $this->scriptName = $_SERVER['argv'][0];
-        }
-
-        $this->options = array();
-        if (!isset($arguments)) {
-            $arguments = isset($_SERVER['argv']) ? $_SERVER['argv'] : array();
-            $this->scriptName = array_shift($arguments); // $argv[0] is the script's name
-        } elseif (is_string($arguments) && empty($this->scriptName)) {
-            $this->scriptName = $_SERVER['PHP_SELF'];
-        }
-
-        $parser = new CommandLineParser($this->optionList);
-        $parser->parse($arguments);
-        $this->options = $parser->getOptions();
-        $this->operands = $parser->getOperands();
+        $this->help = $help;
+        return $this;
     }
 
     /**
-     * Returns the value of the given option. Must be invoked after parse().
+     * Get the current Help instance
      *
-     * The return value can be any of the following:
-     * <ul>
-     *   <li><b>null</b> if the option is not given and does not have a default value</li>
-     *   <li><b>the default value</b> if it has been defined and the option is not given</li>
-     *   <li><b>an integer</b> if the option is given without argument. The
-     *       returned value is the number of occurrences of the option.</li>
-     *   <li><b>a string</b> if the option is given with an argument. The returned value is that argument.</li>
-     * </ul>
-     *
-     * @param string $name The (short or long) option name.
-     * @return mixed
+     * @return HelpInterface
      */
-    public function getOption($name)
+    public function getHelp()
     {
-        return isset($this->options[$name]) ? $this->options[$name] : null;
+        if (!$this->help) {
+            $this->help = new Help();
+        }
+
+        return $this->help;
+    }
+
+    /**
+     * Returns an usage information text generated from the given options.
+     *
+     * The $padding got removed due to refactoring. Help is an own class now. You can change the layout by using a
+     * custom template or using a custom help formatter (has to implement HelpInterface)
+     *
+     * @see Help for setting a custom template
+     * @see HelpInterface for creating an custom help formatter
+     * @return string
+     */
+    public function getHelpText()
+    {
+        return $this->getHelp()->render($this);
     }
 
     /**
      * Returns the list of options. Must be invoked after parse() (otherwise it returns an empty array).
      *
+     * If $object is set to true it returns an array of Option instances.
+     *
+     * @param bool $objects
      * @return array
      */
-    public function getOptions()
+    public function getOptions($objects = false)
     {
-        return $this->options;
+        if ($objects) {
+            return $this->options;
+        }
+
+        $result = array();
+
+        foreach ($this->options as $option) {
+            $value = $option->getValue();
+            if ($value !== null) {
+                if ($short = $option->short()) {
+                    $result[$short] = $value;
+                }
+                if ($long = $option->long()) {
+                    $result[$long] = $value;
+                }
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -200,111 +303,89 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * Returns the banner string
+     * Create or get the OptionParser
      *
-     * @return string
+     * @return OptionParser
      */
-    public function getBanner()
+    protected function getOptionParser()
     {
-        return $this->banner;
+        if ($this->optionParser === null) {
+            $this->optionParser = new OptionParser($this->settings[self::SETTING_DEFAULT_MODE]);
+        }
+
+        return $this->optionParser;
     }
 
+    // backward compatibility
+
     /**
-     * Set the banner string
+     * Set script name manually
      *
-     * @param string $banner    The banner string; will be passed to sprintf(), can include %s for current scripts name.
-     *                          Be sure to include a trailing line feed.
+     * @param string $scriptName
      * @return Getopt
+     * @deprecated Use `Getopt::set(Getopt::SETTING_SCRIPT_NAME, $scriptName)` instead
+     * @codeCoverageIgnore
      */
-    public function setBanner($banner)
+    public function setScriptName($scriptName)
     {
-        $this->banner = $banner;
-        return $this;
+        return $this->set(self::SETTING_SCRIPT_NAME, $scriptName);
     }
 
     /**
-     * Returns an usage information text generated from the given options.
-     * @param int $padding Number of characters to pad output of options to
-     * @return string
+     * Process $arguments or $_SERVER['argv']
+     *
+     * These function is an alias for process now. Parse was not the correct verb for what
+     * the function is currently doing.
+     *
+     * @deprecated Use `Getopt::process($arguments)` instead
+     * @param mixed $arguments optional ARGV array or argument string
+     * @codeCoverageIgnore
      */
-    public function getHelpText($padding = 25)
+    public function parse($arguments = null)
     {
-        $helpText = sprintf($this->getBanner(), $this->scriptName);
-        if (!empty($this->optionList)) {
-            $helpText .= "Options:\n";
-            foreach ($this->optionList as $option) {
-                $mode = '';
-                switch ($option->mode()) {
-                    case self::NO_ARGUMENT:
-                        $mode = '';
-                        break;
-                    case self::REQUIRED_ARGUMENT:
-                        $mode = "<".$option->getArgument()->getName().">";
-                        break;
-                    case self::OPTIONAL_ARGUMENT:
-                        $mode = "[<".$option->getArgument()->getName().">]";
-                        break;
-                }
-                $short = ($option->short()) ? '-'.$option->short() : '';
-                $long = ($option->long()) ? '--'.$option->long() : '';
-                if ($short && $long) {
-                    $options = $short.', '.$long;
-                } else {
-                    $options = $short ? : $long;
-                }
-                $padded = str_pad(sprintf("  %s %s", $options, $mode), $padding);
-                $helpText .= sprintf("%s %s\n", $padded, $option->getDescription());
+        $this->process($arguments);
+    }
+
+    // array functions
+
+    public function getIterator()
+    {
+        $result = array();
+
+        foreach ($this->options as $option) {
+            if ($value = $option->getValue()) {
+                $name = $option->short() ?: $option->long();
+                $result[$name] = $value;
             }
         }
-        return $helpText;
-    }
 
-
-    /*
-     * Interface support functions
-     */
-
-    public function count()
-    {
-        return count($this->options);
+        return new \ArrayIterator($result);
     }
 
     public function offsetExists($offset)
     {
-        return isset($this->options[$offset]);
+        $option = $this->getOption($offset, true);
+        return $option && $option->getValue() !== null;
     }
 
     public function offsetGet($offset)
     {
-        return $this->getOption($offset);
+        $option = $this->getOption($offset, true);
+        return $option ? $option->getValue() : null;
     }
 
     public function offsetSet($offset, $value)
     {
-        throw new \LogicException('Getopt is read-only');
+        throw new \LogicException('Read only array access');
     }
 
     public function offsetUnset($offset)
     {
-        throw new \LogicException('Getopt is read-only');
+        throw new \LogicException('Read only array access');
     }
 
-    public function getIterator()
+    public function count()
     {
-        // For options that have both short and long names, $this->options has two entries.
-        // We don't want this when iterating, so we have to filter the duplicates out.
-        $filteredOptions = array();
-        foreach ($this->options as $name => $value) {
-            $keep = true;
-            foreach ($this->optionList as $option) {
-                if ($option->long() == $name && !is_null($option->short())) {
-                    $keep = false;
-                }
-            }
-            if ($keep) {
-                $filteredOptions[$name] = $value;
-            }
-        }
-        return new \ArrayIterator($filteredOptions);
+        return $this->getIterator()->count();
     }
 }

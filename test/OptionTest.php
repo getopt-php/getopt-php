@@ -2,7 +2,9 @@
 
 namespace GetOpt;
 
-class OptionTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class OptionTest extends TestCase
 {
     public function testConstruct()
     {
@@ -20,34 +22,37 @@ class OptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(Getopt::OPTIONAL_ARGUMENT, $option->mode());
     }
 
-    public function testConstructEmptyOption()
+    /** @dataProvider dataConstructFails */
+    public function testConstructFails($short, $long, $mode)
     {
         $this->setExpectedException('InvalidArgumentException');
-        new Option(null, null, Getopt::NO_ARGUMENT);
+        new Option($short, $long, $mode);
     }
 
-    public function testConstructNoLetter()
+    public function dataConstructFails()
     {
-        $this->setExpectedException('InvalidArgumentException');
-        new Option('?', null, Getopt::NO_ARGUMENT);
+        return array(
+            array(null, null, Getopt::NO_ARGUMENT),      // long and short are both empty
+            array('&', null, Getopt::NO_ARGUMENT),       // short name must be one of [a-zA-Z0-9?!§$%#]
+            array(null, 'öption', Getopt::NO_ARGUMENT),  // long name may contain only alphanumeric chars, _ and -
+            array('a', null, 'no_argument'),             // invalid mode
+            array(null, 'a', Getopt::NO_ARGUMENT)        // long name must be at least 2 characters long
+        );
     }
 
-    public function testConstructInvalidCharacter()
+    /** @dataProvider dataMatches */
+    public function testMatches(Option $option, $string, $matches)
     {
-        $this->setExpectedException('InvalidArgumentException');
-        new Option(null, 'öption', Getopt::NO_ARGUMENT);
+        $this->assertEquals($matches, $option->matches($string));
     }
-
-    public function testConstructInvalidArgumentType()
+    public function dataMatches()
     {
-        $this->setExpectedException('InvalidArgumentException');
-        new Option('a', null, 'no_argument');
-    }
-
-    public function testConstructLongOptionTooShort()
-    {
-        $this->setExpectedException('InvalidArgumentException');
-        new Option(null, 'a', Getopt::REQUIRED_ARGUMENT);
+        return array(
+            array(new Option('v', null), 'v', true),
+            array(new Option(null, 'verbose'), 'verbose', true),
+            array(new Option(null, 'verbose'), 'v', false),
+            array(new Option('v', 'verbose'), 'v', true)
+        );
     }
 
     public function testSetArgument()
@@ -64,6 +69,15 @@ class OptionTest extends \PHPUnit_Framework_TestCase
         $option->setArgument(new Argument());
     }
 
+    public function testSetArgumentFromConstructor()
+    {
+        $argument = new Argument();
+
+        $option = new Option('a', null, Getopt::OPTIONAL_ARGUMENT, $argument);
+
+        self::assertSame($argument, $option->getArgument());
+    }
+
     public function testSetDefaultValue()
     {
         $option = new Option('a', null, Getopt::OPTIONAL_ARGUMENT);
@@ -76,5 +90,31 @@ class OptionTest extends \PHPUnit_Framework_TestCase
         $option = new Option('a', null, Getopt::OPTIONAL_ARGUMENT);
         $this->assertEquals($option, $option->setValidation('is_numeric'));
         $this->assertTrue($option->getArgument()->hasValidation());
+    }
+
+    public function testToStringWithoutArgument()
+    {
+        $option = new Option('a', null);
+        $option->setValue(null);
+        $option->setValue(null);
+
+        $this->assertSame('2', (string)$option);
+    }
+
+    public function testToStringWithArgument()
+    {
+        $option = new Option('a', null, Getopt::REQUIRED_ARGUMENT);
+        $option->setValue('valueA');
+
+        $this->assertSame('valueA', (string)$option);
+    }
+
+    public function testToStringWithMultipleArguments()
+    {
+        $option = new Option('a', null, Getopt::MULTIPLE_ARGUMENT);
+        $option->setValue('valueA');
+        $option->setValue('valueB');
+
+        $this->assertSame('valueA,valueB', (string)$option);
     }
 }

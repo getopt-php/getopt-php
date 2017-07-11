@@ -2,7 +2,9 @@
 
 namespace GetOpt;
 
-class GetoptTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class GetoptTest extends TestCase
 {
     public function testAddOptions()
     {
@@ -17,6 +19,7 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
         );
 
         $getopt->parse('-a aparam -s sparam --long longparam');
+
         $this->assertEquals('aparam', $getopt->getOption('a'));
         $this->assertEquals('longparam', $getopt->getOption('long'));
         $this->assertEquals('sparam', $getopt->getOption('s'));
@@ -39,7 +42,9 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
 
     public function testAddOptionsUseDefaultArgumentType()
     {
-        $getopt = new Getopt(null, Getopt::REQUIRED_ARGUMENT);
+        $getopt = new Getopt(null, array(
+            Getopt::SETTING_DEFAULT_MODE => Getopt::REQUIRED_ARGUMENT
+        ));
         $getopt->addOptions(
             array(
                 array('l', 'long')
@@ -60,14 +65,13 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
         $getopt->addOptions(new Option('a', 'alpha'));
     }
 
-    public function testAddOptionsOverwritesExistingOptions()
+    public function testChangeModeAfterwards()
     {
         $getopt = new Getopt(array(
             array('a', null, Getopt::REQUIRED_ARGUMENT)
         ));
-        $getopt->addOptions(array(
-            array('a', null, Getopt::NO_ARGUMENT)
-        ));
+
+        $getopt->getOption('a', true)->setMode(Getopt::NO_ARGUMENT);
         $getopt->parse('-a foo');
 
         $this->assertEquals(1, $getopt->getOption('a'));
@@ -112,7 +116,11 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
 
     public function testCountable()
     {
-        $getopt = new Getopt('abc');
+        $getopt = new Getopt(array(
+            new Option('a', 'alpha'),
+            new Option('b', 'beta'),
+            new Option('c', 'gamma'),
+        ));
         $getopt->parse('-abc');
         $this->assertEquals(3, count($getopt));
     }
@@ -150,9 +158,9 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
 
         $expected = "Usage: $script [options] [operands]\n";
         $expected .= "Options:\n";
-        $expected .= "  -a, --alpha             Short and long options with no argument\n";
-        $expected .= "  --beta [<arg>]          Long option only with an optional argument\n";
-        $expected .= "  -c <arg>                Short option only with a mandatory argument\n";
+        $expected .= "  -a, --alpha     Short and long options with no argument\n";
+        $expected .= "  --beta [<arg>]  Long option only with an optional argument\n";
+        $expected .= "  -c <arg>        Short option only with a mandatory argument\n";
 
         $this->assertEquals($expected, $getopt->getHelpText());
     }
@@ -170,18 +178,34 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
 
         $expected = "Usage: $script [options] [operands]\n";
         $expected .= "Options:\n";
-        $expected .= "  -a, --alpha             \n";
-        $expected .= "  --beta [<arg>]          \n";
-        $expected .= "  -c <arg>                \n";
+        $expected .= "  -a, --alpha     \n";
+        $expected .= "  --beta [<arg>]  \n";
+        $expected .= "  -c <arg>        \n";
 
         $this->assertEquals($expected, $getopt->getHelpText());
     }
 
-    public function testHelpTextNoParse()
+    public function testHelpTextWithLongDescriptions()
     {
-        $getopt = new Getopt();
-        $expected = "Usage:  [options] [operands]\n";
-        $this->assertSame($expected, $getopt->getHelpText());
+        defined('COLUMNS') || define('COLUMNS', 90);
+        $getopt = new Getopt(array(
+            array('a', 'alpha', Getopt::NO_ARGUMENT, 'Short and long options with no argument and a very long text ' .
+                                                     'that exceeds the length of the row'),
+            array(null, 'beta', Getopt::OPTIONAL_ARGUMENT, 'Long option only with an optional argument'),
+            array('c', null, Getopt::REQUIRED_ARGUMENT, 'Short option only with a mandatory argument')
+        ));
+        $getopt->parse('');
+
+        $script = $_SERVER['PHP_SELF'];
+
+        $expected = "Usage: $script [options] [operands]\n" .
+                    "Options:\n" .
+                    "  -a, --alpha     Short and long options with no argument and a very long text that\n" .
+                    "                  exceeds the length of the row\n" .
+                    "  --beta [<arg>]  Long option only with an optional argument\n" .
+                    "  -c <arg>        Short option only with a mandatory argument\n";
+
+        $this->assertEquals($expected, $getopt->getHelpText());
     }
 
     public function testHelpTextWithCustomScriptName()
@@ -192,15 +216,64 @@ class GetoptTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expected, $getopt->getHelpText());
     }
 
-    public function testHelpTextWithCustomBanner()
+    public function testThrowsWithInvalidParameter()
     {
-        $script = $_SERVER['PHP_SELF'];
-        
+        $this->setExpectedException('InvalidArgumentException');
         $getopt = new Getopt();
-        $getopt->setBanner("My custom Banner %s\n");
-        $this->assertSame("My custom Banner \n", $getopt->getHelpText());
 
-        $getopt->parse('');
-        $this->assertSame("My custom Banner $script\n", $getopt->getHelpText());
+        $getopt->process(42);
+    }
+
+    public function testAddOptionByString()
+    {
+        $getopt = new Getopt();
+        $getopt->addOption('c');
+
+        $this->assertEquals(new Option('c', null), $getopt->getOption('c', true));
+    }
+
+    public function testThrowsForUnparsableString()
+    {
+        $this->setExpectedException('InvalidArgumentException');
+        $getopt = new Getopt();
+
+        $getopt->addOption('');
+    }
+
+    public function testThrowsForInvalidParameter()
+    {
+        $this->setExpectedException('InvalidArgumentException');
+        $getopt = new Getopt();
+
+        $getopt->addOption(42);
+    }
+
+    public function testIssetArrayAccess()
+    {
+        $getopt = new Getopt();
+        $getopt->addOption('a');
+        $getopt->process('-a');
+
+        $result = isset($getopt['a']);
+
+        self::assertTrue($result);
+    }
+
+    public function testRestirctsArraySet()
+    {
+        $this->setExpectedException('LogicException');
+        $getopt = new Getopt();
+
+        $getopt['a'] = 'test';
+    }
+
+    public function testRestirctsArrayUnset()
+    {
+        $this->setExpectedException('LogicException');
+        $getopt = new Getopt();
+        $getopt->addOption('a');
+        $getopt->process('-a');
+
+        unset($getopt['a']);
     }
 }
