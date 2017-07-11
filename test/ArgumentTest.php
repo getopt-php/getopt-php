@@ -41,4 +41,11 @@ class ArgumentTest extends TestCase
         $argument = new Argument();
         $argument->setValidation('');
     }
+
+    public function testFalsyDefaultValue()
+    {
+        $argument = new Argument('');
+
+        self::assertTrue($argument->hasDefaultValue());
+    }
 }

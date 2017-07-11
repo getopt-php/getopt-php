@@ -92,7 +92,7 @@ class Argument
      */
     public function hasDefaultValue()
     {
-        return !empty($this->default);
+        return !is_null($this->default);
     }
 
     /**
