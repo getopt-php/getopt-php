@@ -23,8 +23,11 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         self::SETTING_DEFAULT_MODE => self::NO_ARGUMENT
     );
 
-    /**@var Option[] */
+    /** @var Option[] */
     protected $options = array();
+
+    /** @var Command[] */
+    protected $commands = array();
 
     /** @var Option[] */
     protected $optionMapping = array();
@@ -64,7 +67,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * @param string $setting
      * @param mixed $value
-     * @return Getopt
+     * @return self
      */
     public function set($setting, $value)
     {
@@ -104,7 +107,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * @see OptionParser::parseArray() fo see how to use arrays
      * @param string|array|Option[] $options
-     * @return Getopt
+     * @return self
      */
     public function addOptions($options)
     {
@@ -132,7 +135,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * @see Getopt::addOptions() for more details
      * @param string|array|Option $option
-     * @return Getopt
+     * @return self
      */
     public function addOption($option)
     {
@@ -157,6 +160,32 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
 
         $this->options[] = $option;
 
+        return $this;
+    }
+
+    /**
+     * Add an array of $commands
+     *
+     * @param Command[] $commands
+     * @return self
+     */
+    public function addCommands(array $commands)
+    {
+        foreach ($commands as $command) {
+            $this->addCommand($command);
+        }
+        return $this;
+    }
+
+    /**
+     * Add a $command
+     *
+     * @param Command $command
+     * @return self
+     */
+    public function addCommand(Command $command)
+    {
+        $this->commands[] = $command;
         return $this;
     }
 
@@ -212,7 +241,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      * Define a custom Help object
      *
      * @param HelpInterface $help
-     * @return Getopt
+     * @return self
      * @codeCoverageIgnore trivial
      */
     public function setHelp(HelpInterface $help)
@@ -322,7 +351,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      * Set script name manually
      *
      * @param string $scriptName
-     * @return Getopt
+     * @return self
      * @deprecated Use `Getopt::set(Getopt::SETTING_SCRIPT_NAME, $scriptName)` instead
      * @codeCoverageIgnore
      */

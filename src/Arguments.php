@@ -2,6 +2,12 @@
 
 namespace GetOpt;
 
+/**
+ * Class Arguments
+ *
+ * @package GetOpt
+ * @author  Thomas Flori <thflori@gmail.com>
+ */
 class Arguments
 {
     /** @var string[] */
