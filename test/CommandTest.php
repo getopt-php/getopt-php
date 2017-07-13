@@ -41,11 +41,11 @@ class CommandTest extends TestCase
 
     public function dataNamesNotAllowed()
     {
-        return [
-            ['-abc'],  // starts with dash
-            [''],      // is empty
-            ['df ae'], // has spaces
-        ];
+        return array(
+            array('-abc'),  // starts with dash
+            array(''),      // is empty
+            array('df ae'), // has spaces
+        );
     }
 
     public function testConstructorSavesDescription()

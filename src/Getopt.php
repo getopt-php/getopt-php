@@ -113,11 +113,13 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         }
 
 
-        $setCommand = function (Command $command) {
+        $getopt = $this;
+        $command = &$this->command;
+        $setCommand = function (Command $cmd) use ($getopt, &$command) {
             foreach ($command->getOptions() as $option) {
-                $this->addOption($option);
+                $getopt->addOption($option);
             }
-            $this->command = $command;
+            $command = $cmd;
         };
 
         $arguments->process($this, $setCommand, $this->operands);
