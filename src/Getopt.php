@@ -29,6 +29,10 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     /** @var Command[] */
     protected $commands = array();
 
+    /** The command that is executed determined by process
+     * @var Command */
+    protected $command;
+
     /** @var Option[] */
     protected $optionMapping = array();
 
@@ -84,6 +88,39 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     public function get($setting)
     {
         return isset($this->settings[$setting]) ? $this->settings[$setting] : null;
+    }
+
+    /**
+     * Process the given $arguments
+     *
+     * Sets the value for defined options, operands and the command.
+     *
+     * @param array|string|Arguments $arguments
+     */
+    public function process($arguments = null)
+    {
+        if ($arguments === null) {
+            $arguments = isset($_SERVER['argv']) ? array_slice($_SERVER['argv'], 1) : array();
+            $arguments = new Arguments($arguments);
+        } elseif (is_array($arguments)) {
+            $arguments = new Arguments($arguments);
+        } elseif (is_string($arguments)) {
+            $arguments = Arguments::fromString($arguments);
+        } elseif (!$arguments instanceof Arguments) {
+            throw new \InvalidArgumentException(
+                '$arguments has to be an instance of Arguments, an arguments string, an array of arguments or null'
+            );
+        }
+
+
+        $setCommand = function (Command $command) {
+            foreach ($command->getOptions() as $option) {
+                $this->addOption($option);
+            }
+            $this->command = $command;
+        };
+
+        $arguments->process($this, $setCommand, $this->operands);
     }
 
     /**
@@ -164,53 +201,6 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * Add an array of $commands
-     *
-     * @param Command[] $commands
-     * @return self
-     */
-    public function addCommands(array $commands)
-    {
-        foreach ($commands as $command) {
-            $this->addCommand($command);
-        }
-        return $this;
-    }
-
-    /**
-     * Add a $command
-     *
-     * @param Command $command
-     * @return self
-     */
-    public function addCommand(Command $command)
-    {
-        $this->commands[] = $command;
-        return $this;
-    }
-
-    /**
-     * @param array|string|Arguments $arguments
-     */
-    public function process($arguments = null)
-    {
-        if ($arguments === null) {
-            $arguments = isset($_SERVER['argv']) ? array_slice($_SERVER['argv'], 1) : array();
-            $arguments = new Arguments($arguments);
-        } elseif (is_array($arguments)) {
-            $arguments = new Arguments($arguments);
-        } elseif (is_string($arguments)) {
-            $arguments = Arguments::fromString($arguments);
-        } elseif (!$arguments instanceof Arguments) {
-            throw new \InvalidArgumentException(
-                '$arguments has to be an instance of Arguments, an arguments string, an array of arguments or null'
-            );
-        }
-
-        $arguments->process($this, $this->operands);
-    }
-
-    /**
      * Get an option by $name
      *
      * If $object is set to true it returns the Option instead of the value.
@@ -235,6 +225,98 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         }
 
         return $this->optionMapping[$name] !== null ? $this->optionMapping[$name]->getValue() : null;
+    }
+
+    /**
+     * Returns the list of options. Must be invoked after parse() (otherwise it returns an empty array).
+     *
+     * If $object is set to true it returns an array of Option instances.
+     *
+     * @param bool $objects
+     * @return array
+     */
+    public function getOptions($objects = false)
+    {
+        if ($objects) {
+            return $this->options;
+        }
+
+        $result = array();
+
+        foreach ($this->options as $option) {
+            $value = $option->getValue();
+            if ($value !== null) {
+                if ($short = $option->short()) {
+                    $result[$short] = $value;
+                }
+                if ($long = $option->long()) {
+                    $result[$long] = $value;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Add an array of $commands
+     *
+     * @param Command[] $commands
+     * @return self
+     */
+    public function addCommands(array $commands)
+    {
+        foreach ($commands as $command) {
+            $this->addCommand($command);
+        }
+        return $this;
+    }
+
+    /**
+     * Add a $command
+     *
+     * @param Command $command
+     * @return self
+     */
+    public function addCommand(Command $command)
+    {
+        foreach ($command->getOptions() as $option) {
+            if ($this->getOption($option->short(), true) || $this->getOption($option->long(), true)) {
+                throw new \InvalidArgumentException('$command has conflicting options');
+            }
+        }
+        $this->commands[$command->getName()] = $command;
+        return $this;
+    }
+
+    public function getCommand($name = null)
+    {
+        if ($name !== null) {
+            return isset($this->commands[$name]) ? $this->commands[$name] : null;
+        }
+
+        return $this->command;
+    }
+
+    /**
+     * Returns the list of operands. Must be invoked after parse().
+     *
+     * @return array
+     */
+    public function getOperands()
+    {
+        return $this->operands;
+    }
+
+    /**
+     * Returns the i-th operand (starting with 0), or null if it does not exist. Must be invoked after parse().
+     *
+     * @param int $i
+     * @return string
+     */
+    public function getOperand($i)
+    {
+        return ($i < count($this->operands)) ? $this->operands[$i] : null;
     }
 
     /**
@@ -277,58 +359,6 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     public function getHelpText()
     {
         return $this->getHelp()->render($this);
-    }
-
-    /**
-     * Returns the list of options. Must be invoked after parse() (otherwise it returns an empty array).
-     *
-     * If $object is set to true it returns an array of Option instances.
-     *
-     * @param bool $objects
-     * @return array
-     */
-    public function getOptions($objects = false)
-    {
-        if ($objects) {
-            return $this->options;
-        }
-
-        $result = array();
-
-        foreach ($this->options as $option) {
-            $value = $option->getValue();
-            if ($value !== null) {
-                if ($short = $option->short()) {
-                    $result[$short] = $value;
-                }
-                if ($long = $option->long()) {
-                    $result[$long] = $value;
-                }
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * Returns the list of operands. Must be invoked after parse().
-     *
-     * @return array
-     */
-    public function getOperands()
-    {
-        return $this->operands;
-    }
-
-    /**
-     * Returns the i-th operand (starting with 0), or null if it does not exist. Must be invoked after parse().
-     *
-     * @param int $i
-     * @return string
-     */
-    public function getOperand($i)
-    {
-        return ($i < count($this->operands)) ? $this->operands[$i] : null;
     }
 
     /**

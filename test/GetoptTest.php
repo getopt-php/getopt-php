@@ -276,4 +276,30 @@ class GetoptTest extends TestCase
 
         unset($getopt['a']);
     }
+
+    public function testAddCommandWithConflictingOptions()
+    {
+        $this->setExpectedException('InvalidArgumentException');
+
+        $getopt = new Getopt(array(
+            new Option('a'),
+        ));
+
+        $getopt->addCommand(new Command('test', 'Test that it throws', 'var_dump', array(
+            new Option('a'),
+        )));
+    }
+
+    public function testGetCommandByName()
+    {
+        $cmd1 = new Command('help', 'Get help for command', 'var_dump');
+        $cmd2 = new Command('test', 'Test commands', 'var_dump');
+        $getopt = new Getopt();
+
+        $getopt->addCOmmands(array( $cmd1, $cmd2 ));
+
+        self::assertSame($cmd1, $getopt->getCommand('help'));
+        self::assertSame($cmd2, $getopt->getCommand('test'));
+        self::assertNull($getopt->getCommand());
+    }
 }

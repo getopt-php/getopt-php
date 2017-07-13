@@ -20,17 +20,17 @@ class Command
     /** @var Option[] */
     protected $options = array();
 
-    /** @var callable */
+    /** @var mixed */
     protected $handler;
 
     /**
      * Command constructor.
      *
-     * @param string   $name
-     * @param string   $shortDescription
-     * @param mixed $handler
-     * @param array    $options
-     * @param string   $longDescription
+     * @param string $name
+     * @param string $shortDescription
+     * @param mixed  $handler
+     * @param array  $options
+     * @param string $longDescription
      */
     public function __construct(
         $name,
@@ -39,11 +39,25 @@ class Command
         array $options = array(),
         $longDescription = ''
     ) {
-        $this->name             = $name;
+        $this->setName($name);
         $this->shortDescription = $shortDescription;
         $this->handler          = $handler;
         $this->options          = $options;
         $this->longDescription  = $longDescription ?: $shortDescription;
+    }
+
+    /**
+     * @param string $name
+     */
+    protected function setName($name)
+    {
+        if (empty($name) || $name[0] === '-' || strpos($name, ' ') !== false) {
+            throw new \InvalidArgumentException(sprintf(
+                'Command name has to be an alphanumeric string not starting with dash, found \'%s\'',
+                $name
+            ));
+        }
+        $this->name = $name;
     }
 
     /**

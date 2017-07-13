@@ -32,6 +32,22 @@ class CommandTest extends TestCase
         self::assertSame('the-name', $this->command->getName());
     }
 
+    /** @dataProvider dataNamesNotAllowed */
+    public function testNamesNotAllowed($name)
+    {
+        $this->setExpectedException('InvalidArgumentException');
+        $command = new Command($name, '', null);
+    }
+
+    public function dataNamesNotAllowed()
+    {
+        return [
+            ['-abc'],  // starts with dash
+            [''],      // is empty
+            ['df ae'], // has spaces
+        ];
+    }
+
     public function testConstructorSavesDescription()
     {
         self::assertSame('a short description', $this->command->getDescription(true));

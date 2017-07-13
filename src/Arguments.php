@@ -28,11 +28,12 @@ class Arguments
      *
      * Stores operands using $addOperand callback.
      *
-     * @param Getopt $getopt
-     * @param string $operands
+     * @param Getopt   $getopt
+     * @param callable $setCommand
+     * @param array    $operands
      * @return bool
      */
-    public function process(Getopt $getopt, &$operands)
+    public function process(Getopt $getopt, callable $setCommand, &$operands)
     {
         while (($arg = array_shift($this->arguments)) !== null) {
             if ($this->isMeta($arg)) {
@@ -44,7 +45,11 @@ class Arguments
             }
 
             if ($this->isValue($arg)) {
-                $operands[] = $arg;
+                if (empty($operands) && $command = $getopt->getCommand($arg)) {
+                    $setCommand($command);
+                } else {
+                    $operands[] = $arg;
+                }
             }
 
             if ($this->isLongOption($arg)) {

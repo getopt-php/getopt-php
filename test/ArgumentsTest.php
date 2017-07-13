@@ -556,4 +556,17 @@ class ArgumentsTest extends TestCase
         $this->setExpectedException('UnexpectedValueException');
         $this->getopt->process('-a -b');
     }
+
+    public function testUsingCommand()
+    {
+        $cmd = new Command('test', 'test something', 'var_dump', [
+            new Option('a', 'alpha')
+        ]);
+        $this->getopt->addCommand($cmd);
+
+        $this->getopt->process('test -a --alpha');
+
+        self::assertSame(2, $this->getopt->getOption('a'));
+        self::assertSame($cmd, $this->getopt->getCommand());
+    }
 }
