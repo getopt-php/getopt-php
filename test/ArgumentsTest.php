@@ -559,9 +559,9 @@ class ArgumentsTest extends TestCase
 
     public function testUsingCommand()
     {
-        $cmd = new Command('test', 'test something', 'var_dump', [
+        $cmd = new Command('test', 'test something', 'var_dump', array(
             new Option('a', 'alpha')
-        ]);
+        ));
         $this->getopt->addCommand($cmd);
 
         $this->getopt->process('test -a --alpha');
