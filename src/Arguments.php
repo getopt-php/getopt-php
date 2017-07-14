@@ -2,6 +2,12 @@
 
 namespace GetOpt;
 
+/**
+ * Class Arguments
+ *
+ * @package GetOpt
+ * @author  Thomas Flori <thflori@gmail.com>
+ */
 class Arguments
 {
     /** @var string[] */
@@ -22,12 +28,20 @@ class Arguments
      *
      * Stores operands using $addOperand callback.
      *
-     * @param Getopt $getopt
-     * @param string $operands
+     * @param Getopt   $getopt
+     * @param callable $setCommand
+     * @param array    $operands
      * @return bool
      */
-    public function process(Getopt $getopt, &$operands)
+    public function process(Getopt $getopt, $setCommand, &$operands)
     {
+        // @codeCoverageIgnoreStart
+        // this is an annoying workaround for php 5.3 (there is no callable type hint)
+        if (!is_callable($setCommand)) {
+            throw new \InvalidArgumentException('Argument 2 passed to ' . __METHOD__ . ' must be callable');
+        }
+        // @codeCoverageIgnoreEnd
+
         while (($arg = array_shift($this->arguments)) !== null) {
             if ($this->isMeta($arg)) {
                 // everything from here are operands
@@ -38,7 +52,11 @@ class Arguments
             }
 
             if ($this->isValue($arg)) {
-                $operands[] = $arg;
+                if (empty($operands) && $command = $getopt->getCommand($arg)) {
+                    $setCommand($command);
+                } else {
+                    $operands[] = $arg;
+                }
             }
 
             if ($this->isLongOption($arg)) {
