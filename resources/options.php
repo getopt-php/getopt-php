@@ -1,29 +1,27 @@
-Options:
 <?php
 
 use GetOpt\Getopt;
+
+echo 'Options:' . PHP_EOL;
 
 /** @var \GetOpt\Option[] $options */
 
 $data            = array();
 $definitionWidth = 0;
 foreach ($options as $option) {
-    $argument = '';
+    $definition = implode(', ', array_filter( array(
+        $option->short() ? '-' . $option->short() : null,
+        $option->long() ? '--' . $option->long() : null,
+    )));
+
     if ($option->mode() !== Getopt::NO_ARGUMENT) {
         $argument = '<' . $option->getArgument()->getName() . '>';
         if ($option->mode() === Getopt::OPTIONAL_ARGUMENT) {
             $argument = '[' . $argument . ']';
         }
-    }
 
-    $definition = sprintf(
-        '%s %s',
-        implode(', ', array_filter( array(
-            $option->short() ? '-' . $option->short() : null,
-            $option->long() ? '--' . $option->long() : null,
-        ))),
-        $argument
-    );
+        $definition .= ' ' . $argument;
+    }
 
     if (strlen($definition) > $definitionWidth) {
         $definitionWidth = strlen($definition);

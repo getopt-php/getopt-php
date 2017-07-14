@@ -10,6 +10,9 @@ class Help implements HelpInterface
     /** @var string */
     protected $optionsTemplate;
 
+    /** @var string */
+    protected $commandsTemplate;
+
     /**
      * Create a Help object
      *
@@ -19,6 +22,7 @@ class Help implements HelpInterface
     {
         $this->usageTemplate = __DIR__ . '/../resources/usage.php';
         $this->optionsTemplate = __DIR__ . '/../resources/options.php';
+        $this->commandsTemplate = __DIR__ . '/../resources/commands.php';
     }
 
     /**
@@ -69,11 +73,16 @@ class Help implements HelpInterface
         $helpText = $this->renderTemplate($this->usageTemplate, array('getopt' => $getopt));
 
         // when we have options we add them too
-        $options = $getopt->getOptions(true);
-        if (!empty($options)) {
+        if ($getopt->hasOptions()) {
             $helpText .= $this->renderTemplate($this->optionsTemplate, array(
-                'getopt' => $getopt,
-                'options' => $options
+                'options' => $getopt->getOptions(true)
+            ));
+        }
+
+        // when we have commands we render commands template
+        if (!$getopt->getCommand() && $getopt->hasCommands()) {
+            $helpText .= $this->renderTemplate($this->commandsTemplate, array(
+                'commands' => $getopt->getCommands()
             ));
         }
 

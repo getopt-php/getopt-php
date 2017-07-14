@@ -260,6 +260,11 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         return $result;
     }
 
+    public function hasOptions()
+    {
+        return !empty($this->options);
+    }
+
     /**
      * Add an array of $commands
      *
@@ -291,6 +296,12 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         return $this;
     }
 
+    /**
+     * Get the current or a named command.
+     *
+     * @param string $name
+     * @return Command
+     */
     public function getCommand($name = null)
     {
         if ($name !== null) {
@@ -298,6 +309,24 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         }
 
         return $this->command;
+    }
+
+    /**
+     * @return Command[]
+     */
+    public function getCommands()
+    {
+        return $this->commands;
+    }
+
+    /**
+     * Check if commands are defined
+     *
+     * @return bool
+     */
+    public function hasCommands()
+    {
+        return !empty($this->commands);
     }
 
     /**

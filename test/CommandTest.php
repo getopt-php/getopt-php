@@ -86,4 +86,53 @@ class CommandTest extends TestCase
 
         self::assertSame('short description', $command->getDescription());
     }
+
+    public function testGetHelpForExecutedCommand()
+    {
+        $longDescription = 'This is a very long description.' . PHP_EOL . 'It also may have line breaks.';
+        $getopt = new Getopt();
+        $getopt->addCommand(new Command(
+            'test',
+            '',
+            'var_dump',
+            array(Option::create('a', 'alpha')->setDescription('enable alpha')),
+            $longDescription
+        ));
+        $script = $_SERVER['PHP_SELF'];
+
+        $getopt->process('test');
+        $help = $getopt->getHelpText();
+
+        self::assertSame(
+            'Usage: ' . $script . ' test [options] [operands]' . PHP_EOL .
+            '' . PHP_EOL .
+            $longDescription . PHP_EOL . PHP_EOL .
+            'Options:' . PHP_EOL .
+            '  -a, --alpha  enable alpha' . PHP_EOL,
+            $help
+        );
+    }
+
+    public function testGetHelpForCommands()
+    {
+        $cmd1 = new Command('help', 'Shows help for a command', 'var_dump');
+        $cmd2 = new Command('run:tests', 'Executes the tests', 'var_dump');
+        $getopt = new Getopt(array(
+            Option::create('h', 'help')->setDescription('Shows this help')
+        ));
+        $getopt->addCommands(array($cmd1, $cmd2));
+        $script = $_SERVER['PHP_SELF'];
+
+        $help = $getopt->getHelpText();
+
+        self::assertSame(
+            'Usage: ' . $script . ' [command] [options] [operands]' . PHP_EOL .
+            'Options:' . PHP_EOL .
+            '  -h, --help  Shows this help' . PHP_EOL .
+            'Commands:' . PHP_EOL .
+            '  help       Shows help for a command' . PHP_EOL .
+            '  run:tests  Executes the tests' . PHP_EOL,
+            $help
+        );
+    }
 }
