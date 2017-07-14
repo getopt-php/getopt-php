@@ -135,4 +135,31 @@ class CommandTest extends TestCase
             $help
         );
     }
+
+    public function testTooLongShortDescription()
+    {
+        defined('COLUMNS') || define('COLUMNS', 90);
+        $getopt = new Getopt(array(
+            Option::create('h', 'help')->setDescription('Shows this help')
+        ));
+        $getopt->addCommands(array(new Command(
+            'help',
+            'This is a too long help text to have it on one row. It is also too long for a short description. ' .
+            'You should avoid such long texts for a short description.',
+            'var_dump'
+        )));
+        $script = $_SERVER['PHP_SELF'];
+
+        $help = $getopt->getHelpText();
+
+        self::assertSame(
+            'Usage: ' . $script . ' [command] [options] [operands]' . PHP_EOL .
+            'Options:' . PHP_EOL .
+            '  -h, --help  Shows this help' . PHP_EOL .
+            'Commands:' . PHP_EOL .
+            '  help  This is a too long help text to have it on one row. It is also too long for a' . PHP_EOL .
+            '        short description. You should avoid such long texts for a short description.' . PHP_EOL,
+            $help
+        );
+    }
 }
