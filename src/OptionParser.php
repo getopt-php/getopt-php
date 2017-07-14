@@ -31,7 +31,7 @@ class OptionParser
         if (!mb_strlen($string)) {
             throw new \InvalidArgumentException('Option string must not be empty');
         }
-        $options        = array();
+        $options        = [];
         $eol            = mb_strlen($string) - 1;
         $nextCanBeColon = false;
         for ($i = 0; $i <= $eol; ++$i) {
@@ -119,6 +119,6 @@ class OptionParser
             $mode = $row[1];
         }
 
-        return array( $short, $long, $mode );
+        return [ $short, $long, $mode ];
     }
 }

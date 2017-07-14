@@ -18,7 +18,7 @@ class Help implements HelpInterface
      *
      * @param array $settings
      */
-    public function __construct(array $settings = array())
+    public function __construct(array $settings = [])
     {
         $this->usageTemplate = __DIR__ . '/../resources/usage.php';
         $this->optionsTemplate = __DIR__ . '/../resources/options.php';
@@ -70,20 +70,20 @@ class Help implements HelpInterface
     public function render(Getopt $getopt)
     {
         // we always append the usage
-        $helpText = $this->renderTemplate($this->usageTemplate, array('getopt' => $getopt));
+        $helpText = $this->renderTemplate($this->usageTemplate, [ 'getopt' => $getopt ]);
 
         // when we have options we add them too
         if ($getopt->hasOptions()) {
-            $helpText .= $this->renderTemplate($this->optionsTemplate, array(
+            $helpText .= $this->renderTemplate($this->optionsTemplate, [
                 'options' => $getopt->getOptions(true)
-            ));
+            ]);
         }
 
         // when we have commands we render commands template
         if (!$getopt->getCommand() && $getopt->hasCommands()) {
-            $helpText .= $this->renderTemplate($this->commandsTemplate, array(
+            $helpText .= $this->renderTemplate($this->commandsTemplate, [
                 'commands' => $getopt->getCommands()
-            ));
+            ]);
         }
 
         return $helpText;

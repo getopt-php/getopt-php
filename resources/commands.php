@@ -4,21 +4,21 @@ echo 'Commands:' . PHP_EOL;
 
 /** @var \GetOpt\Command[] $commands */
 
-$data      = array();
+$data      = [];
 $nameWidth = 0;
 foreach ($commands as $command) {
     if (strlen($command->getName()) > $nameWidth) {
         $nameWidth = strlen($command->getName());
     }
 
-    $data[] = array(
+    $data[] = [
         $command->getName(),
         $command->getDescription(true)
-    );
+    ];
 }
 
 $screenWidth = defined('COLUMNS') ? COLUMNS : @getenv('COLUMNS') ?: @exec('tput cols 2>/dev/null') ?: 90;
-$screenWidth = min(array(120, $screenWidth)); // max 120
+$screenWidth = min([ 120, $screenWidth ]); // max 120
 foreach ($data as $dataRow) {
     $row = sprintf('  % -' . $nameWidth . 's  %s', $dataRow[0], $dataRow[1]);
 

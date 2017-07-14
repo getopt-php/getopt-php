@@ -6,13 +6,13 @@ echo 'Options:' . PHP_EOL;
 
 /** @var \GetOpt\Option[] $options */
 
-$data            = array();
+$data            = [];
 $definitionWidth = 0;
 foreach ($options as $option) {
-    $definition = implode(', ', array_filter( array(
+    $definition = implode(', ', array_filter([
         $option->short() ? '-' . $option->short() : null,
         $option->long() ? '--' . $option->long() : null,
-    )));
+    ]));
 
     if ($option->mode() !== Getopt::NO_ARGUMENT) {
         $argument = '<' . $option->getArgument()->getName() . '>';
@@ -27,14 +27,14 @@ foreach ($options as $option) {
         $definitionWidth = strlen($definition);
     }
 
-    $data[] = array(
+    $data[] = [
         $definition,
         $option->getDescription()
-    );
+    ];
 }
 
 $screenWidth = defined('COLUMNS') ? COLUMNS : @getenv('COLUMNS') ?: @exec('tput cols 2>/dev/null') ?: 90;
-$screenWidth = min(array(120, $screenWidth)); // max 120
+$screenWidth = min([ 120, $screenWidth ]); // max 120
 foreach ($data as $dataRow) {
     $row = sprintf('  % -' . $definitionWidth . 's  %s', $dataRow[0], $dataRow[1]);
 

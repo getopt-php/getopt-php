@@ -171,7 +171,7 @@ class Arguments
     protected function shortNames($arg)
     {
         if (!$this->isOption($arg) || $this->isLongOption($arg)) {
-            return array();
+            return [];
         }
 
         return array_map(function ($i) use ($arg) {
@@ -212,12 +212,12 @@ class Arguments
      */
     public static function fromString($argsString)
     {
-        $argv = array('');
+        $argv = [ '' ];
         $argsString = trim($argsString);
         $argc = 0;
 
         if (empty($argsString)) {
-            return new self(array());
+            return new self([]);
         }
 
         $state = 'n'; // states: n (normal), d (double quoted), s (single quoted)
@@ -229,7 +229,7 @@ class Arguments
                         $state = 's';
                     } elseif ($char === '"') {
                         $state = 'd';
-                    } elseif (in_array($char, array("\n", "\t", ' '))) {
+                    } elseif (in_array($char, [ "\n", "\t", ' ' ])) {
                         $argc++;
                         $argv[$argc] = '';
                     } else {
