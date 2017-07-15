@@ -33,15 +33,8 @@ class Arguments
      * @param array    $operands
      * @return bool
      */
-    public function process(Getopt $getopt, $setCommand, &$operands)
+    public function process(Getopt $getopt, callable $setCommand, &$operands)
     {
-        // @codeCoverageIgnoreStart
-        // this is an annoying workaround for php 5.3 (there is no callable type hint)
-        if (!is_callable($setCommand)) {
-            throw new \InvalidArgumentException('Argument 2 passed to ' . __METHOD__ . ' must be callable');
-        }
-        // @codeCoverageIgnoreEnd
-
         while (($arg = array_shift($this->arguments)) !== null) {
             if ($this->isMeta($arg)) {
                 // everything from here are operands

@@ -113,13 +113,11 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         }
 
 
-        $getopt = $this;
-        $command = &$this->command;
-        $setCommand = function (Command $cmd) use ($getopt, &$command) {
-            foreach ($cmd->getOptions() as $option) {
-                $getopt->addOption($option);
+        $setCommand = function (Command $command) {
+            foreach ($command->getOptions() as $option) {
+                $this->addOption($option);
             }
-            $command = $cmd;
+            $this->command = $command;
         };
 
         $arguments->process($this, $setCommand, $this->operands);
@@ -385,11 +383,12 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * @see Help for setting a custom template
      * @see HelpInterface for creating an custom help formatter
+     * @param array $data This data will be forwarded to HelpInterface::render and is available in templates
      * @return string
      */
-    public function getHelpText()
+    public function getHelpText(array $data = [])
     {
-        return $this->getHelp()->render($this);
+        return $this->getHelp()->render($this, $data);
     }
 
     /**
