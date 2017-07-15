@@ -1,3 +1,32 @@
+## 3.0.0 (unpublished)
+
+Features:
+* php 5.3 support dropped (solves #72)
+* moved to neutral namespace `GetOpt`
+* parse options after operands (gnu compatibility; solves #39)
+* added `Getopt::MULTIPLE_ARGUMENT` for parameter aggregation (solves #57)
+* implemented `Command` for kinda routing in console applications (solves #41)
+* added `HelpInterface` for custom help implementations
+* refactored `Getopt::getHelpText()` for better support of other features and customization
+
+Bugfixes:
+* `Getopt::count()` returns the wrong value (solves #70)
+
+## 2.4.3 (2017-07-02)
+
+Features:
+* move documentation to master branch
+* added badges to readme
+
+## 2.4.2 (2017-07-01)
+
+Features:
+* don't show options when there are no options configured
+* allow arguments in quotes (allows single quote in double quote and vise versa)
+* get script name from argv[0] when parsing arguments from array or string
+* add method to set script name manually
+* support for php 7.1
+
 ## 2.3.0 (2015-03-28)
 
 Features:

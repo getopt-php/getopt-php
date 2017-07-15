@@ -5,7 +5,7 @@ permalink: /
 ---
 # {{ page.title }}
 
-Getopt.php is a command-line argument processor for PHP 5.3 and above. It started out as an object-oriented
+Getopt.php is a command-line argument processor for PHP 5.4 and above. It started out as an object-oriented
 replacement for PHP's own <a href="http://php.net/manual/en/function.getopt.php">`getopt()`</a> method,
 but has since evolved to become significantly more powerful.
 

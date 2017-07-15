@@ -6,7 +6,7 @@
 [![Total Downloads](https://poser.pugx.org/ulrichsg/getopt-php/downloads.svg)](https://packagist.org/packages/ulrichsg/getopt-php) 
 [![License](https://poser.pugx.org/ulrichsg/getopt-php/license.svg)](https://packagist.org/packages/ulrichsg/getopt-php)
 
-Getopt.PHP is a library for command-line argument processing. It supports PHP version 5.3 and above.
+Getopt.PHP is a library for command-line argument processing. It supports PHP version 5.4 and above.
 
 ## Features
 

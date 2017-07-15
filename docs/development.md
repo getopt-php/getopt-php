@@ -13,7 +13,7 @@ information.
 
 ## Guidelines
 
- - Getopt supports PHP versions back up to 5.3, so unfortunately, all those shiny language features from newer
+ - Getopt supports PHP versions back up to 5.4, so unfortunately, all those shiny language features from newer
 versions are off limits. Luckily, [Travis](https://travis-ci.org/getopt-php/getopt-php) ensures this
 automatically and will notify you if your pull request does not respect it (or if it breaks anything else).
  - With v2.0 we have adopted [PSR-2](http://www.php-fig.org/psr/psr-2/) as coding conventions, so we would
