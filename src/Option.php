@@ -190,12 +190,12 @@ class Option
      */
     public function setMode($mode)
     {
-        if (!in_array($mode, array(
+        if (!in_array($mode, [
             Getopt::NO_ARGUMENT,
             Getopt::OPTIONAL_ARGUMENT,
             Getopt::REQUIRED_ARGUMENT,
             Getopt::MULTIPLE_ARGUMENT,
-        ), true)) {
+        ], true)) {
             throw new \InvalidArgumentException(sprintf(
                 'Option mode must be one of %s, %s, %s and %s',
                 'Getopt::NO_ARGUMENT',
@@ -234,7 +234,7 @@ class Option
      */
     public function setValue($value = null)
     {
-        if ($value === null && in_array($this->mode, array(Getopt::REQUIRED_ARGUMENT, Getopt::MULTIPLE_ARGUMENT))) {
+        if ($value === null && in_array($this->mode, [ Getopt::REQUIRED_ARGUMENT, Getopt::MULTIPLE_ARGUMENT ])) {
             throw new \UnexpectedValueException(sprintf(
                 'Option \'%s\' must have a value',
                 $this->long() ?: $this->short()
@@ -253,7 +253,7 @@ class Option
         }
 
         if ($this->mode === Getopt::MULTIPLE_ARGUMENT) {
-            $this->value = $this->value === null ? array($value) : array_merge($this->value, array($value));
+            $this->value = $this->value === null ? [ $value ] : array_merge($this->value, [ $value ]);
         } else {
             $this->value = $value;
         }
@@ -272,7 +272,7 @@ class Option
                 return $this->value === null ? $this->argument->getDefaultValue() : $this->value;
 
             case Getopt::MULTIPLE_ARGUMENT:
-                return $this->value === null ? array($this->argument->getDefaultValue()) : $this->value;
+                return $this->value === null ? [ $this->argument->getDefaultValue() ] : $this->value;
 
             case Getopt::NO_ARGUMENT:
             default:

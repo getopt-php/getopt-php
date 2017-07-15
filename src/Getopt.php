@@ -19,25 +19,25 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     protected $help;
 
     /** @var array */
-    protected $settings = array(
+    protected $settings = [
         self::SETTING_DEFAULT_MODE => self::NO_ARGUMENT
-    );
+    ];
 
     /** @var Option[] */
-    protected $options = array();
+    protected $options = [];
 
     /** @var Command[] */
-    protected $commands = array();
+    protected $commands = [];
 
     /** The command that is executed determined by process
      * @var Command */
     protected $command;
 
     /** @var Option[] */
-    protected $optionMapping = array();
+    protected $optionMapping = [];
 
     /** @var string[] */
-    protected $operands = array();
+    protected $operands = [];
 
     /**
      * Creates a new Getopt object.
@@ -49,7 +49,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      * @param array $settings
      * @link https://www.gnu.org/s/hello/manual/libc/Getopt.html GNU Getopt manual
      */
-    public function __construct($options = null, array $settings = array())
+    public function __construct($options = null, array $settings = [])
     {
         if ($options !== null) {
             $this->addOptions($options);
@@ -100,7 +100,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     public function process($arguments = null)
     {
         if ($arguments === null) {
-            $arguments = isset($_SERVER['argv']) ? array_slice($_SERVER['argv'], 1) : array();
+            $arguments = isset($_SERVER['argv']) ? array_slice($_SERVER['argv'], 1) : [];
             $arguments = new Arguments($arguments);
         } elseif (is_array($arguments)) {
             $arguments = new Arguments($arguments);
@@ -113,13 +113,11 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         }
 
 
-        $getopt = $this;
-        $command = &$this->command;
-        $setCommand = function (Command $cmd) use ($getopt, &$command) {
-            foreach ($cmd->getOptions() as $option) {
-                $getopt->addOption($option);
+        $setCommand = function (Command $command) {
+            foreach ($command->getOptions() as $option) {
+                $this->addOption($option);
             }
-            $command = $cmd;
+            $this->command = $command;
         };
 
         $arguments->process($this, $setCommand, $this->operands);
@@ -243,7 +241,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
             return $this->options;
         }
 
-        $result = array();
+        $result = [];
 
         foreach ($this->options as $option) {
             $value = $option->getValue();
@@ -385,11 +383,12 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * @see Help for setting a custom template
      * @see HelpInterface for creating an custom help formatter
+     * @param array $data This data will be forwarded to HelpInterface::render and is available in templates
      * @return string
      */
-    public function getHelpText()
+    public function getHelpText(array $data = [])
     {
-        return $this->getHelp()->render($this);
+        return $this->getHelp()->render($this, $data);
     }
 
     /**
@@ -440,7 +439,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
 
     public function getIterator()
     {
-        $result = array();
+        $result = [];
 
         foreach ($this->options as $option) {
             if ($value = $option->getValue()) {

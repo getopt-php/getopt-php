@@ -31,13 +31,13 @@ class OptionTest extends TestCase
 
     public function dataConstructFails()
     {
-        return array(
-            array(null, null, Getopt::NO_ARGUMENT),      // long and short are both empty
-            array('&', null, Getopt::NO_ARGUMENT),       // short name must be one of [a-zA-Z0-9?!§$%#]
-            array(null, 'öption', Getopt::NO_ARGUMENT),  // long name may contain only alphanumeric chars, _ and -
-            array('a', null, 'no_argument'),             // invalid mode
-            array(null, 'a', Getopt::NO_ARGUMENT)        // long name must be at least 2 characters long
-        );
+        return [
+            [ null, null, Getopt::NO_ARGUMENT ],      // long and short are both empty
+            [ '&', null, Getopt::NO_ARGUMENT ],       // short name must be one of [a-zA-Z0-9?!§$%#]
+            [ null, 'öption', Getopt::NO_ARGUMENT ],  // long name may contain only alphanumeric chars, _ and -
+            [ 'a', null, 'no_argument' ],             // invalid mode
+            [ null, 'a', Getopt::NO_ARGUMENT ]        // long name must be at least 2 characters long
+        ];
     }
 
     /** @dataProvider dataMatches */
@@ -47,12 +47,12 @@ class OptionTest extends TestCase
     }
     public function dataMatches()
     {
-        return array(
-            array(new Option('v', null), 'v', true),
-            array(new Option(null, 'verbose'), 'verbose', true),
-            array(new Option(null, 'verbose'), 'v', false),
-            array(new Option('v', 'verbose'), 'v', true)
-        );
+        return [
+            [ new Option('v', null), 'v', true ],
+            [ new Option(null, 'verbose'), 'verbose', true ],
+            [ new Option(null, 'verbose'), 'v', false ],
+            [ new Option('v', 'verbose'), 'v', true ]
+        ];
     }
 
     public function testSetArgument()

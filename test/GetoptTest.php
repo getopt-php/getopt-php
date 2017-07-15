@@ -10,13 +10,11 @@ class GetoptTest extends TestCase
     {
         $getopt = new Getopt();
         $getopt->addOptions('a:');
-        $getopt->addOptions(
-            array(
-                array('s', null, Getopt::OPTIONAL_ARGUMENT),
-                array(null, 'long', Getopt::OPTIONAL_ARGUMENT),
-                array('n', 'name', Getopt::OPTIONAL_ARGUMENT)
-            )
-        );
+        $getopt->addOptions([
+                [ 's', null, Getopt::OPTIONAL_ARGUMENT ],
+                [ null, 'long', Getopt::OPTIONAL_ARGUMENT ],
+                [ 'n', 'name', Getopt::OPTIONAL_ARGUMENT ]
+        ]);
 
         $getopt->parse('-a aparam -s sparam --long longparam');
 
@@ -28,12 +26,10 @@ class GetoptTest extends TestCase
     public function testAddOptionsChooseShortOrLongAutomatically()
     {
         $getopt = new Getopt();
-        $getopt->addOptions(
-            array(
-                array('s'),
-                array('long', Getopt::OPTIONAL_ARGUMENT)
-            )
-        );
+        $getopt->addOptions([
+            [ 's' ],
+            [ 'long', Getopt::OPTIONAL_ARGUMENT ]
+        ]);
 
         $getopt->parse('-s --long longparam');
         $this->assertEquals('longparam', $getopt->getOption('long'));
@@ -42,14 +38,12 @@ class GetoptTest extends TestCase
 
     public function testAddOptionsUseDefaultArgumentType()
     {
-        $getopt = new Getopt(null, array(
+        $getopt = new Getopt(null, [
             Getopt::SETTING_DEFAULT_MODE => Getopt::REQUIRED_ARGUMENT
-        ));
-        $getopt->addOptions(
-            array(
-                array('l', 'long')
-            )
-        );
+        ]);
+        $getopt->addOptions([
+            [ 'l', 'long' ]
+        ]);
 
         $getopt->parse('-l something');
         $this->assertEquals('something', $getopt->getOption('l'));
@@ -67,9 +61,9 @@ class GetoptTest extends TestCase
 
     public function testChangeModeAfterwards()
     {
-        $getopt = new Getopt(array(
-            array('a', null, Getopt::REQUIRED_ARGUMENT)
-        ));
+        $getopt = new Getopt([
+            [ 'a', null, Getopt::REQUIRED_ARGUMENT ]
+        ]);
 
         $getopt->getOption('a', true)->setMode(Getopt::NO_ARGUMENT);
         $getopt->parse('-a foo');
@@ -81,17 +75,17 @@ class GetoptTest extends TestCase
     public function testAddOptionsFailsOnConflict()
     {
         $this->setExpectedException('\InvalidArgumentException');
-        $getopt = new Getopt(array(
-            array('v', 'version')
-        ));
-        $getopt->addOptions(array(
-            array('v', 'verbose')
-        ));
+        $getopt = new Getopt([
+            [ 'v', 'version' ]
+        ]);
+        $getopt->addOptions([
+            [ 'v', 'verbose' ]
+        ]);
     }
 
     public function testParseUsesGlobalArgvWhenNoneGiven()
     {
-        $_SERVER['argv'] = array('foo.php', '-a');
+        $_SERVER['argv'] = [ 'foo.php', '-a' ];
 
         $getopt = new Getopt('a');
         $getopt->parse();
@@ -116,11 +110,11 @@ class GetoptTest extends TestCase
 
     public function testCountable()
     {
-        $getopt = new Getopt(array(
+        $getopt = new Getopt([
             new Option('a', 'alpha'),
             new Option('b', 'beta'),
             new Option('c', 'gamma'),
-        ));
+        ]);
         $getopt->parse('-abc');
         $this->assertEquals(3, count($getopt));
     }
@@ -134,12 +128,12 @@ class GetoptTest extends TestCase
 
     public function testIterable()
     {
-        $getopt = new Getopt(array(
-            array(null, 'alpha', Getopt::NO_ARGUMENT),
-            array('b', 'beta', Getopt::REQUIRED_ARGUMENT)
-        ));
+        $getopt = new Getopt([
+            [ null, 'alpha', Getopt::NO_ARGUMENT ],
+            [ 'b', 'beta', Getopt::REQUIRED_ARGUMENT ]
+        ]);
         $getopt->parse('--alpha -b foo');
-        $expected = array('alpha' => 1, 'b' => 'foo'); // 'beta' should not occur
+        $expected = [ 'alpha' => 1, 'b' => 'foo' ]; // 'beta' should not occur
         foreach ($getopt as $option => $value) {
             $this->assertEquals($expected[$option], $value);
         }
@@ -147,11 +141,11 @@ class GetoptTest extends TestCase
 
     public function testHelpText()
     {
-        $getopt = new Getopt(array(
-            array('a', 'alpha', Getopt::NO_ARGUMENT, 'Short and long options with no argument'),
-            array(null, 'beta', Getopt::OPTIONAL_ARGUMENT, 'Long option only with an optional argument'),
-            array('c', null, Getopt::REQUIRED_ARGUMENT, 'Short option only with a mandatory argument')
-        ));
+        $getopt = new Getopt([
+            [ 'a', 'alpha', Getopt::NO_ARGUMENT, 'Short and long options with no argument' ],
+            [ null, 'beta', Getopt::OPTIONAL_ARGUMENT, 'Long option only with an optional argument' ],
+            [ 'c', null, Getopt::REQUIRED_ARGUMENT, 'Short option only with a mandatory argument' ]
+        ]);
         $getopt->parse('');
 
         $script = $_SERVER['PHP_SELF'];
@@ -167,11 +161,11 @@ class GetoptTest extends TestCase
 
     public function testHelpTextWithoutDescriptions()
     {
-        $getopt = new Getopt(array(
-            array('a', 'alpha', Getopt::NO_ARGUMENT),
-            array(null, 'beta', Getopt::OPTIONAL_ARGUMENT),
-            array('c', null, Getopt::REQUIRED_ARGUMENT)
-        ));
+        $getopt = new Getopt([
+            [ 'a', 'alpha', Getopt::NO_ARGUMENT ],
+            [ null, 'beta', Getopt::OPTIONAL_ARGUMENT ],
+            [ 'c', null, Getopt::REQUIRED_ARGUMENT ]
+        ]);
         $getopt->parse('');
 
         $script = $_SERVER['PHP_SELF'];
@@ -188,12 +182,14 @@ class GetoptTest extends TestCase
     public function testHelpTextWithLongDescriptions()
     {
         defined('COLUMNS') || define('COLUMNS', 90);
-        $getopt = new Getopt(array(
-            array('a', 'alpha', Getopt::NO_ARGUMENT, 'Short and long options with no argument and a very long text ' .
-                                                     'that exceeds the length of the row'),
-            array(null, 'beta', Getopt::OPTIONAL_ARGUMENT, 'Long option only with an optional argument'),
-            array('c', null, Getopt::REQUIRED_ARGUMENT, 'Short option only with a mandatory argument')
-        ));
+        $getopt = new Getopt([
+            [
+                'a', 'alpha', Getopt::NO_ARGUMENT, 'Short and long options with no argument and a very long text ' .
+                                                   'that exceeds the length of the row'
+            ],
+            [ null, 'beta', Getopt::OPTIONAL_ARGUMENT, 'Long option only with an optional argument' ],
+            [ 'c', null, Getopt::REQUIRED_ARGUMENT, 'Short option only with a mandatory argument' ]
+        ]);
         $getopt->parse('');
 
         $script = $_SERVER['PHP_SELF'];
@@ -281,13 +277,13 @@ class GetoptTest extends TestCase
     {
         $this->setExpectedException('InvalidArgumentException');
 
-        $getopt = new Getopt(array(
+        $getopt = new Getopt([
             new Option('a'),
-        ));
+        ]);
 
-        $getopt->addCommand(new Command('test', 'Test that it throws', 'var_dump', array(
+        $getopt->addCommand(new Command('test', 'Test that it throws', 'var_dump', [
             new Option('a'),
-        )));
+        ]));
     }
 
     public function testGetCommandByName()
@@ -296,7 +292,7 @@ class GetoptTest extends TestCase
         $cmd2 = new Command('test', 'Test commands', 'var_dump');
         $getopt = new Getopt();
 
-        $getopt->addCOmmands(array( $cmd1, $cmd2 ));
+        $getopt->addCOmmands([ $cmd1, $cmd2 ]);
 
         self::assertSame($cmd1, $getopt->getCommand('help'));
         self::assertSame($cmd2, $getopt->getCommand('test'));

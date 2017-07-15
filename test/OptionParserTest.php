@@ -65,11 +65,11 @@ class OptionParserTest extends TestCase
 
     public function provideOptionArrays()
     {
-        return array(
-            array(array('a', 'alpha', Getopt::OPTIONAL_ARGUMENT, 'Description', 42)),
-            array(array('b', 'beta')),
-            array(array('c')),
-        );
+        return [
+            [ [ 'a', 'alpha', Getopt::OPTIONAL_ARGUMENT, 'Description', 42 ] ],
+            [ [ 'b', 'beta' ] ],
+            [ [ 'c' ] ],
+        ];
     }
 
     /**
@@ -106,12 +106,12 @@ class OptionParserTest extends TestCase
     public function testParseArrayEmpty()
     {
         $this->setExpectedException('InvalidArgumentException');
-        $this->parser->parseArray(array());
+        $this->parser->parseArray([]);
     }
 
     public function testParseArrayInvalid()
     {
         $this->setExpectedException('InvalidArgumentException');
-        $this->parser->parseArray(array('a', 'b'));
+        $this->parser->parseArray([ 'a', 'b' ]);
     }
 }

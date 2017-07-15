@@ -18,7 +18,7 @@ class Command
     protected $longDescription;
 
     /** @var Option[] */
-    protected $options = array();
+    protected $options = [];
 
     /** @var mixed */
     protected $handler;
@@ -36,7 +36,7 @@ class Command
         $name,
         $shortDescription,
         $handler,
-        array $options = array(),
+        array $options = [],
         $longDescription = ''
     ) {
         $this->setName($name);

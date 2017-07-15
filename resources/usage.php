@@ -1,9 +1,11 @@
 <?php
 
+/** @var \GetOpt\Getopt $getopt */
+/** @var \GetOpt\Command $command */
+
 echo 'Usage: ' . $getopt->get(GetOpt\Getopt::SETTING_SCRIPT_NAME) . ' ';
 
-$command = $getopt->getCommand();
-if ($command) {
+if (isset($command)) {
     echo $command->getName() . ' ';
 } elseif ($getopt->hasCommands()) {
     echo '[command] ';
@@ -11,6 +13,6 @@ if ($command) {
 
 echo '[options] [operands]' . PHP_EOL;
 
-if ($command) {
+if (isset($command)) {
     echo PHP_EOL . $command->getDescription() . PHP_EOL . PHP_EOL;
 }

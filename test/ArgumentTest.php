@@ -18,7 +18,7 @@ class ArgumentTest extends TestCase
     {
         $this->setExpectedException('InvalidArgumentException');
         $argument = new Argument();
-        $argument->setDefaultValue(array());
+        $argument->setDefaultValue([]);
     }
 
     public function testValidates()

@@ -8,20 +8,20 @@ class CommandTest extends TestCase
 {
     /** @var Command */
     protected $command;
-    protected $options = array();
+    protected $options = [];
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->options = array(
+        $this->options = [
             new Option('a', 'opta'),
             new Option('b', 'optb'),
-        );
+        ];
         $this->command = new Command(
             'the-name',
             'a short description',
-            array('\PDO', 'getAvailableDrivers'),
+            [ '\PDO', 'getAvailableDrivers' ],
             $this->options,
             'a long description might be longer'
         );
@@ -41,11 +41,11 @@ class CommandTest extends TestCase
 
     public function dataNamesNotAllowed()
     {
-        return array(
-            array('-abc'),  // starts with dash
-            array(''),      // is empty
-            array('df ae'), // has spaces
-        );
+        return [
+            [ '-abc' ],  // starts with dash
+            [ '' ],      // is empty
+            [ 'df ae' ], // has spaces
+        ];
     }
 
     public function testConstructorSavesDescription()
@@ -60,7 +60,7 @@ class CommandTest extends TestCase
 
     public function testConstructorSavesHandler()
     {
-        self::assertSame(array('\PDO', 'getAvailableDrivers'), $this->command->getHandler());
+        self::assertSame([ '\PDO', 'getAvailableDrivers' ], $this->command->getHandler());
     }
 
     public function testConstructorSavesOptions()
@@ -71,9 +71,9 @@ class CommandTest extends TestCase
     public function testAddOptionsAppendsOptions()
     {
         $optionC = new Option('c', 'optc');
-        $this->command->addOptions(array($optionC));
+        $this->command->addOptions([ $optionC ]);
 
-        self::assertSame(array($this->options[0], $this->options[1], $optionC), $this->command->getOptions());
+        self::assertSame([ $this->options[0], $this->options[1], $optionC ], $this->command->getOptions());
     }
 
     public function testConstructorUsesShortDescription()
@@ -95,7 +95,7 @@ class CommandTest extends TestCase
             'test',
             '',
             'var_dump',
-            array(Option::create('a', 'alpha')->setDescription('enable alpha')),
+            [ Option::create('a', 'alpha')->setDescription('enable alpha') ],
             $longDescription
         ));
         $script = $_SERVER['PHP_SELF'];
@@ -117,10 +117,10 @@ class CommandTest extends TestCase
     {
         $cmd1 = new Command('help', 'Shows help for a command', 'var_dump');
         $cmd2 = new Command('run:tests', 'Executes the tests', 'var_dump');
-        $getopt = new Getopt(array(
+        $getopt = new Getopt([
             Option::create('h', 'help')->setDescription('Shows this help')
-        ));
-        $getopt->addCommands(array($cmd1, $cmd2));
+        ]);
+        $getopt->addCommands([ $cmd1, $cmd2 ]);
         $script = $_SERVER['PHP_SELF'];
 
         $help = $getopt->getHelpText();
@@ -139,15 +139,15 @@ class CommandTest extends TestCase
     public function testTooLongShortDescription()
     {
         defined('COLUMNS') || define('COLUMNS', 90);
-        $getopt = new Getopt(array(
+        $getopt = new Getopt([
             Option::create('h', 'help')->setDescription('Shows this help')
-        ));
-        $getopt->addCommands(array(new Command(
+        ]);
+        $getopt->addCommands([new Command(
             'help',
             'This is a too long help text to have it on one row. It is also too long for a short description. ' .
             'You should avoid such long texts for a short description.',
             'var_dump'
-        )));
+        )]);
         $script = $_SERVER['PHP_SELF'];
 
         $help = $getopt->getHelpText();

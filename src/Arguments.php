@@ -33,15 +33,8 @@ class Arguments
      * @param array    $operands
      * @return bool
      */
-    public function process(Getopt $getopt, $setCommand, &$operands)
+    public function process(Getopt $getopt, callable $setCommand, &$operands)
     {
-        // @codeCoverageIgnoreStart
-        // this is an annoying workaround for php 5.3 (there is no callable type hint)
-        if (!is_callable($setCommand)) {
-            throw new \InvalidArgumentException('Argument 2 passed to ' . __METHOD__ . ' must be callable');
-        }
-        // @codeCoverageIgnoreEnd
-
         while (($arg = array_shift($this->arguments)) !== null) {
             if ($this->isMeta($arg)) {
                 // everything from here are operands
@@ -171,7 +164,7 @@ class Arguments
     protected function shortNames($arg)
     {
         if (!$this->isOption($arg) || $this->isLongOption($arg)) {
-            return array();
+            return [];
         }
 
         return array_map(function ($i) use ($arg) {
@@ -212,12 +205,12 @@ class Arguments
      */
     public static function fromString($argsString)
     {
-        $argv = array('');
+        $argv = [ '' ];
         $argsString = trim($argsString);
         $argc = 0;
 
         if (empty($argsString)) {
-            return new self(array());
+            return new self([]);
         }
 
         $state = 'n'; // states: n (normal), d (double quoted), s (single quoted)
@@ -229,7 +222,7 @@ class Arguments
                         $state = 's';
                     } elseif ($char === '"') {
                         $state = 'd';
-                    } elseif (in_array($char, array("\n", "\t", ' '))) {
+                    } elseif (in_array($char, [ "\n", "\t", ' ' ])) {
                         $argc++;
                         $argv[$argc] = '';
                     } else {
