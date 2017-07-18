@@ -11,7 +11,11 @@ if (isset($command)) {
     echo '[command] ';
 }
 
-echo '[options] [operands]' . PHP_EOL;
+if ($getopt->hasOptions()) {
+    echo '[options] ';
+}
+
+echo '[operands]' . PHP_EOL;
 
 if (isset($command)) {
     echo PHP_EOL . $command->getDescription() . PHP_EOL . PHP_EOL;

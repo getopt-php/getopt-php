@@ -30,16 +30,16 @@ class Arguments
      *
      * @param Getopt   $getopt
      * @param callable $setCommand
-     * @param array    $operands
+     * @param callable $addOperand
      * @return bool
      */
-    public function process(Getopt $getopt, callable $setCommand, &$operands)
+    public function process(Getopt $getopt, callable $setCommand, callable $addOperand)
     {
         while (($arg = array_shift($this->arguments)) !== null) {
             if ($this->isMeta($arg)) {
                 // everything from here are operands
                 foreach ($this->arguments as $argument) {
-                    $operands[] = $argument;
+                    $addOperand($argument);
                 }
                 break;
             }
@@ -48,7 +48,7 @@ class Arguments
                 if (empty($operands) && $command = $getopt->getCommand($arg)) {
                     $setCommand($command);
                 } else {
-                    $operands[] = $arg;
+                    $addOperand($arg);
                 }
             }
 

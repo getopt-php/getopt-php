@@ -29,6 +29,9 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     /** @var Command[] */
     protected $commands = [];
 
+    /** @var Operand[] */
+    protected $operands = [];
+
     /** The command that is executed determined by process
      * @var Command */
     protected $command;
@@ -37,7 +40,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     protected $optionMapping = [];
 
     /** @var string[] */
-    protected $operands = [];
+    protected $operandValues = [];
 
     /**
      * Creates a new Getopt object.
@@ -120,7 +123,19 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
             $this->command = $command;
         };
 
-        $arguments->process($this, $setCommand, $this->operands);
+        $addOperand = function ($value) {
+            if (($operand = $this->nextOperand()) && $operand->hasValidation() && !$operand->validates($value)) {
+                throw new \UnexpectedValueException(sprintf('Operand %s has an invalid value', $operand->getName()));
+            }
+
+            $this->operandValues[] = $value;
+        };
+
+        $arguments->process($this, $setCommand, $addOperand);
+
+        if (($operand = $this->nextOperand()) && $operand->isRequired()) {
+            throw new \UnexpectedValueException(sprintf('Operand %s is required', $operand->getName()));
+        }
     }
 
     /**
@@ -327,6 +342,28 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         return !empty($this->commands);
     }
 
+    public function addOperands(array $operands)
+    {
+        foreach ($operands as $operand) {
+            $this->addOperand($operand);
+        }
+
+        return $this;
+    }
+
+    public function addOperand(Operand $operand)
+    {
+        $this->operands[] = $operand;
+
+        return $this;
+    }
+
+    protected function nextOperand()
+    {
+        return count($this->operands) > count($this->operandValues) ?
+            $this->operands[count($this->operandValues)] : null;
+    }
+
     /**
      * Returns the list of operands. Must be invoked after parse().
      *
@@ -334,18 +371,31 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      */
     public function getOperands()
     {
-        return $this->operands;
+        return $this->operandValues;
     }
 
     /**
      * Returns the i-th operand (starting with 0), or null if it does not exist. Must be invoked after parse().
      *
-     * @param int $i
+     * @param int|string $i
      * @return string
      */
     public function getOperand($i)
     {
-        return ($i < count($this->operands)) ? $this->operands[$i] : null;
+        if (is_string($i)) {
+            $name = $i;
+            foreach ($this->operands as $i => $operand) {
+                if ($operand->getName() === $name) {
+                    // return default when there is no value
+                    if ($i >= count($this->operandValues)) {
+                        return $operand->getDefaultValue();
+                    }
+                    break;
+                }
+            }
+        }
+
+        return ($i < count($this->operandValues)) ? $this->operandValues[$i] : null;
     }
 
     /**
