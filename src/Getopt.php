@@ -353,6 +353,11 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
 
     public function addOperand(Operand $operand)
     {
+        if ($operand->isRequired()) {
+            foreach ($this->operands as $previousOperand) {
+                $previousOperand->required();
+            }
+        }
         $this->operands[] = $operand;
 
         return $this;
@@ -367,10 +372,15 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     /**
      * Returns the list of operands. Must be invoked after parse().
      *
-     * @return array
+     * @param bool $objects Whether to return the operand specifications
+     * @return array|Operand[]
      */
-    public function getOperands()
+    public function getOperands($objects = false)
     {
+        if ($objects) {
+            return $this->operands;
+        }
+
         return $this->operandValues;
     }
 

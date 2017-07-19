@@ -16,4 +16,10 @@ class Operand extends Argument
     {
         return $this->required;
     }
+
+    public function required($required = true)
+    {
+        $this->required = $required;
+        return $this;
+    }
 }
