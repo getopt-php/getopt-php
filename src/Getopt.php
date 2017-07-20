@@ -117,9 +117,8 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
 
 
         $setCommand = function (Command $command) {
-            foreach ($command->getOptions() as $option) {
-                $this->addOption($option);
-            }
+            $this->addOptions($command->getOptions());
+            $this->addOperands($command->getOperands());
             $this->command = $command;
         };
 
@@ -134,7 +133,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         $arguments->process($this, $setCommand, $addOperand);
 
         if (($operand = $this->nextOperand()) && $operand->isRequired()) {
-            throw new \UnexpectedValueException(sprintf('Operand %s is required', $operand->getName()));
+            throw new MissingArgumentException(sprintf('Operand %s is required', $operand->getName()));
         }
     }
 
@@ -392,25 +391,31 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     /**
      * Returns the i-th operand (starting with 0), or null if it does not exist. Must be invoked after parse().
      *
-     * @param int|string $i
+     * @param int|string $index
      * @return string
      */
-    public function getOperand($i)
+    public function getOperand($index)
     {
-        if (is_string($i)) {
-            $name = $i;
-            foreach ($this->operands as $i => $operand) {
+        if (is_string($index)) {
+            $name = $index;
+            foreach ($this->operands as $index => $operand) {
                 if ($operand->getName() === $name) {
                     // return default when there is no value
-                    if ($i >= count($this->operandValues)) {
+                    if ($index >= count($this->operandValues)) {
                         return $operand->getDefaultValue();
                     }
                     break;
                 }
             }
+            if ($index === $name) {
+                throw new \InvalidArgumentException(sprintf(
+                    'Operand %s is not defined',
+                    $name
+                ));
+            }
         }
 
-        return ($i < count($this->operandValues)) ? $this->operandValues[$i] : null;
+        return isset($this->operandValues[$index]) ? $this->operandValues[$index] : null;
     }
 
     /**
