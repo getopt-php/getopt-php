@@ -2,6 +2,12 @@
 
 namespace GetOpt;
 
+/**
+ * Class Help
+ *
+ * @package GetOpt
+ * @author  Thomas Flori <thflori@gmail.com>
+ */
 class Help implements HelpInterface
 {
     /** @var string */

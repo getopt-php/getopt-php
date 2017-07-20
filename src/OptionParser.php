@@ -4,6 +4,9 @@ namespace GetOpt;
 
 /**
  * Converts user-given option specifications into Option objects.
+ *
+ * @package GetOpt
+ * @author  Ulrich Schmidt-Goertz
  */
 class OptionParser
 {

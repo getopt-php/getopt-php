@@ -51,6 +51,7 @@ class Command
 
     /**
      * @param string $name
+     * @return self
      */
     protected function setName($name)
     {
@@ -61,6 +62,15 @@ class Command
             ));
         }
         $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**
@@ -144,13 +154,5 @@ class Command
     public function getDescription($short = false)
     {
         return $short ? $this->shortDescription : $this->longDescription;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 }

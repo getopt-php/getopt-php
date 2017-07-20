@@ -4,6 +4,9 @@ namespace GetOpt;
 
 /**
  * Represents an option that Getopt accepts.
+ *
+ * @package GetOpt
+ * @author  Ulrich Schmidt-Goertz
  */
 class Option
 {

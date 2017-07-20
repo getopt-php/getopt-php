@@ -2,6 +2,12 @@
 
 namespace GetOpt;
 
+/**
+ * Class Argument
+ *
+ * @package GetOpt
+ * @author  Ulrich Schmidt-Goertz
+ */
 class Argument
 {
     const CLASSNAME = __CLASS__;
@@ -16,9 +22,9 @@ class Argument
     /**
      * Creates a new argument.
      *
-     * @param mixed $default Default value or NULL
-     * @param callable|null $validation a validation function (optional)
-     * @throws \InvalidArgumentException
+     * @param mixed    $default    Default value or NULL
+     * @param callable $validation A validation function
+     * @param string   $name       A name for the argument
      */
     public function __construct($default = null, $validation = null, $name = "arg")
     {

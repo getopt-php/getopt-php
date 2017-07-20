@@ -2,6 +2,12 @@
 
 namespace GetOpt;
 
+/**
+ * Interface HelpInterface
+ *
+ * @package GetOpt
+ * @author  Thomas Flori <thflori@gmail.com>
+ */
 interface HelpInterface
 {
     /**

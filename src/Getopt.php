@@ -2,6 +2,12 @@
 
 namespace GetOpt;
 
+/**
+ * Class Getopt
+ *
+ * @package GetOpt
+ * @author  Thomas Flori <thflori@gmail.com>
+ */
 class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
 {
     const NO_ARGUMENT = 0;
