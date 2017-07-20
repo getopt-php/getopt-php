@@ -369,6 +369,11 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
             $this->operands[count($this->operandValues)] : null;
     }
 
+    public function hasOperands()
+    {
+        return !empty($this->operands);
+    }
+
     /**
      * Returns the list of operands. Must be invoked after parse().
      *

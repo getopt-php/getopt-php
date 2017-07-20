@@ -86,4 +86,19 @@ class OperandsTest extends TestCase
 
         self::assertTrue($getopt->getOperands(true)[0]->isRequired());
     }
+
+    public function testHelpContainsOperandNames()
+    {
+        $operand1 = new Operand('op1', true);
+        $operand2 = new Operand('op2', false);
+        $script = $_SERVER['PHP_SELF'];
+
+        $getopt = new Getopt();
+        $getopt->addOperands([$operand1, $operand2]);
+
+        self::assertSame(
+            'Usage: ' . $script . ' <op1> [<op2>] [operands]' . PHP_EOL,
+            $getopt->getHelpText()
+        );
+    }
 }

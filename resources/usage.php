@@ -15,6 +15,16 @@ if ($getopt->hasOptions()) {
     echo '[options] ';
 }
 
+if ($getopt->hasOperands()) {
+    foreach ($getopt->getOperands(true) as $operand) {
+        $name = '<' . $operand->getName() . '>';
+        if (!$operand->isRequired()) {
+            $name = '[' . $name . ']';
+        }
+        echo $name . ' ';
+    }
+}
+
 echo '[operands]' . PHP_EOL;
 
 if (isset($command)) {
