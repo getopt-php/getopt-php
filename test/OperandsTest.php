@@ -113,7 +113,7 @@ class OperandsTest extends TestCase
         $command->addOperand($operand);
         $getopt->addCommand($command);
 
-        $getopt->parse('command path/to/file');
+        $getopt->process('command path/to/file');
 
         self::assertSame('path/to/file', $getopt->getOperand('file'));
     }
@@ -145,12 +145,12 @@ class OperandsTest extends TestCase
         $getopt->addCommand($command);
 
         try {
-            $getopt->parse('command');
+            $getopt->process('command');
         } catch (MissingArgumentException $exception) {
         }
 
         self::assertSame(
-            'Usage: /tmp/ide-phpunit.php command <op1> [<op2>] [operands]' . PHP_EOL . PHP_EOL .
+            'Usage: ' . $script . ' command <op1> [<op2>] [operands]' . PHP_EOL . PHP_EOL .
             'This is any command' . PHP_EOL . PHP_EOL,
             $getopt->getHelpText()
         );
