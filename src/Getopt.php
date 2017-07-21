@@ -130,7 +130,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
 
         $addOperand = function ($value) {
             if (($operand = $this->nextOperand()) && $operand->hasValidation() && !$operand->validates($value)) {
-                throw new \UnexpectedValueException(sprintf('Operand %s has an invalid value', $operand->getName()));
+                throw new InvalidArgumentException(sprintf('Operand %s has an invalid value', $operand->getName()));
             }
 
             $this->operandValues[] = $value;
@@ -138,7 +138,9 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
 
         $arguments->process($this, $setCommand, $addOperand);
 
-        if (($operand = $this->nextOperand()) && $operand->isRequired()) {
+        if (($operand = $this->nextOperand()) && $operand->isRequired() &&
+            (!$operand->isMultiple() || count($this->getOperand($operand->getName())) === 0)
+        ) {
             throw new MissingArgumentException(sprintf('Operand %s is required', $operand->getName()));
         }
     }
@@ -347,6 +349,12 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         return !empty($this->commands);
     }
 
+    /**
+     * Add an array of $operands
+     *
+     * @param Operand[] $operands
+     * @return self
+     */
     public function addOperands(array $operands)
     {
         foreach ($operands as $operand) {
@@ -356,6 +364,12 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         return $this;
     }
 
+    /**
+     * Add an $operand
+     *
+     * @param Operand $operand
+     * @return self
+     */
     public function addOperand(Operand $operand)
     {
         if ($operand->isRequired()) {
@@ -363,17 +377,48 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
                 $previousOperand->required();
             }
         }
+
+        if ($this->hasOperands()) {
+            /** @var Operand $lastOperand */
+            $lastOperand = array_slice($this->operands, -1)[0];
+            if ($lastOperand->isMultiple()) {
+                throw new \InvalidArgumentException(sprintf(
+                    'Operand %s is multiple - no more operands allowed',
+                    $lastOperand->getName()
+                ));
+            }
+        }
+
         $this->operands[] = $operand;
 
         return $this;
     }
 
+    /**
+     * Get the next operand
+     *
+     * @return Operand|null
+     */
     protected function nextOperand()
     {
-        return count($this->operands) > count($this->operandValues) ?
-            $this->operands[count($this->operandValues)] : null;
+        if (!$this->hasOperands()) {
+            return null;
+        }
+
+        if (count($this->operands) > count($this->operandValues)) {
+            return $this->operands[count($this->operandValues)];
+        }
+
+        /** @var Operand $operand */
+        $operand = array_slice($this->operands, -1)[0];
+        return $operand->isMultiple() ? $operand : null;
     }
 
+    /**
+     * Check if operands are defined
+     *
+     * @return bool
+     */
     public function hasOperands()
     {
         return !empty($this->operands);
@@ -398,7 +443,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      * Returns the i-th operand (starting with 0), or null if it does not exist. Must be invoked after parse().
      *
      * @param int|string $index
-     * @return string
+     * @return mixed
      */
     public function getOperand($index)
     {
@@ -406,8 +451,12 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
             $name = $index;
             foreach ($this->operands as $index => $operand) {
                 if ($operand->getName() === $name) {
-                    // return default when there is no value
-                    if ($index >= count($this->operandValues)) {
+                    if ($index >= count($this->operandValues) && $operand->isMultiple()) {
+                        $default = $operand->getDefaultValue();
+                        return $default ? [$default] : [];
+                    } elseif ($operand->isMultiple()) {
+                        return array_slice($this->operandValues, $index);
+                    } elseif ($index >= count($this->operandValues)) {
                         return $operand->getDefaultValue();
                     }
                     break;

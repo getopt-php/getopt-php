@@ -19,10 +19,12 @@ class Operand extends Argument
      * @param bool     $required   Whether the operand is required
      * @param mixed    $default    Default value if not required
      * @param callable $validation A validation function
+     * @param bool     $multiple   All operands following validated by this operand
      */
-    public function __construct($name, $required = false, $default = null, $validation = null)
+    public function __construct($name, $required = false, $default = null, $validation = null, $multiple = false)
     {
         $this->required = $required;
+        $this->multiple = $multiple;
         parent::__construct($default, $validation, $name);
     }
 
@@ -32,6 +34,11 @@ class Operand extends Argument
     public function isRequired()
     {
         return $this->required;
+    }
+
+    public function isMultiple()
+    {
+        return $this->multiple;
     }
 
     /**

@@ -155,4 +155,106 @@ class OperandsTest extends TestCase
             $getopt->getHelpText()
         );
     }
+
+    // multiple operands
+
+    public function testValueForMultiple()
+    {
+        $operand1 = new Operand('op1', false, null, null, false);
+        $operand2 = new Operand('op2', false, null, null, true);
+
+        $getopt = new Getopt();
+        $getopt->addOperands([$operand1, $operand2]);
+        $getopt->process('a b c');
+
+        self::assertSame('a', $getopt->getOperand('op1'));
+        self::assertSame(['b', 'c'], $getopt->getOperand('op2'));
+        self::assertSame(['a', 'b', 'c'], $getopt->getOperands());
+    }
+
+    public function testDefaultValueForMultiple()
+    {
+        $operand = new Operand('op1', false, 42, null, true);
+
+        $getopt = new Getopt();
+        $getopt->addOperand($operand);
+        $getopt->process('');
+
+        self::assertSame([42], $getopt->getOperand('op1'));
+    }
+
+    public function testRequiredMultiple()
+    {
+        $operand = new Operand('op1', true, null, null, true);
+
+        $getopt = new Getopt();
+        $getopt->addOperand($operand);
+
+        $this->setExpectedException('GetOpt\MissingArgumentException');
+        $getopt->process('');
+    }
+
+    public function testRequiredMultipleNotToThrow()
+    {
+        $operand = new Operand('op1', true, null, null, true);
+
+        $getopt = new Getopt();
+        $getopt->addOperand($operand);
+        $getopt->process('42');
+
+        self::assertSame(['42'], $getopt->getOperand('op1'));
+    }
+
+    public function testValidationOfMultiple()
+    {
+        $operand1 = new Operand('op1', false, null, function ($value) {
+            return $value <= 42;
+        }, true);
+
+        $getopt = new Getopt();
+        $getopt->addOperand($operand1);
+
+        $this->setExpectedException('GetOpt\InvalidArgumentException');
+        $getopt->process('42 43');
+    }
+
+    public function testRestrictsAddingAfterMultiple()
+    {
+        $operand1 = new Operand('op1', false, null, null, true);
+        $operand2 = new Operand('op2', false, null, null, false);
+
+        $getopt = new Getopt();
+        $getopt->addOperand($operand1);
+
+        $this->setExpectedException('InvalidArgumentException');
+        $getopt->addOperand($operand2);
+    }
+
+    public function testHelpTextForMultiple()
+    {
+        $operand = new Operand('op1', false, null, null, true);
+        $script = $_SERVER['PHP_SELF'];
+
+        $getopt = new Getopt();
+        $getopt->addOperand($operand);
+
+        self::assertSame(
+            'Usage: ' . $script . ' [<op1>] [<op1>...]' . PHP_EOL,
+            $getopt->getHelpText()
+        );
+    }
+
+    public function testHelpTextForRequiredMultiple()
+    {
+        $operand = new Operand('op1', true, null, null, true);
+        $script = $_SERVER['PHP_SELF'];
+
+        $getopt = new Getopt();
+        $getopt->addOperand($operand);
+
+        self::assertSame(
+            'Usage: ' . $script . ' <op1> [<op1>...]' . PHP_EOL,
+            $getopt->getHelpText()
+        );
+    }
 }
