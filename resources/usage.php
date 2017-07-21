@@ -11,7 +11,30 @@ if (isset($command)) {
     echo '[command] ';
 }
 
-echo '[options] [operands]' . PHP_EOL;
+if ($getopt->hasOptions()) {
+    echo '[options] ';
+}
+
+$lastOperandMultiple = false;
+if ($getopt->hasOperands()) {
+    foreach ($getopt->getOperands(true) as $operand) {
+        $name = '<' . $operand->getName() . '>';
+        if (!$operand->isRequired()) {
+            $name = '[' . $name . ']';
+        }
+        echo $name . ' ';
+        if ($operand->isMultiple()) {
+            echo '[<' . $operand->getName() . '>...]';
+            $lastOperandMultiple = true;
+        }
+    }
+}
+
+if (!$lastOperandMultiple) {
+    echo '[operands]';
+}
+
+echo PHP_EOL;
 
 if (isset($command)) {
     echo PHP_EOL . $command->getDescription() . PHP_EOL . PHP_EOL;

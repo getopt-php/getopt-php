@@ -4,6 +4,9 @@ namespace GetOpt;
 
 /**
  * Represents an option that Getopt accepts.
+ *
+ * @package GetOpt
+ * @author  Ulrich Schmidt-Goertz
  */
 class Option
 {
@@ -235,7 +238,7 @@ class Option
     public function setValue($value = null)
     {
         if ($value === null && in_array($this->mode, [ Getopt::REQUIRED_ARGUMENT, Getopt::MULTIPLE_ARGUMENT ])) {
-            throw new \UnexpectedValueException(sprintf(
+            throw new MissingArgumentException(sprintf(
                 'Option \'%s\' must have a value',
                 $this->long() ?: $this->short()
             ));
@@ -246,7 +249,7 @@ class Option
         }
 
         if ($this->getArgument()->hasValidation() && !$this->getArgument()->validates($value)) {
-            throw new \UnexpectedValueException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'Option \'%s\' has an invalid value',
                 $this->long() ?: $this->short()
             ));

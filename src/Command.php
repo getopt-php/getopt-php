@@ -20,6 +20,9 @@ class Command
     /** @var Option[] */
     protected $options = [];
 
+    /** @var Operand[] */
+    protected $operands = [];
+
     /** @var mixed */
     protected $handler;
 
@@ -48,6 +51,7 @@ class Command
 
     /**
      * @param string $name
+     * @return self
      */
     protected function setName($name)
     {
@@ -58,16 +62,79 @@ class Command
             ));
         }
         $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**
      * Add options to this command.
      *
      * @param Option[] $options
+     * @return self
      */
     public function addOptions(array $options)
     {
-        $this->options = array_merge($this->options, $options);
+        foreach ($options as $option) {
+            $this->addOption($option);
+        }
+        return $this;
+    }
+
+    /**
+     * @param Option $option
+     * @return self
+     */
+    public function addOption(Option $option)
+    {
+        $this->options[] = $option;
+        return $this;
+    }
+
+    /**
+     * @return Option[]
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * Add operands to this command.
+     *
+     * @param array $operands
+     * @return self
+     */
+    public function addOperands(array $operands)
+    {
+        foreach ($operands as $operand) {
+            $this->addOperand($operand);
+        }
+        return $this;
+    }
+
+    /**
+     * @param Operand $operand
+     * @return self
+     */
+    public function addOperand(Operand $operand)
+    {
+        $this->operands[] = $operand;
+        return $this;
+    }
+
+    /**
+     * @return Operand[]
+     */
+    public function getOperands()
+    {
+        return $this->operands;
     }
 
     /**
@@ -87,21 +154,5 @@ class Command
     public function getDescription($short = false)
     {
         return $short ? $this->shortDescription : $this->longDescription;
-    }
-
-    /**
-     * @return Option[]
-     */
-    public function getOptions()
-    {
-        return $this->options;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 }

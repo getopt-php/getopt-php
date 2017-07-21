@@ -2,6 +2,12 @@
 
 namespace GetOpt;
 
+/**
+ * Class Getopt
+ *
+ * @package GetOpt
+ * @author  Thomas Flori <thflori@gmail.com>
+ */
 class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
 {
     const NO_ARGUMENT = 0;
@@ -29,6 +35,9 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     /** @var Command[] */
     protected $commands = [];
 
+    /** @var Operand[] */
+    protected $operands = [];
+
     /** The command that is executed determined by process
      * @var Command */
     protected $command;
@@ -37,7 +46,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     protected $optionMapping = [];
 
     /** @var string[] */
-    protected $operands = [];
+    protected $operandValues = [];
 
     /**
      * Creates a new Getopt object.
@@ -114,13 +123,26 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
 
 
         $setCommand = function (Command $command) {
-            foreach ($command->getOptions() as $option) {
-                $this->addOption($option);
-            }
+            $this->addOptions($command->getOptions());
+            $this->addOperands($command->getOperands());
             $this->command = $command;
         };
 
-        $arguments->process($this, $setCommand, $this->operands);
+        $addOperand = function ($value) {
+            if (($operand = $this->nextOperand()) && $operand->hasValidation() && !$operand->validates($value)) {
+                throw new InvalidArgumentException(sprintf('Operand %s has an invalid value', $operand->getName()));
+            }
+
+            $this->operandValues[] = $value;
+        };
+
+        $arguments->process($this, $setCommand, $addOperand);
+
+        if (($operand = $this->nextOperand()) && $operand->isRequired() &&
+            (!$operand->isMultiple() || count($this->getOperand($operand->getName())) === 0)
+        ) {
+            throw new MissingArgumentException(sprintf('Operand %s is required', $operand->getName()));
+        }
     }
 
     /**
@@ -328,24 +350,127 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     }
 
     /**
+     * Add an array of $operands
+     *
+     * @param Operand[] $operands
+     * @return self
+     */
+    public function addOperands(array $operands)
+    {
+        foreach ($operands as $operand) {
+            $this->addOperand($operand);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Add an $operand
+     *
+     * @param Operand $operand
+     * @return self
+     */
+    public function addOperand(Operand $operand)
+    {
+        if ($operand->isRequired()) {
+            foreach ($this->operands as $previousOperand) {
+                $previousOperand->required();
+            }
+        }
+
+        if ($this->hasOperands()) {
+            /** @var Operand $lastOperand */
+            $lastOperand = array_slice($this->operands, -1)[0];
+            if ($lastOperand->isMultiple()) {
+                throw new \InvalidArgumentException(sprintf(
+                    'Operand %s is multiple - no more operands allowed',
+                    $lastOperand->getName()
+                ));
+            }
+        }
+
+        $this->operands[] = $operand;
+
+        return $this;
+    }
+
+    /**
+     * Get the next operand
+     *
+     * @return Operand|null
+     */
+    protected function nextOperand()
+    {
+        if (!$this->hasOperands()) {
+            return null;
+        }
+
+        if (count($this->operands) > count($this->operandValues)) {
+            return $this->operands[count($this->operandValues)];
+        }
+
+        /** @var Operand $operand */
+        $operand = array_slice($this->operands, -1)[0];
+        return $operand->isMultiple() ? $operand : null;
+    }
+
+    /**
+     * Check if operands are defined
+     *
+     * @return bool
+     */
+    public function hasOperands()
+    {
+        return !empty($this->operands);
+    }
+
+    /**
      * Returns the list of operands. Must be invoked after parse().
      *
-     * @return array
+     * @param bool $objects Whether to return the operand specifications
+     * @return array|Operand[]
      */
-    public function getOperands()
+    public function getOperands($objects = false)
     {
-        return $this->operands;
+        if ($objects) {
+            return $this->operands;
+        }
+
+        return $this->operandValues;
     }
 
     /**
      * Returns the i-th operand (starting with 0), or null if it does not exist. Must be invoked after parse().
      *
-     * @param int $i
-     * @return string
+     * @param int|string $index
+     * @return mixed
      */
-    public function getOperand($i)
+    public function getOperand($index)
     {
-        return ($i < count($this->operands)) ? $this->operands[$i] : null;
+        if (is_string($index)) {
+            $name = $index;
+            foreach ($this->operands as $index => $operand) {
+                if ($operand->getName() === $name) {
+                    if ($index >= count($this->operandValues) && $operand->isMultiple()) {
+                        $default = $operand->getDefaultValue();
+                        return $default ? [$default] : [];
+                    } elseif ($operand->isMultiple()) {
+                        return array_slice($this->operandValues, $index);
+                    } elseif ($index >= count($this->operandValues)) {
+                        return $operand->getDefaultValue();
+                    }
+                    break;
+                }
+            }
+            if ($index === $name) {
+                throw new \InvalidArgumentException(sprintf(
+                    'Operand %s is not defined',
+                    $name
+                ));
+            }
+        }
+
+        return isset($this->operandValues[$index]) ? $this->operandValues[$index] : null;
     }
 
     /**

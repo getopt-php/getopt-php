@@ -208,7 +208,7 @@ class GetoptTest extends TestCase
     {
         $getopt = new Getopt();
         $getopt->setScriptName('test');
-        $expected = "Usage: test [options] [operands]\n";
+        $expected = "Usage: test [operands]\n";
         $this->assertSame($expected, $getopt->getHelpText());
     }
 
