@@ -47,14 +47,14 @@ class OptionParser
                 );
             }
             if ($i == $eol || $string[$i + 1] != ':') {
-                $options[]      = new Option($ch, null, Getopt::NO_ARGUMENT);
+                $options[]      = new Option($ch, null, GetOpt::NO_ARGUMENT);
                 $nextCanBeColon = true;
             } elseif ($i < $eol - 1 && $string[$i + 2] == ':') {
-                $options[]      = new Option($ch, null, Getopt::OPTIONAL_ARGUMENT);
+                $options[]      = new Option($ch, null, GetOpt::OPTIONAL_ARGUMENT);
                 $i              += 2;
                 $nextCanBeColon = false;
             } else {
-                $options[] = new Option($ch, null, Getopt::REQUIRED_ARGUMENT);
+                $options[] = new Option($ch, null, GetOpt::REQUIRED_ARGUMENT);
                 ++$i;
                 $nextCanBeColon = true;
             }
@@ -89,7 +89,7 @@ class OptionParser
             $option->setDescription($array[3]);
         }
 
-        if ($rowSize >= 5 && $array[2] != Getopt::NO_ARGUMENT) {
+        if ($rowSize >= 5 && $array[2] != GetOpt::NO_ARGUMENT) {
             $option->setArgument(new Argument($array[4]));
         }
 
@@ -98,7 +98,7 @@ class OptionParser
 
     /**
      * When using arrays, instead of a full option spec ([short, long, type]) users can leave out one or more of
-     * these parts and have Getopt fill them in intelligently:
+     * these parts and have GetOpt fill them in intelligently:
      * - If either the short or the long option string is left out, the first element of the given array is interpreted
      *   as either short (if it has length 1) or long, and the other one is set to null.
      * - If the type is left out, it is set to NO_ARGUMENT.

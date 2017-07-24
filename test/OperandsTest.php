@@ -12,7 +12,7 @@ class OperandsTest extends TestCase
         $operand2 = new Operand('op2');
         $operand3 = new Operand('op3');
 
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $getopt->addOperand($operand1);
         $getopt->addOperands([$operand2, $operand3]);
 
@@ -25,7 +25,7 @@ class OperandsTest extends TestCase
             return $value === null; // this validator is always false
         });
 
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $getopt->addOperand($operand);
 
         $this->setExpectedException('UnexpectedValueException');
@@ -36,7 +36,7 @@ class OperandsTest extends TestCase
     {
         $operand = new Operand('op1', false); // false is default
 
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $getopt->addOperand($operand);
         $getopt->process('');
 
@@ -47,7 +47,7 @@ class OperandsTest extends TestCase
     {
         $operand = new Operand('op1', true);
 
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $getopt->addOperand($operand);
 
         $this->setExpectedException('UnexpectedValueException');
@@ -58,7 +58,7 @@ class OperandsTest extends TestCase
     {
         $operand = new Operand('op1');
 
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $getopt->addOperand($operand);
         $getopt->process('42');
 
@@ -67,7 +67,7 @@ class OperandsTest extends TestCase
 
     public function testGetOperandByNameThrows()
     {
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $getopt->process('42');
 
         $this->setExpectedException('InvalidArgumentException');
@@ -78,7 +78,7 @@ class OperandsTest extends TestCase
     {
         $operand = new Operand('op1', false, 42);
 
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $getopt->addOperand($operand);
         $getopt->process('');
 
@@ -90,7 +90,7 @@ class OperandsTest extends TestCase
         $operand1 = new Operand('op1', false); // this is not required
         $operand2 = new Operand('op2', true);
 
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $getopt->addOperands([$operand1, $operand2]);
 
         self::assertTrue($getopt->getOperands(true)[0]->isRequired());
@@ -107,7 +107,7 @@ class OperandsTest extends TestCase
 
     public function testCommandWithOperand()
     {
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $command = new Command('command', 'This is any command', 'var_dump');
         $operand = new Operand('file');
         $command->addOperand($operand);
@@ -124,7 +124,7 @@ class OperandsTest extends TestCase
         $operand2 = new Operand('op2', false);
         $script = $_SERVER['PHP_SELF'];
 
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $getopt->addOperands([$operand1, $operand2]);
 
         self::assertSame(
@@ -139,7 +139,7 @@ class OperandsTest extends TestCase
         $operand2 = new Operand('op2', false);
         $script = $_SERVER['PHP_SELF'];
 
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $command = new Command('command', 'This is any command', 'var_dump');
         $command->addOperands([$operand1, $operand2]);
         $getopt->addCommand($command);
@@ -163,7 +163,7 @@ class OperandsTest extends TestCase
         $operand1 = new Operand('op1', false, null, null, false);
         $operand2 = new Operand('op2', false, null, null, true);
 
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $getopt->addOperands([$operand1, $operand2]);
         $getopt->process('a b c');
 
@@ -176,7 +176,7 @@ class OperandsTest extends TestCase
     {
         $operand = new Operand('op1', false, 42, null, true);
 
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $getopt->addOperand($operand);
         $getopt->process('');
 
@@ -187,7 +187,7 @@ class OperandsTest extends TestCase
     {
         $operand = new Operand('op1', true, null, null, true);
 
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $getopt->addOperand($operand);
 
         $this->setExpectedException('GetOpt\MissingArgumentException');
@@ -198,7 +198,7 @@ class OperandsTest extends TestCase
     {
         $operand = new Operand('op1', true, null, null, true);
 
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $getopt->addOperand($operand);
         $getopt->process('42');
 
@@ -211,7 +211,7 @@ class OperandsTest extends TestCase
             return $value <= 42;
         }, true);
 
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $getopt->addOperand($operand1);
 
         $this->setExpectedException('GetOpt\InvalidArgumentException');
@@ -223,7 +223,7 @@ class OperandsTest extends TestCase
         $operand1 = new Operand('op1', false, null, null, true);
         $operand2 = new Operand('op2', false, null, null, false);
 
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $getopt->addOperand($operand1);
 
         $this->setExpectedException('InvalidArgumentException');
@@ -235,7 +235,7 @@ class OperandsTest extends TestCase
         $operand = new Operand('op1', false, null, null, true);
         $script = $_SERVER['PHP_SELF'];
 
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $getopt->addOperand($operand);
 
         self::assertSame(
@@ -249,7 +249,7 @@ class OperandsTest extends TestCase
         $operand = new Operand('op1', true, null, null, true);
         $script = $_SERVER['PHP_SELF'];
 
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $getopt->addOperand($operand);
 
         self::assertSame(

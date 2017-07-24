@@ -11,7 +11,7 @@ class OptionParserTest extends TestCase
 
     public function setUp()
     {
-        $this->parser = new OptionParser(Getopt::REQUIRED_ARGUMENT);
+        $this->parser = new OptionParser(GetOpt::REQUIRED_ARGUMENT);
     }
 
     public function testParseString()
@@ -25,13 +25,13 @@ class OptionParserTest extends TestCase
             switch ($option->short()) {
                 case 'a':
                 case '3':
-                    $this->assertEquals(Getopt::NO_ARGUMENT, $option->mode());
+                    $this->assertEquals(GetOpt::NO_ARGUMENT, $option->mode());
                     break;
                 case 'b':
-                    $this->assertEquals(Getopt::REQUIRED_ARGUMENT, $option->mode());
+                    $this->assertEquals(GetOpt::REQUIRED_ARGUMENT, $option->mode());
                     break;
                 case 'c':
-                    $this->assertEquals(Getopt::OPTIONAL_ARGUMENT, $option->mode());
+                    $this->assertEquals(GetOpt::OPTIONAL_ARGUMENT, $option->mode());
                     break;
                 default:
                     $this->fail('Unexpected option: '.$option->short());
@@ -66,7 +66,7 @@ class OptionParserTest extends TestCase
     public function provideOptionArrays()
     {
         return [
-            [ [ 'a', 'alpha', Getopt::OPTIONAL_ARGUMENT, 'Description', 42 ] ],
+            [ [ 'a', 'alpha', GetOpt::OPTIONAL_ARGUMENT, 'Description', 42 ] ],
             [ [ 'b', 'beta' ] ],
             [ [ 'c' ] ],
         ];
@@ -84,18 +84,18 @@ class OptionParserTest extends TestCase
         switch ($option->short()) {
             case 'a':
                 $this->assertEquals('alpha', $option->long());
-                $this->assertEquals(Getopt::OPTIONAL_ARGUMENT, $option->mode());
+                $this->assertEquals(GetOpt::OPTIONAL_ARGUMENT, $option->mode());
                 $this->assertEquals('Description', $option->getDescription());
                 $this->assertEquals(42, $option->getArgument()->getDefaultValue());
                 break;
             case 'b':
                 $this->assertEquals('beta', $option->long());
-                $this->assertEquals(Getopt::REQUIRED_ARGUMENT, $option->mode());
+                $this->assertEquals(GetOpt::REQUIRED_ARGUMENT, $option->mode());
                 $this->assertEquals('', $option->getDescription());
                 break;
             case 'c':
                 $this->assertNull($option->long());
-                $this->assertEquals(Getopt::REQUIRED_ARGUMENT, $option->mode());
+                $this->assertEquals(GetOpt::REQUIRED_ARGUMENT, $option->mode());
                 $this->assertEquals('', $option->getDescription());
                 $this->assertFalse($option->getArgument()->hasDefaultValue());
                 break;

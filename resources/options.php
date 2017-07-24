@@ -1,6 +1,6 @@
 <?php
 
-use GetOpt\Getopt;
+use GetOpt\GetOpt;
 
 echo 'Options:' . PHP_EOL;
 
@@ -14,9 +14,9 @@ foreach ($options as $option) {
         $option->long() ? '--' . $option->long() : null,
     ]));
 
-    if ($option->mode() !== Getopt::NO_ARGUMENT) {
+    if ($option->mode() !== GetOpt::NO_ARGUMENT) {
         $argument = '<' . $option->getArgument()->getName() . '>';
-        if ($option->mode() === Getopt::OPTIONAL_ARGUMENT) {
+        if ($option->mode() === GetOpt::OPTIONAL_ARGUMENT) {
             $argument = '[' . $argument . ']';
         }
 

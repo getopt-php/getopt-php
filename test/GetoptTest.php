@@ -8,12 +8,12 @@ class GetoptTest extends TestCase
 {
     public function testAddOptions()
     {
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $getopt->addOptions('a:');
         $getopt->addOptions([
-                [ 's', null, Getopt::OPTIONAL_ARGUMENT ],
-                [ null, 'long', Getopt::OPTIONAL_ARGUMENT ],
-                [ 'n', 'name', Getopt::OPTIONAL_ARGUMENT ]
+            [ 's', null, GetOpt::OPTIONAL_ARGUMENT ],
+            [ null, 'long', GetOpt::OPTIONAL_ARGUMENT ],
+            [ 'n', 'name', GetOpt::OPTIONAL_ARGUMENT ]
         ]);
 
         $getopt->process('-a aparam -s sparam --long longparam');
@@ -25,10 +25,10 @@ class GetoptTest extends TestCase
 
     public function testAddOptionsChooseShortOrLongAutomatically()
     {
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $getopt->addOptions([
             [ 's' ],
-            [ 'long', Getopt::OPTIONAL_ARGUMENT ]
+            [ 'long', GetOpt::OPTIONAL_ARGUMENT ]
         ]);
 
         $getopt->process('-s --long longparam');
@@ -38,8 +38,8 @@ class GetoptTest extends TestCase
 
     public function testAddOptionsUseDefaultArgumentType()
     {
-        $getopt = new Getopt(null, [
-            Getopt::SETTING_DEFAULT_MODE => Getopt::REQUIRED_ARGUMENT
+        $getopt = new GetOpt(null, [
+            GetOpt::SETTING_DEFAULT_MODE => GetOpt::REQUIRED_ARGUMENT
         ]);
         $getopt->addOptions([
             [ 'l', 'long' ]
@@ -55,17 +55,17 @@ class GetoptTest extends TestCase
     public function testAddOptionsFailsOnInvalidArgument()
     {
         $this->setExpectedException('\InvalidArgumentException');
-        $getopt = new Getopt(null);
+        $getopt = new GetOpt(null);
         $getopt->addOptions(new Option('a', 'alpha'));
     }
 
     public function testChangeModeAfterwards()
     {
-        $getopt = new Getopt([
-            [ 'a', null, Getopt::REQUIRED_ARGUMENT ]
+        $getopt = new GetOpt([
+            [ 'a', null, GetOpt::REQUIRED_ARGUMENT ]
         ]);
 
-        $getopt->getOption('a', true)->setMode(Getopt::NO_ARGUMENT);
+        $getopt->getOption('a', true)->setMode(GetOpt::NO_ARGUMENT);
         $getopt->process('-a foo');
 
         $this->assertEquals(1, $getopt->getOption('a'));
@@ -75,7 +75,7 @@ class GetoptTest extends TestCase
     public function testAddOptionsFailsOnConflict()
     {
         $this->setExpectedException('\InvalidArgumentException');
-        $getopt = new Getopt([
+        $getopt = new GetOpt([
             [ 'v', 'version' ]
         ]);
         $getopt->addOptions([
@@ -87,14 +87,14 @@ class GetoptTest extends TestCase
     {
         $_SERVER['argv'] = [ 'foo.php', '-a' ];
 
-        $getopt = new Getopt('a');
+        $getopt = new GetOpt('a');
         $getopt->process();
         $this->assertEquals(1, $getopt->getOption('a'));
     }
 
     public function testAccessMethods()
     {
-        $getopt = new Getopt('a');
+        $getopt = new GetOpt('a');
         $getopt->process('-a foo');
 
         $options = $getopt->getOptions();
@@ -110,7 +110,7 @@ class GetoptTest extends TestCase
 
     public function testCountable()
     {
-        $getopt = new Getopt([
+        $getopt = new GetOpt([
             new Option('a', 'alpha'),
             new Option('b', 'beta'),
             new Option('c', 'gamma'),
@@ -121,16 +121,16 @@ class GetoptTest extends TestCase
 
     public function testArrayAccess()
     {
-        $getopt = new Getopt('q');
+        $getopt = new GetOpt('q');
         $getopt->process('-q');
         $this->assertEquals(1, $getopt['q']);
     }
 
     public function testIterable()
     {
-        $getopt = new Getopt([
-            [ null, 'alpha', Getopt::NO_ARGUMENT ],
-            [ 'b', 'beta', Getopt::REQUIRED_ARGUMENT ]
+        $getopt = new GetOpt([
+            [ null, 'alpha', GetOpt::NO_ARGUMENT ],
+            [ 'b', 'beta', GetOpt::REQUIRED_ARGUMENT ]
         ]);
         $getopt->process('--alpha -b foo');
         $expected = [ 'alpha' => 1, 'b' => 'foo' ]; // 'beta' should not occur
@@ -141,10 +141,10 @@ class GetoptTest extends TestCase
 
     public function testHelpText()
     {
-        $getopt = new Getopt([
-            [ 'a', 'alpha', Getopt::NO_ARGUMENT, 'Short and long options with no argument' ],
-            [ null, 'beta', Getopt::OPTIONAL_ARGUMENT, 'Long option only with an optional argument' ],
-            [ 'c', null, Getopt::REQUIRED_ARGUMENT, 'Short option only with a mandatory argument' ]
+        $getopt = new GetOpt([
+            [ 'a', 'alpha', GetOpt::NO_ARGUMENT, 'Short and long options with no argument' ],
+            [ null, 'beta', GetOpt::OPTIONAL_ARGUMENT, 'Long option only with an optional argument' ],
+            [ 'c', null, GetOpt::REQUIRED_ARGUMENT, 'Short option only with a mandatory argument' ]
         ]);
         $getopt->process('');
 
@@ -161,10 +161,10 @@ class GetoptTest extends TestCase
 
     public function testHelpTextWithoutDescriptions()
     {
-        $getopt = new Getopt([
-            [ 'a', 'alpha', Getopt::NO_ARGUMENT ],
-            [ null, 'beta', Getopt::OPTIONAL_ARGUMENT ],
-            [ 'c', null, Getopt::REQUIRED_ARGUMENT ]
+        $getopt = new GetOpt([
+            [ 'a', 'alpha', GetOpt::NO_ARGUMENT ],
+            [ null, 'beta', GetOpt::OPTIONAL_ARGUMENT ],
+            [ 'c', null, GetOpt::REQUIRED_ARGUMENT ]
         ]);
         $getopt->process('');
 
@@ -182,13 +182,13 @@ class GetoptTest extends TestCase
     public function testHelpTextWithLongDescriptions()
     {
         defined('COLUMNS') || define('COLUMNS', 90);
-        $getopt = new Getopt([
+        $getopt = new GetOpt([
             [
-                'a', 'alpha', Getopt::NO_ARGUMENT, 'Short and long options with no argument and a very long text ' .
+                'a', 'alpha', GetOpt::NO_ARGUMENT, 'Short and long options with no argument and a very long text ' .
                                                    'that exceeds the length of the row'
             ],
-            [ null, 'beta', Getopt::OPTIONAL_ARGUMENT, 'Long option only with an optional argument' ],
-            [ 'c', null, Getopt::REQUIRED_ARGUMENT, 'Short option only with a mandatory argument' ]
+            [ null, 'beta', GetOpt::OPTIONAL_ARGUMENT, 'Long option only with an optional argument' ],
+            [ 'c', null, GetOpt::REQUIRED_ARGUMENT, 'Short option only with a mandatory argument' ]
         ]);
         $getopt->process('');
 
@@ -206,8 +206,8 @@ class GetoptTest extends TestCase
 
     public function testHelpTextWithCustomScriptName()
     {
-        $getopt = new Getopt();
-        $getopt->set(Getopt::SETTING_SCRIPT_NAME, 'test');
+        $getopt = new GetOpt();
+        $getopt->set(GetOpt::SETTING_SCRIPT_NAME, 'test');
         $expected = "Usage: test [operands]\n";
         $this->assertSame($expected, $getopt->getHelpText());
     }
@@ -215,14 +215,14 @@ class GetoptTest extends TestCase
     public function testThrowsWithInvalidParameter()
     {
         $this->setExpectedException('InvalidArgumentException');
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
 
         $getopt->process(42);
     }
 
     public function testAddOptionByString()
     {
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $getopt->addOption('c');
 
         $this->assertEquals(new Option('c', null), $getopt->getOption('c', true));
@@ -231,7 +231,7 @@ class GetoptTest extends TestCase
     public function testThrowsForUnparsableString()
     {
         $this->setExpectedException('InvalidArgumentException');
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
 
         $getopt->addOption('');
     }
@@ -239,14 +239,14 @@ class GetoptTest extends TestCase
     public function testThrowsForInvalidParameter()
     {
         $this->setExpectedException('InvalidArgumentException');
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
 
         $getopt->addOption(42);
     }
 
     public function testIssetArrayAccess()
     {
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $getopt->addOption('a');
         $getopt->process('-a');
 
@@ -258,7 +258,7 @@ class GetoptTest extends TestCase
     public function testRestirctsArraySet()
     {
         $this->setExpectedException('LogicException');
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
 
         $getopt['a'] = 'test';
     }
@@ -266,7 +266,7 @@ class GetoptTest extends TestCase
     public function testRestirctsArrayUnset()
     {
         $this->setExpectedException('LogicException');
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $getopt->addOption('a');
         $getopt->process('-a');
 
@@ -277,7 +277,7 @@ class GetoptTest extends TestCase
     {
         $this->setExpectedException('InvalidArgumentException');
 
-        $getopt = new Getopt([
+        $getopt = new GetOpt([
             new Option('a'),
         ]);
 
@@ -290,7 +290,7 @@ class GetoptTest extends TestCase
     {
         $cmd1 = new Command('help', 'Get help for command', 'var_dump');
         $cmd2 = new Command('test', 'Test commands', 'var_dump');
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
 
         $getopt->addCOmmands([ $cmd1, $cmd2 ]);
 

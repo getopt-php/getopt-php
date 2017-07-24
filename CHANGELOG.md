@@ -4,13 +4,13 @@ Features:
 * php 5.3 support dropped (solves #72)
 * moved to neutral namespace `GetOpt`
 * parse options after operands (gnu compatibility; solves #39)
-* added `Getopt::MULTIPLE_ARGUMENT` for parameter aggregation (solves #57)
+* added `GetOpt::MULTIPLE_ARGUMENT` for parameter aggregation (solves #57)
 * implemented `Command` for kinda routing in console applications (solves #41)
 * added `HelpInterface` for custom help implementations
-* refactored `Getopt::getHelpText()` for better support of other features and customization
+* refactored `GetOpt::getHelpText()` for better support of other features and customization
 
 Bugfixes:
-* `Getopt::count()` returns the wrong value (solves #70)
+* `GetOpt::count()` returns the wrong value (solves #70)
 
 ## 2.4.3 (2017-07-02)
 
@@ -58,7 +58,7 @@ Features:
 ## 2.0.0-RC.1 (2014-01-17)
 
 Changes:
-* Namespace is now Ulrichsg\Getopt
+* Namespace is now Ulrichsg\GetOpt
 * Public API has been cleaned up, please refer to the documentation
 
 

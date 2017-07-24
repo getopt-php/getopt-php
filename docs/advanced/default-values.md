@@ -9,8 +9,8 @@ You can assign a default value to any option that can take an argument. Then if 
 command line, it will assume the default value instead of `null`.
 
 ```php?start_inline=true
-$getopt = new Getopt(array(
-    (new Option('n', null, Getopt::REQUIRED_ARGUMENT))
+$getopt = new GetOpt(array(
+    (new Option('n', null, GetOpt::REQUIRED_ARGUMENT))
         ->setDefaultValue(10)
 ));
 ```
@@ -22,20 +22,20 @@ If you want an option to have both a default value and a
 by creating an `Argument` object directly:
 
 ```php?start_inline=true
-$getopt = new Getopt(array(
-    (new Option('n', null, Getopt::REQUIRED_ARGUMENT))
+$getopt = new GetOpt(array(
+    (new Option('n', null, GetOpt::REQUIRED_ARGUMENT))
         ->setArgument(new Argument(10, 'is_numeric'))
 ));
 ```
 
 ## The Legacy Way
 
-If you are using the array notation from Getopt v1, you can set the default value as the fifth
+If you are using the array notation from GetOpt v1, you can set the default value as the fifth
 element of the option array. Note that this forces you to set a
 [description](option-descriptions.md), though you can leave it blank:
 
 ```php?start_inline=true
-$getopt = new Getopt(array(
-    array('n', null, Getopt::REQUIRED_ARGUMENT, '', 10)
+$getopt = new GetOpt(array(
+    array('n', null, GetOpt::REQUIRED_ARGUMENT, '', 10)
 ));
 ```

@@ -3,7 +3,7 @@
 namespace GetOpt;
 
 /**
- * Represents an option that Getopt accepts.
+ * Represents an option that GetOpt accepts.
  *
  * @package GetOpt
  * @author  Ulrich Schmidt-Goertz
@@ -28,7 +28,7 @@ class Option
      * @param int      $mode  Whether the option can/must have an argument (optional, defaults to no argument)
      * @param Argument $argument The argument definition
      */
-    public function __construct($short, $long = null, $mode = Getopt::NO_ARGUMENT, Argument $argument = null)
+    public function __construct($short, $long = null, $mode = GetOpt::NO_ARGUMENT, Argument $argument = null)
     {
         if (!$short && !$long) {
             throw new \InvalidArgumentException("The short and long name may not both be empty");
@@ -54,7 +54,7 @@ class Option
      * @param Argument $argument
      * @return Option
      */
-    public static function create($short, $long = null, $mode = Getopt::NO_ARGUMENT, Argument $argument = null)
+    public static function create($short, $long = null, $mode = GetOpt::NO_ARGUMENT, Argument $argument = null)
     {
         return new self($short, $long, $mode, $argument);
     }
@@ -111,7 +111,7 @@ class Option
      */
     public function setArgument(Argument $arg)
     {
-        if ($this->mode == Getopt::NO_ARGUMENT) {
+        if ($this->mode == GetOpt::NO_ARGUMENT) {
             throw new \InvalidArgumentException("Option should not have any argument");
         }
         $this->argument = $arg;
@@ -194,17 +194,17 @@ class Option
     public function setMode($mode)
     {
         if (!in_array($mode, [
-            Getopt::NO_ARGUMENT,
-            Getopt::OPTIONAL_ARGUMENT,
-            Getopt::REQUIRED_ARGUMENT,
-            Getopt::MULTIPLE_ARGUMENT,
+            GetOpt::NO_ARGUMENT,
+            GetOpt::OPTIONAL_ARGUMENT,
+            GetOpt::REQUIRED_ARGUMENT,
+            GetOpt::MULTIPLE_ARGUMENT,
         ], true)) {
             throw new \InvalidArgumentException(sprintf(
                 'Option mode must be one of %s, %s, %s and %s',
-                'Getopt::NO_ARGUMENT',
-                'Getopt::OPTIONAL_ARGUMENT',
-                'Getopt::REQUIRED_ARGUMENT',
-                'Getopt::MULTIPLE_ARGUMENT'
+                'GetOpt::NO_ARGUMENT',
+                'GetOpt::OPTIONAL_ARGUMENT',
+                'GetOpt::REQUIRED_ARGUMENT',
+                'GetOpt::MULTIPLE_ARGUMENT'
             ));
         }
         $this->mode = $mode;
@@ -237,14 +237,14 @@ class Option
      */
     public function setValue($value = null)
     {
-        if ($value === null && in_array($this->mode, [ Getopt::REQUIRED_ARGUMENT, Getopt::MULTIPLE_ARGUMENT ])) {
+        if ($value === null && in_array($this->mode, [ GetOpt::REQUIRED_ARGUMENT, GetOpt::MULTIPLE_ARGUMENT ])) {
             throw new MissingArgumentException(sprintf(
                 'Option \'%s\' must have a value',
                 $this->long() ?: $this->short()
             ));
         }
 
-        if ($value === null || $this->mode() === Getopt::NO_ARGUMENT) {
+        if ($value === null || $this->mode() === GetOpt::NO_ARGUMENT) {
             $value = $this->value === null ? 1 : $this->value + 1;
         }
 
@@ -255,7 +255,7 @@ class Option
             ));
         }
 
-        if ($this->mode === Getopt::MULTIPLE_ARGUMENT) {
+        if ($this->mode === GetOpt::MULTIPLE_ARGUMENT) {
             $this->value = $this->value === null ? [ $value ] : array_merge($this->value, [ $value ]);
         } else {
             $this->value = $value;
@@ -270,14 +270,14 @@ class Option
     public function getValue()
     {
         switch ($this->mode) {
-            case Getopt::OPTIONAL_ARGUMENT:
-            case Getopt::REQUIRED_ARGUMENT:
+            case GetOpt::OPTIONAL_ARGUMENT:
+            case GetOpt::REQUIRED_ARGUMENT:
                 return $this->value === null ? $this->argument->getDefaultValue() : $this->value;
 
-            case Getopt::MULTIPLE_ARGUMENT:
+            case GetOpt::MULTIPLE_ARGUMENT:
                 return $this->value === null ? [ $this->argument->getDefaultValue() ] : $this->value;
 
-            case Getopt::NO_ARGUMENT:
+            case GetOpt::NO_ARGUMENT:
             default:
                 return $this->value;
         }

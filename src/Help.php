@@ -70,11 +70,11 @@ class Help implements HelpInterface
     /**
      * Get the help text for $options
      *
-     * @param Getopt $getopt
+     * @param GetOpt $getopt
      * @param array  $data Additional data for templates
      * @return string
      */
-    public function render(Getopt $getopt, array $data = [])
+    public function render(GetOpt $getopt, array $data = [])
     {
         $data['getopt'] = $getopt;
 

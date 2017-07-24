@@ -13,9 +13,9 @@ interface HelpInterface
     /**
      * Render the help text for $getopt
      *
-     * @param Getopt $getopt
+     * @param GetOpt $getopt
      * @param array  $data
      * @return string
      */
-    public function render(Getopt $getopt, array $data = []);
+    public function render(GetOpt $getopt, array $data = []);
 }

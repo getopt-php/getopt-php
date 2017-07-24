@@ -5,14 +5,14 @@ permalink: /basic/retrieving-values.html
 ---
 # {{ page.title }}
 
-After you have constructed your `Getopt` object and specified all your options, you have to invoke the parser
+After you have constructed your `GetOpt` object and specified all your options, you have to invoke the parser
 next. In the usual case this looks just like this:
 
 ```php?start_inline=true
 $getopt->parse();
 ```
 
-By default, Getopt looks for command line arguments in the superglobal variable `$GLOBALS['argv']`. You can override
+By default, GetOpt looks for command line arguments in the superglobal variable `$GLOBALS['argv']`. You can override
 this behavior by passing a string or array.
 
 After that (and if no error occurred - see below for that case) you can use the following methods:
@@ -57,7 +57,7 @@ $getopt->getOperands();
 
 ## Error Handling
 
-If the command line arguments do not match the specified options, `Getopt::parse()` will throw a standard
+If the command line arguments do not match the specified options, `GetOpt::parse()` will throw a standard
 `UnexpectedValueException` with a message containing detailed information about what went wrong. Catching
 this exception thus allows you to react to the error the way you prefer (you could, for instance, use
-`Getopt::getHelpText()` to print [usage information](usage-information.md)).
+`GetOpt::getHelpText()` to print [usage information](usage-information.md)).

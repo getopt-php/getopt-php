@@ -9,7 +9,7 @@ You can add short description texts to individual options. They will be used to 
 [generated help text]({{ site.baseurl}}/basic/usage-information.html).
 
 ```php?start_inline=true
-$getopt = new Getopt(array(
+$getopt = new GetOpt(array(
     (new Option('v', 'version'))
         ->setDescription('Display version information'),
     (new Option('h', 'help'))
@@ -24,8 +24,8 @@ requires manual creation of an `Argument` object. For instance, the following sn
 option show up as `-n <count>` (instead of `-n <arg>`):
 
 ```php?start_inline=true
-$getopt = new Getopt(array(
-    (new Option('n', null, Getopt::REQUIRED_ARGUMENT))
+$getopt = new GetOpt(array(
+    (new Option('n', null, GetOpt::REQUIRED_ARGUMENT))
         ->setArgument(new Argument(null, null, "count"))
         // see "Argument Validation" for the meaning of the first two parameters
 ));
@@ -33,11 +33,11 @@ $getopt = new Getopt(array(
 
 ## The Legacy Way
 
-If you are using the array notation from Getopt v1, you can set the description as the fourth
+If you are using the array notation from GetOpt v1, you can set the description as the fourth
 element of the option array:
 
 ```php?start_inline=true
-$getopt = new Getopt(array(
-   array('v', 'version', Getopt::NO_ARGUMENT, 'Display version information')
+$getopt = new GetOpt(array(
+   array('v', 'version', GetOpt::NO_ARGUMENT, 'Display version information')
 ));
 ```

@@ -5,14 +5,14 @@ permalink: /basic/
 ---
 # {{ page.title }}
 
-These pages describe Getopt's essential features. They cover everything you need to know in order to make use of it.
+These pages describe GetOpt's essential features. They cover everything you need to know in order to make use of it.
 All of the advanced features are optional; you only need to look into them if you actually want to use them.
 
 ## Topics
 
-**[Specifying options](specifying-options.md)** - The first step of using Getopt: configuring the desired options
+**[Specifying options](specifying-options.md)** - The first step of using GetOpt: configuring the desired options
 
-**[Retrieving values](retrieving-values.md)** - The second step of using Getopt: invoking the parser and retrieving the
+**[Retrieving values](retrieving-values.md)** - The second step of using GetOpt: invoking the parser and retrieving the
 results
 
 **[Usage information](usage-information.md)** - Generate usage information for help texts automatically

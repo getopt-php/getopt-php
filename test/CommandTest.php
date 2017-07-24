@@ -92,7 +92,7 @@ class CommandTest extends TestCase
     public function testGetHelpForExecutedCommand()
     {
         $longDescription = 'This is a very long description.' . PHP_EOL . 'It also may have line breaks.';
-        $getopt = new Getopt();
+        $getopt = new GetOpt();
         $getopt->addCommand(new Command(
             'test',
             '',
@@ -119,7 +119,7 @@ class CommandTest extends TestCase
     {
         $cmd1 = new Command('help', 'Shows help for a command', 'var_dump');
         $cmd2 = new Command('run:tests', 'Executes the tests', 'var_dump');
-        $getopt = new Getopt([
+        $getopt = new GetOpt([
             Option::create('h', 'help')->setDescription('Shows this help')
         ]);
         $getopt->addCommands([ $cmd1, $cmd2 ]);
@@ -141,7 +141,7 @@ class CommandTest extends TestCase
     public function testTooLongShortDescription()
     {
         defined('COLUMNS') || define('COLUMNS', 90);
-        $getopt = new Getopt([
+        $getopt = new GetOpt([
             Option::create('h', 'help')->setDescription('Shows this help')
         ]);
         $getopt->addCommands([new Command(

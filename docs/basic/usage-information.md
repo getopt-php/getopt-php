@@ -5,7 +5,7 @@ permalink: /basic/usage-information.html
 ---
 # {{ page.title }}
 
-Getopt can automatically generate a human-readable usage information from the specified options. Use it for quickly
+GetOpt can automatically generate a human-readable usage information from the specified options. Use it for quickly
 setting up help texts:
 
 ```php?start_inline=true

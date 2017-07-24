@@ -1,9 +1,9 @@
 <?php
 
-/** @var \GetOpt\Getopt $getopt */
+/** @var \GetOpt\GetOpt $getopt */
 /** @var \GetOpt\Command $command */
 
-echo 'Usage: ' . $getopt->get(GetOpt\Getopt::SETTING_SCRIPT_NAME) . ' ';
+echo 'Usage: ' . $getopt->get(GetOpt\GetOpt::SETTING_SCRIPT_NAME) . ' ';
 
 if (isset($command)) {
     echo $command->getName() . ' ';

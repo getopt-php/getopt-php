@@ -8,18 +8,18 @@ class OptionTest extends TestCase
 {
     public function testConstruct()
     {
-        $option = new Option('a', 'az-AZ09_', Getopt::OPTIONAL_ARGUMENT);
+        $option = new Option('a', 'az-AZ09_', GetOpt::OPTIONAL_ARGUMENT);
         $this->assertEquals('a', $option->short());
         $this->assertEquals('az-AZ09_', $option->long());
-        $this->assertEquals(Getopt::OPTIONAL_ARGUMENT, $option->mode());
+        $this->assertEquals(GetOpt::OPTIONAL_ARGUMENT, $option->mode());
     }
 
     public function testCreate()
     {
-        $option = Option::create('a', 'az-AZ09_', Getopt::OPTIONAL_ARGUMENT);
+        $option = Option::create('a', 'az-AZ09_', GetOpt::OPTIONAL_ARGUMENT);
         $this->assertEquals('a', $option->short());
         $this->assertEquals('az-AZ09_', $option->long());
-        $this->assertEquals(Getopt::OPTIONAL_ARGUMENT, $option->mode());
+        $this->assertEquals(GetOpt::OPTIONAL_ARGUMENT, $option->mode());
     }
 
     /** @dataProvider dataConstructFails
@@ -36,11 +36,11 @@ class OptionTest extends TestCase
     public function dataConstructFails()
     {
         return [
-            [ null, null, Getopt::NO_ARGUMENT ],      // long and short are both empty
-            [ '&', null, Getopt::NO_ARGUMENT ],       // short name must be one of [a-zA-Z0-9?!§$%#]
-            [ null, 'öption', Getopt::NO_ARGUMENT ],  // long name may contain only alphanumeric chars, _ and -
+            [ null, null, GetOpt::NO_ARGUMENT ],      // long and short are both empty
+            [ '&', null, GetOpt::NO_ARGUMENT ],       // short name must be one of [a-zA-Z0-9?!§$%#]
+            [ null, 'öption', GetOpt::NO_ARGUMENT ],  // long name may contain only alphanumeric chars, _ and -
             [ 'a', null, 'no_argument' ],             // invalid mode
-            [ null, 'a', Getopt::NO_ARGUMENT ]        // long name must be at least 2 characters long
+            [ null, 'a', GetOpt::NO_ARGUMENT ]        // long name must be at least 2 characters long
         ];
     }
 
@@ -65,7 +65,7 @@ class OptionTest extends TestCase
 
     public function testSetArgument()
     {
-        $option = new Option('a', null, Getopt::OPTIONAL_ARGUMENT);
+        $option = new Option('a', null, GetOpt::OPTIONAL_ARGUMENT);
         $this->assertEquals($option, $option->setArgument(new Argument()));
         $this->assertInstanceof(Argument::CLASSNAME, $option->getArgument());
     }
@@ -73,7 +73,7 @@ class OptionTest extends TestCase
     public function testSetArgumentWrongMode()
     {
         $this->setExpectedException('InvalidArgumentException');
-        $option = new Option('a', null, Getopt::NO_ARGUMENT);
+        $option = new Option('a', null, GetOpt::NO_ARGUMENT);
         $option->setArgument(new Argument());
     }
 
@@ -81,21 +81,21 @@ class OptionTest extends TestCase
     {
         $argument = new Argument();
 
-        $option = new Option('a', null, Getopt::OPTIONAL_ARGUMENT, $argument);
+        $option = new Option('a', null, GetOpt::OPTIONAL_ARGUMENT, $argument);
 
         self::assertSame($argument, $option->getArgument());
     }
 
     public function testSetDefaultValue()
     {
-        $option = new Option('a', null, Getopt::OPTIONAL_ARGUMENT);
+        $option = new Option('a', null, GetOpt::OPTIONAL_ARGUMENT);
         $this->assertEquals($option, $option->setDefaultValue(10));
         $this->assertEquals(10, $option->getArgument()->getDefaultValue());
     }
 
     public function testSetValidation()
     {
-        $option = new Option('a', null, Getopt::OPTIONAL_ARGUMENT);
+        $option = new Option('a', null, GetOpt::OPTIONAL_ARGUMENT);
         $this->assertEquals($option, $option->setValidation('is_numeric'));
         $this->assertTrue($option->getArgument()->hasValidation());
     }
@@ -111,7 +111,7 @@ class OptionTest extends TestCase
 
     public function testToStringWithArgument()
     {
-        $option = new Option('a', null, Getopt::REQUIRED_ARGUMENT);
+        $option = new Option('a', null, GetOpt::REQUIRED_ARGUMENT);
         $option->setValue('valueA');
 
         $this->assertSame('valueA', (string)$option);
@@ -119,7 +119,7 @@ class OptionTest extends TestCase
 
     public function testToStringWithMultipleArguments()
     {
-        $option = new Option('a', null, Getopt::MULTIPLE_ARGUMENT);
+        $option = new Option('a', null, GetOpt::MULTIPLE_ARGUMENT);
         $option->setValue('valueA');
         $option->setValue('valueB');
 

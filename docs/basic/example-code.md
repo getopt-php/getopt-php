@@ -5,21 +5,21 @@ permalink: /basic/example-code.html
 ---
 # {{ page.title }}
 
-This short (and incomplete) sample program demonstrates the use of Getopt's basic features. It is modeled after
+This short (and incomplete) sample program demonstrates the use of GetOpt's basic features. It is modeled after
 [GNU mkdir](http://unixhelp.ed.ac.uk/CGI/man-cgi?mkdir) as an example of a real-world command line
-interface that uses many of the aspects featured in Getopt.
+interface that uses many of the aspects featured in GetOpt.
 
 ```php
 <?php
 
-use Ulrichsg\Getopt\Getopt;
-use Ulrichsg\Getopt\Option;
+use Ulrichsg\GetOpt\GetOpt;
+use Ulrichsg\GetOpt\Option;
 
-$getopt = new Getopt(array(
-    new Option('m', 'mode', Getopt::REQUIRED_ARGUMENT),
+$getopt = new GetOpt(array(
+    new Option('m', 'mode', GetOpt::REQUIRED_ARGUMENT),
     new Option('p', 'parents'),
     new Option('v', 'verbose'),
-    new Option('Z', 'context', Getopt::REQUIRED_ARGUMENT),
+    new Option('Z', 'context', GetOpt::REQUIRED_ARGUMENT),
     new Option(null, 'help'),
     new Option(null, 'version')
 ));
@@ -28,7 +28,7 @@ try {
     $getopt->parse();
 
     if ($getopt['version']) {
-        echo "Getopt example v0.0.1\n";
+        echo "GetOpt example v0.0.1\n";
         exit(0);
     }
 

@@ -3,12 +3,12 @@
 namespace GetOpt;
 
 /**
- * Class Getopt
+ * Class GetOpt
  *
  * @package GetOpt
  * @author  Thomas Flori <thflori@gmail.com>
  */
-class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
+class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
 {
     const NO_ARGUMENT = 0;
     const REQUIRED_ARGUMENT = 1;
@@ -49,14 +49,14 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     protected $operandValues = [];
 
     /**
-     * Creates a new Getopt object.
+     * Creates a new GetOpt object.
      *
      * The argument $options can be either a string in the format accepted by the PHP library
      * function getopt() or an array.
      *
      * @param array $options
      * @param array $settings
-     * @link https://www.gnu.org/s/hello/manual/libc/Getopt.html GNU Getopt manual
+     * @link https://www.gnu.org/s/hello/manual/libc/Getopt.html GNU GetOpt manual
      */
     public function __construct($options = null, array $settings = [])
     {
@@ -152,14 +152,14 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * You can also mix Option instances and arrays. Eg.:
      * $getopt->addOptions([
-     *   ['?', 'help', Getopt::NO_ARGUMENT, 'Show this help'],
+     *   ['?', 'help', GetOpt::NO_ARGUMENT, 'Show this help'],
      *   new Option('v', 'verbose'),
      *   (new Option(null, 'version'))->setDescription('Print version and exit'),
      *   Option::create('q', 'quiet')->setDescription('Don\'t write any output')
      *   new Option(
      *     'c',
      *     'config',
-     *     Getopt::REQUIRED_ARGUMENT,
+     *     GetOpt::REQUIRED_ARGUMENT,
      *     new Argument(getenv('HOME') . '/.myapp.inc', 'file_exists', 'file')
      *   )
      * ]);
@@ -175,7 +175,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
         }
 
         if (!is_array($options)) {
-            throw new \InvalidArgumentException('Getopt(): argument must be string or array');
+            throw new \InvalidArgumentException('GetOpt(): argument must be string or array');
         }
 
         foreach ($options as $option) {
@@ -192,7 +192,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * Otherwise it has to be an array or an Option instance.
      *
-     * @see Getopt::addOptions() for more details
+     * @see GetOpt::addOptions() for more details
      * @param string|array|Option $option
      * @return self
      */
@@ -539,7 +539,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * @param string $scriptName
      * @return self
-     * @deprecated Use `Getopt::set(Getopt::SETTING_SCRIPT_NAME, $scriptName)` instead
+     * @deprecated Use `GetOpt::set(GetOpt::SETTING_SCRIPT_NAME, $scriptName)` instead
      * @codeCoverageIgnore
      */
     public function setScriptName($scriptName)
@@ -553,7 +553,7 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
      * These function is an alias for process now. Parse was not the correct verb for what
      * the function is currently doing.
      *
-     * @deprecated Use `Getopt::process($arguments)` instead
+     * @deprecated Use `GetOpt::process($arguments)` instead
      * @param mixed $arguments optional ARGV array or argument string
      * @codeCoverageIgnore
      */
