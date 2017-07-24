@@ -16,7 +16,7 @@ class GetoptTest extends TestCase
                 [ 'n', 'name', Getopt::OPTIONAL_ARGUMENT ]
         ]);
 
-        $getopt->parse('-a aparam -s sparam --long longparam');
+        $getopt->process('-a aparam -s sparam --long longparam');
 
         $this->assertEquals('aparam', $getopt->getOption('a'));
         $this->assertEquals('longparam', $getopt->getOption('long'));
@@ -31,7 +31,7 @@ class GetoptTest extends TestCase
             [ 'long', Getopt::OPTIONAL_ARGUMENT ]
         ]);
 
-        $getopt->parse('-s --long longparam');
+        $getopt->process('-s --long longparam');
         $this->assertEquals('longparam', $getopt->getOption('long'));
         $this->assertEquals('1', $getopt->getOption('s'));
     }
@@ -45,10 +45,10 @@ class GetoptTest extends TestCase
             [ 'l', 'long' ]
         ]);
 
-        $getopt->parse('-l something');
+        $getopt->process('-l something');
         $this->assertEquals('something', $getopt->getOption('l'));
 
-        $getopt->parse('--long someOtherThing');
+        $getopt->process('--long someOtherThing');
         $this->assertEquals('someOtherThing', $getopt->getOption('long'));
     }
 
@@ -66,7 +66,7 @@ class GetoptTest extends TestCase
         ]);
 
         $getopt->getOption('a', true)->setMode(Getopt::NO_ARGUMENT);
-        $getopt->parse('-a foo');
+        $getopt->process('-a foo');
 
         $this->assertEquals(1, $getopt->getOption('a'));
         $this->assertEquals('foo', $getopt->getOperand(0));
@@ -88,14 +88,14 @@ class GetoptTest extends TestCase
         $_SERVER['argv'] = [ 'foo.php', '-a' ];
 
         $getopt = new Getopt('a');
-        $getopt->parse();
+        $getopt->process();
         $this->assertEquals(1, $getopt->getOption('a'));
     }
 
     public function testAccessMethods()
     {
         $getopt = new Getopt('a');
-        $getopt->parse('-a foo');
+        $getopt->process('-a foo');
 
         $options = $getopt->getOptions();
         $this->assertCount(1, $options);
@@ -115,14 +115,14 @@ class GetoptTest extends TestCase
             new Option('b', 'beta'),
             new Option('c', 'gamma'),
         ]);
-        $getopt->parse('-abc');
+        $getopt->process('-abc');
         $this->assertEquals(3, count($getopt));
     }
 
     public function testArrayAccess()
     {
         $getopt = new Getopt('q');
-        $getopt->parse('-q');
+        $getopt->process('-q');
         $this->assertEquals(1, $getopt['q']);
     }
 
@@ -132,7 +132,7 @@ class GetoptTest extends TestCase
             [ null, 'alpha', Getopt::NO_ARGUMENT ],
             [ 'b', 'beta', Getopt::REQUIRED_ARGUMENT ]
         ]);
-        $getopt->parse('--alpha -b foo');
+        $getopt->process('--alpha -b foo');
         $expected = [ 'alpha' => 1, 'b' => 'foo' ]; // 'beta' should not occur
         foreach ($getopt as $option => $value) {
             $this->assertEquals($expected[$option], $value);
@@ -146,7 +146,7 @@ class GetoptTest extends TestCase
             [ null, 'beta', Getopt::OPTIONAL_ARGUMENT, 'Long option only with an optional argument' ],
             [ 'c', null, Getopt::REQUIRED_ARGUMENT, 'Short option only with a mandatory argument' ]
         ]);
-        $getopt->parse('');
+        $getopt->process('');
 
         $script = $_SERVER['PHP_SELF'];
 
@@ -166,7 +166,7 @@ class GetoptTest extends TestCase
             [ null, 'beta', Getopt::OPTIONAL_ARGUMENT ],
             [ 'c', null, Getopt::REQUIRED_ARGUMENT ]
         ]);
-        $getopt->parse('');
+        $getopt->process('');
 
         $script = $_SERVER['PHP_SELF'];
 
@@ -190,7 +190,7 @@ class GetoptTest extends TestCase
             [ null, 'beta', Getopt::OPTIONAL_ARGUMENT, 'Long option only with an optional argument' ],
             [ 'c', null, Getopt::REQUIRED_ARGUMENT, 'Short option only with a mandatory argument' ]
         ]);
-        $getopt->parse('');
+        $getopt->process('');
 
         $script = $_SERVER['PHP_SELF'];
 
@@ -207,7 +207,7 @@ class GetoptTest extends TestCase
     public function testHelpTextWithCustomScriptName()
     {
         $getopt = new Getopt();
-        $getopt->setScriptName('test');
+        $getopt->set(Getopt::SETTING_SCRIPT_NAME, 'test');
         $expected = "Usage: test [operands]\n";
         $this->assertSame($expected, $getopt->getHelpText());
     }

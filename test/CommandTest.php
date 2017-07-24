@@ -32,11 +32,13 @@ class CommandTest extends TestCase
         self::assertSame('the-name', $this->command->getName());
     }
 
-    /** @dataProvider dataNamesNotAllowed */
+    /** @dataProvider dataNamesNotAllowed
+     * @param string $name
+     */
     public function testNamesNotAllowed($name)
     {
         $this->setExpectedException('InvalidArgumentException');
-        $command = new Command($name, '', null);
+        new Command($name, '', null);
     }
 
     public function dataNamesNotAllowed()

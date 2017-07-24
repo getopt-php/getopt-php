@@ -22,7 +22,11 @@ class OptionTest extends TestCase
         $this->assertEquals(Getopt::OPTIONAL_ARGUMENT, $option->mode());
     }
 
-    /** @dataProvider dataConstructFails */
+    /** @dataProvider dataConstructFails
+     * @param string $short
+     * @param string $long
+     * @param int $mode
+     */
     public function testConstructFails($short, $long, $mode)
     {
         $this->setExpectedException('InvalidArgumentException');
@@ -40,7 +44,11 @@ class OptionTest extends TestCase
         ];
     }
 
-    /** @dataProvider dataMatches */
+    /** @dataProvider dataMatches
+     * @param Option $option
+     * @param string $string
+     * @param bool   $matches
+     */
     public function testMatches(Option $option, $string, $matches)
     {
         $this->assertEquals($matches, $option->matches($string));

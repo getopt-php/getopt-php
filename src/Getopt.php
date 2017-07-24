@@ -440,7 +440,9 @@ class Getopt implements \Countable, \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * Returns the i-th operand (starting with 0), or null if it does not exist. Must be invoked after parse().
+     * Returns the nth operand (starting with 0), or null if it does not exist.
+     *
+     * When $index is a string it returns the current value or the default value for the named operand.
      *
      * @param int|string $index
      * @return mixed

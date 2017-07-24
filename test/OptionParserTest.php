@@ -74,6 +74,7 @@ class OptionParserTest extends TestCase
 
     /**
      * @dataProvider provideOptionArrays
+     * @param array $array
      */
     public function testParseArray($array)
     {

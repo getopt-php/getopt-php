@@ -22,7 +22,7 @@ class OperandsTest extends TestCase
     public function testOperandValidation()
     {
         $operand = new Operand('op1', false, null, function ($value) {
-            return false; // this validator is always false
+            return $value === null; // this validator is always false
         });
 
         $getopt = new Getopt();
