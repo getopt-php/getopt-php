@@ -2,6 +2,9 @@
 
 namespace GetOpt;
 
+use GetOpt\ArgumentException\Invalid;
+use GetOpt\ArgumentException\Missing;
+
 /**
  * Represents an option that GetOpt accepts.
  *
@@ -238,7 +241,7 @@ class Option
     public function setValue($value = null)
     {
         if ($value === null && in_array($this->mode, [ GetOpt::REQUIRED_ARGUMENT, GetOpt::MULTIPLE_ARGUMENT ])) {
-            throw new MissingArgumentException(sprintf(
+            throw new Missing(sprintf(
                 'Option \'%s\' must have a value',
                 $this->long() ?: $this->short()
             ));
@@ -249,7 +252,7 @@ class Option
         }
 
         if ($this->getArgument()->hasValidation() && !$this->getArgument()->validates($value)) {
-            throw new InvalidArgumentException(sprintf(
+            throw new Invalid(sprintf(
                 'Option \'%s\' has an invalid value',
                 $this->long() ?: $this->short()
             ));

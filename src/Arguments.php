@@ -2,6 +2,8 @@
 
 namespace GetOpt;
 
+use GetOpt\ArgumentException\Unexpected;
+
 /**
  * Class Arguments
  *
@@ -57,7 +59,7 @@ class Arguments
                 $option = $getopt->getOption($name, true);
 
                 if (!$option) {
-                    throw new UnexpectedArgumentException(sprintf(
+                    throw new Unexpected(sprintf(
                         'Option \'%s\' is unknown',
                         $name
                     ));
@@ -77,7 +79,7 @@ class Arguments
                 $option = $getopt->getOption($name, true);
 
                 if (!$option) {
-                    throw new UnexpectedArgumentException(sprintf(
+                    throw new Unexpected(sprintf(
                         'Option \'%s\' is unknown',
                         $name
                     ));

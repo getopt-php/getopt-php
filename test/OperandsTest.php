@@ -2,6 +2,7 @@
 
 namespace GetOpt;
 
+use GetOpt\ArgumentException\Missing;
 use PHPUnit\Framework\TestCase;
 
 class OperandsTest extends TestCase
@@ -28,7 +29,7 @@ class OperandsTest extends TestCase
         $getopt = new GetOpt();
         $getopt->addOperand($operand);
 
-        $this->setExpectedException('GetOpt\InvalidArgumentException');
+        $this->setExpectedException('GetOpt\ArgumentException\Invalid');
         $getopt->process('"any value"');
     }
 
@@ -50,7 +51,7 @@ class OperandsTest extends TestCase
         $getopt = new GetOpt();
         $getopt->addOperand($operand);
 
-        $this->setExpectedException('GetOpt\MissingArgumentException');
+        $this->setExpectedException('GetOpt\ArgumentException\Missing');
         $getopt->process('');
     }
 
@@ -146,7 +147,7 @@ class OperandsTest extends TestCase
 
         try {
             $getopt->process('command');
-        } catch (MissingArgumentException $exception) {
+        } catch (Missing $exception) {
         }
 
         self::assertSame(
@@ -190,7 +191,7 @@ class OperandsTest extends TestCase
         $getopt = new GetOpt();
         $getopt->addOperand($operand);
 
-        $this->setExpectedException('GetOpt\MissingArgumentException');
+        $this->setExpectedException('GetOpt\ArgumentException\Missing');
         $getopt->process('');
     }
 
@@ -214,7 +215,7 @@ class OperandsTest extends TestCase
         $getopt = new GetOpt();
         $getopt->addOperand($operand1);
 
-        $this->setExpectedException('GetOpt\InvalidArgumentException');
+        $this->setExpectedException('GetOpt\ArgumentException\Invalid');
         $getopt->process('42 43');
     }
 

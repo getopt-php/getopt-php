@@ -2,6 +2,9 @@
 
 namespace GetOpt;
 
+use GetOpt\ArgumentException\Invalid;
+use GetOpt\ArgumentException\Missing;
+
 /**
  * Class GetOpt
  *
@@ -130,7 +133,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
 
         $addOperand = function ($value) {
             if (($operand = $this->nextOperand()) && $operand->hasValidation() && !$operand->validates($value)) {
-                throw new InvalidArgumentException(sprintf('Operand %s has an invalid value', $operand->getName()));
+                throw new Invalid(sprintf('Operand %s has an invalid value', $operand->getName()));
             }
 
             $this->operandValues[] = $value;
@@ -141,7 +144,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
         if (($operand = $this->nextOperand()) && $operand->isRequired() &&
             (!$operand->isMultiple() || count($this->getOperand($operand->getName())) === 0)
         ) {
-            throw new MissingArgumentException(sprintf('Operand %s is required', $operand->getName()));
+            throw new Missing(sprintf('Operand %s is required', $operand->getName()));
         }
     }
 
