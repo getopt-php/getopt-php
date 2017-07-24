@@ -4,6 +4,7 @@ namespace GetOpt;
 
 use GetOpt\ArgumentException\Invalid;
 use GetOpt\ArgumentException\Missing;
+use GetOpt\ArgumentException\Unexpected;
 
 /**
  * Class GetOpt
@@ -140,7 +141,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
             if ($operand && $operand->hasValidation() && !$operand->validates($value)) {
                 throw new Invalid(sprintf('Operand %s has an invalid value', $operand->getName()));
             } elseif ($this->get(self::SETTING_STRICT_OPERANDS) && !$operand) {
-                throw new UnexpectedArgumentException(sprintf(
+                throw new Unexpected(sprintf(
                     'No more operands expected - got %s',
                     $value
                 ));

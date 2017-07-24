@@ -266,7 +266,7 @@ class OperandsTest extends TestCase
         $getopt = new GetOpt();
         $getopt->set(GetOpt::SETTING_STRICT_OPERANDS, true);
 
-        $this->setExpectedException('GetOpt\UnexpectedArgumentException');
+        $this->setExpectedException('GetOpt\ArgumentException\Unexpected');
         $getopt->process('"some operand"');
     }
 
