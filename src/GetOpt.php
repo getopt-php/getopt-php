@@ -188,7 +188,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     /**
      * Add $option to the list of options
      *
-     * $option can also be a string in format of phps `getopt()` function. But only the first option will be added.
+     * $option can also be a string in format of php`s `getopt()` function. But only the first option will be added.
      *
      * Otherwise it has to be an array or an Option instance.
      *
@@ -225,9 +225,8 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     /**
      * Get an option by $name
      *
-     * If $object is set to true it returns the Option instead of the value.
-     *
-     * @param string $name Short or long name of the option
+     * @param string $name   Short or long name of the option
+     * @param bool   $object Get the definition object instead of the current value.
      * @return Option|mixed
      */
     public function getOption($name, $object = false)

@@ -57,7 +57,7 @@ class Arguments
                 $option = $getopt->getOption($name, true);
 
                 if (!$option) {
-                    throw new \UnexpectedValueException(sprintf(
+                    throw new UnexpectedArgumentException(sprintf(
                         'Option \'%s\' is unknown',
                         $name
                     ));
@@ -77,7 +77,7 @@ class Arguments
                 $option = $getopt->getOption($name, true);
 
                 if (!$option) {
-                    throw new \UnexpectedValueException(sprintf(
+                    throw new UnexpectedArgumentException(sprintf(
                         'Option \'%s\' is unknown',
                         $name
                     ));

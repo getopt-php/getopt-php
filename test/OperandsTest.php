@@ -28,7 +28,7 @@ class OperandsTest extends TestCase
         $getopt = new GetOpt();
         $getopt->addOperand($operand);
 
-        $this->setExpectedException('UnexpectedValueException');
+        $this->setExpectedException('GetOpt\InvalidArgumentException');
         $getopt->process('"any value"');
     }
 
@@ -50,7 +50,7 @@ class OperandsTest extends TestCase
         $getopt = new GetOpt();
         $getopt->addOperand($operand);
 
-        $this->setExpectedException('UnexpectedValueException');
+        $this->setExpectedException('GetOpt\MissingArgumentException');
         $getopt->process('');
     }
 
