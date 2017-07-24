@@ -20,6 +20,8 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
 
     const SETTING_SCRIPT_NAME  = 'scriptName';
     const SETTING_DEFAULT_MODE = 'defaultMode';
+    const SETTING_STRICT_OPTIONS = 'strictOptions';
+    const SETTING_STRICT_OPERANDS = 'strictOperands';
 
     /** @var OptionParser */
     protected $optionParser;
@@ -29,7 +31,9 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
 
     /** @var array */
     protected $settings = [
-        self::SETTING_DEFAULT_MODE => self::NO_ARGUMENT
+        self::SETTING_DEFAULT_MODE => self::NO_ARGUMENT,
+        self::SETTING_STRICT_OPTIONS => true,
+        self::SETTING_STRICT_OPERANDS => false,
     ];
 
     /** @var Option[] */
@@ -132,8 +136,14 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
         };
 
         $addOperand = function ($value) {
-            if (($operand = $this->nextOperand()) && $operand->hasValidation() && !$operand->validates($value)) {
+            $operand = $this->nextOperand();
+            if ($operand && $operand->hasValidation() && !$operand->validates($value)) {
                 throw new Invalid(sprintf('Operand %s has an invalid value', $operand->getName()));
+            } elseif ($this->get(self::SETTING_STRICT_OPERANDS) && !$operand) {
+                throw new UnexpectedArgumentException(sprintf(
+                    'No more operands expected - got %s',
+                    $value
+                ));
             }
 
             $this->operandValues[] = $value;
