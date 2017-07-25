@@ -56,6 +56,9 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     /** @var string[] */
     protected $operandValues = [];
 
+    /** @var array */
+    protected $additionalOptions = [];
+
     /**
      * Creates a new GetOpt object.
      *
@@ -129,6 +132,27 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
             );
         }
 
+        $setOption = function ($name, callable $getValue) {
+            $option = $this->getOption($name, true);
+
+            if (!$option) {
+                if (!$this->get(self::SETTING_STRICT_OPTIONS)) {
+                    $value = $getValue() ?: 1;
+                    if (isset($this->additionalOptions[$name]) &&
+                        is_int($value) && is_int($this->additionalOptions[$name])
+                    ) {
+                        $value += $this->additionalOptions[$name];
+                    }
+
+                    $this->additionalOptions[$name] = $value;
+                    return;
+                } else {
+                    throw new Unexpected(sprintf('Option \'%s\' is unknown', $name));
+                }
+            }
+
+            $option->setValue($option->mode() !== GetOpt::NO_ARGUMENT ? $getValue() : null);
+        };
 
         $setCommand = function (Command $command) {
             $this->addOptions($command->getOptions());
@@ -150,7 +174,10 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
             $this->operandValues[] = $value;
         };
 
-        $arguments->process($this, $setCommand, $addOperand);
+        $this->additionalOptions = [];
+        $this->operandValues = [];
+
+        $arguments->process($this, $setOption, $setCommand, $addOperand);
 
         if (($operand = $this->nextOperand()) && $operand->isRequired() &&
             (!$operand->isMultiple() || count($this->getOperand($operand->getName())) === 0)
@@ -259,7 +286,11 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
             return $this->optionMapping[$name];
         }
 
-        return $this->optionMapping[$name] !== null ? $this->optionMapping[$name]->getValue() : null;
+        if ($this->optionMapping[$name] !== null) {
+            return $this->optionMapping[$name]->getValue();
+        }
+
+        return isset($this->additionalOptions[$name]) ? $this->additionalOptions[$name] : null;
     }
 
     /**
@@ -281,6 +312,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
         foreach ($this->options as $option) {
             $value = $option->getValue();
             if ($value !== null) {
+                $result[$option->short() ?: $option->long()] = $value;
                 if ($short = $option->short()) {
                     $result[$short] = $value;
                 }
@@ -290,7 +322,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
             }
         }
 
-        return $result;
+        return $result + $this->additionalOptions;
     }
 
     public function hasOptions()
@@ -588,19 +620,27 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
             }
         }
 
-        return new \ArrayIterator($result);
+        return new \ArrayIterator($result + $this->additionalOptions);
     }
 
     public function offsetExists($offset)
     {
         $option = $this->getOption($offset, true);
-        return $option && $option->getValue() !== null;
+        if ($option && $option->getValue() !== null) {
+            return true;
+        }
+
+        return isset($this->additionalOptions[$offset]);
     }
 
     public function offsetGet($offset)
     {
         $option = $this->getOption($offset, true);
-        return $option ? $option->getValue() : null;
+        if ($option) {
+            return $option->getValue();
+        }
+
+        return isset($this->additionalOptions[$offset]) ? $this->additionalOptions[$offset] : null;
     }
 
     public function offsetSet($offset, $value)

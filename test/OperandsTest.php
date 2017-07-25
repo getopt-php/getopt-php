@@ -7,6 +7,16 @@ use PHPUnit\Framework\TestCase;
 
 class OperandsTest extends TestCase
 {
+    public function testOperandsAreResetted()
+    {
+        $getopt = new GetOpt();
+        $getopt->process('"any operand"');
+
+        $getopt->process('');
+
+        self::assertSame([], $getopt->getOperands());
+    }
+
     public function testAddOperands()
     {
         $operand1 = new Operand('op1');

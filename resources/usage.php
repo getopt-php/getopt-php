@@ -14,7 +14,7 @@ if (isset($command)) {
     echo '[command] ';
 }
 
-if ($getopt->hasOptions()) {
+if ($getopt->hasOptions() || !$getopt->get(GetOpt::SETTING_STRICT_OPTIONS)) {
     echo '[options] ';
 }
 

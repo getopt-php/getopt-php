@@ -236,7 +236,6 @@ class Option
      * Internal method to set the current value
      *
      * @param mixed $value
-     * @internal
      */
     public function setValue($value = null)
     {
