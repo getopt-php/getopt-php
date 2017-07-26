@@ -1,9 +1,12 @@
 <?php
 
-/** @var \GetOpt\GetOpt $getopt */
-/** @var \GetOpt\Command $command */
+use GetOpt\Command;
+use GetOpt\GetOpt;
 
-echo 'Usage: ' . $getopt->get(GetOpt\GetOpt::SETTING_SCRIPT_NAME) . ' ';
+/** @var GetOpt $getopt */
+/** @var Command $command */
+
+echo 'Usage: ' . $getopt->get(GetOpt::SETTING_SCRIPT_NAME) . ' ';
 
 if (isset($command)) {
     echo $command->getName() . ' ';
@@ -11,7 +14,7 @@ if (isset($command)) {
     echo '[command] ';
 }
 
-if ($getopt->hasOptions()) {
+if ($getopt->hasOptions() || !$getopt->get(GetOpt::SETTING_STRICT_OPTIONS)) {
     echo '[options] ';
 }
 
@@ -30,7 +33,7 @@ if ($getopt->hasOperands()) {
     }
 }
 
-if (!$lastOperandMultiple) {
+if (!$lastOperandMultiple && !$getopt->get(GetOpt::SETTING_STRICT_OPERANDS)) {
     echo '[operands]';
 }
 

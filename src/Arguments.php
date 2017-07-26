@@ -31,11 +31,12 @@ class Arguments
      * Stores operands using $addOperand callback.
      *
      * @param GetOpt   $getopt
+     * @param callable $setOption
      * @param callable $setCommand
      * @param callable $addOperand
      * @return bool
      */
-    public function process(GetOpt $getopt, callable $setCommand, callable $addOperand)
+    public function process(GetOpt $getopt, callable $setOption, callable $setCommand, callable $addOperand)
     {
         while (($arg = array_shift($this->arguments)) !== null) {
             if ($this->isMeta($arg)) {
@@ -55,43 +56,21 @@ class Arguments
             }
 
             if ($this->isLongOption($arg)) {
-                $name   = $this->longName($arg);
-                $option = $getopt->getOption($name, true);
-
-                if (!$option) {
-                    throw new Unexpected(sprintf(
-                        'Option \'%s\' is unknown',
-                        $name
-                    ));
-                }
-
-                $value = null;
-                if ($option->mode() !== GetOpt::NO_ARGUMENT) {
-                    $value = $this->value($arg);
-                }
-
-                $option->setValue($value);
+                $setOption($this->longName($arg), function () use ($arg) {
+                    return $this->value($arg);
+                });
                 continue;
             }
 
             // the only left is short options
             foreach ($this->shortNames($arg) as $name) {
-                $option = $getopt->getOption($name, true);
+                $requestedValue = false;
+                $setOption($name, function () use ($arg, $name, &$requestedValue) {
+                    $requestedValue = true;
+                    return $this->value($arg, $name);
+                });
 
-                if (!$option) {
-                    throw new Unexpected(sprintf(
-                        'Option \'%s\' is unknown',
-                        $name
-                    ));
-                }
-
-                $value = null;
-                if ($option->mode() !== GetOpt::NO_ARGUMENT) {
-                    $value = $this->value($arg, $name);
-                }
-
-                $option->setValue($value);
-                if ($value) {
+                if ($requestedValue) {
                     // when there is a value it was the last option
                     break;
                 }
