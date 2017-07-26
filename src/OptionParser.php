@@ -113,12 +113,12 @@ class OptionParser
         $long = null;
         if (is_null($short)) {
             $long = $row[0];
-        } elseif (count($row) > 1 && !is_int($row[1])) {
+        } elseif (count($row) > 1 && $row[1][0] !== ':') {
             $long = $row[1];
         }
 
         $mode = $this->defaultMode;
-        if (count($row) == 2 && is_int($row[1])) {
+        if (count($row) == 2 && $row[1][0] === ':') {
             $mode = $row[1];
         }
 

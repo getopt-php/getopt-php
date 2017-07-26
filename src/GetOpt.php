@@ -14,10 +14,10 @@ use GetOpt\ArgumentException\Unexpected;
  */
 class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
 {
-    const NO_ARGUMENT = 0;
-    const REQUIRED_ARGUMENT = 1;
-    const OPTIONAL_ARGUMENT = 2;
-    const MULTIPLE_ARGUMENT = 3;
+    const NO_ARGUMENT = ':noArg';
+    const REQUIRED_ARGUMENT = ':requiredArg';
+    const OPTIONAL_ARGUMENT = ':optionalArg';
+    const MULTIPLE_ARGUMENT = ':multipleArg';
 
     const SETTING_SCRIPT_NAME  = 'scriptName';
     const SETTING_DEFAULT_MODE = 'defaultMode';

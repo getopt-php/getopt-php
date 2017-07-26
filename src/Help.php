@@ -68,6 +68,24 @@ class Help implements HelpInterface
     }
 
     /**
+     * @return string
+     * @codeCoverageIgnore trivial
+     */
+    public function getCommandsTemplate()
+    {
+        return $this->commandsTemplate;
+    }
+
+    /**
+     * @param string $commandsTemplate
+     * @codeCoverageIgnore trivial
+     */
+    public function setCommandsTemplate($commandsTemplate)
+    {
+        $this->commandsTemplate = $commandsTemplate;
+    }
+
+    /**
      * Get the help text for $options
      *
      * @param GetOpt $getopt

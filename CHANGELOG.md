@@ -1,13 +1,19 @@
-## 3.0.0 (unpublished)
+## 3.0.0 (alpha)
 
 Features:
 * php 5.3 support dropped (solves #72)
 * moved to neutral namespace `GetOpt`
+* classname changed to `GetOpt`
+* second parameter for constructor got array of settings (use `GetOpt::SETTING_*` constants)
+* argument constants changed to string `:*Arg`
 * parse options after operands (gnu compatibility; solves #39)
 * added `GetOpt::MULTIPLE_ARGUMENT` for parameter aggregation (solves #57)
 * implemented `Command` for kinda routing in console applications (solves #41)
+* implemented `Operand` for named operands and validation (solves #27)
+* added strict modes for strict operand and parameter matches (default is true for options) (solves #14)
 * added `HelpInterface` for custom help implementations
 * refactored `GetOpt::getHelpText()` for better support of other features and customization
+* default help class uses templates
 
 Bugfixes:
 * `GetOpt::count()` returns the wrong value (solves #70)
