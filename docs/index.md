@@ -17,6 +17,11 @@ but has since evolved to become significantly more powerful.
  - Two alternative notations for long options with arguments: `--option value` and `--option=value`
  - Collapsed short options (eg. `-abc` instead of `-a -b -c`), also with an argument for the last option 
     (eg. `-ab 1` instead of `-a -b 1`)
- - Quoted arguments (eg. `--path "/some path/with spcaces"`)
+ - Two alternative notations for short options with arguments: `-o value` and `-ovalue`
+ - Quoted arguments (eg. `--path "/some path/with spcaces"`) for string processing
+ - Options with multiple arguments (eg. `--domain example.org --domain example.com`)
+ - Operand specification, validation and limitation
+ - Command routing with specified options and operands
+ - Help text generation
  - Default argument values
  - Argument validation

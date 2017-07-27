@@ -5,7 +5,7 @@ permalink: /basic/specifying-options.html
 ---
 # {{ page.title }}
 
-Every option is defined by up to three pieces of information:<
+Every option is defined by up to three pieces of information:
 
  - its *short name*, which must be a single letter or digit. For instance, if you want to respond to
 `php my_program.php -v` by showing some version information, add an option with a short name "v".
