@@ -26,7 +26,7 @@ class Argument
      * @param callable $validation A validation function
      * @param string   $name       A name for the argument
      */
-    public function __construct($default = null, $validation = null, $name = "arg")
+    public function __construct($default = null, callable $validation = null, $name = "arg")
     {
         if (!is_null($default)) {
             $this->setDefaultValue($default);
@@ -61,12 +61,19 @@ class Argument
      * @return Argument this object (for chaining calls)
      * @throws \InvalidArgumentException
      */
-    public function setValidation($callable)
+    public function setValidation(callable $callable)
     {
-        if (!is_callable($callable)) {
-            throw new \InvalidArgumentException("Validation must be a callable");
-        }
         $this->validation = $callable;
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
         return $this;
     }
 
