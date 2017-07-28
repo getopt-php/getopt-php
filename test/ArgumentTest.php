@@ -35,13 +35,6 @@ class ArgumentTest extends TestCase
         $this->assertTrue($argument->validates('test'));
     }
 
-    public function testSetValidationUncallable()
-    {
-        $this->setExpectedException('InvalidArgumentException');
-        $argument = new Argument();
-        $argument->setValidation('');
-    }
-
     public function testFalsyDefaultValue()
     {
         $argument = new Argument('');

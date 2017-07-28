@@ -28,7 +28,7 @@ class Option
      * @param string   $short The option's short name (one of [a-zA-Z0-9?!§$%#]) or null for long-only options
      * @param string   $long  The option's long name (a string of 2+ letter/digit/_/- characters, starting with a letter
      *                        or digit) or null for short-only options
-     * @param int      $mode  Whether the option can/must have an argument (optional, defaults to no argument)
+     * @param string   $mode  Whether the option can/must have an argument (optional, defaults to no argument)
      * @param Argument $argument The argument definition
      */
     public function __construct($short, $long = null, $mode = GetOpt::NO_ARGUMENT, Argument $argument = null)
@@ -53,7 +53,7 @@ class Option
      * @see Options::__construct()
      * @param string   $short
      * @param string   $long
-     * @param int      $mode
+     * @param string   $mode
      * @param Argument $argument
      * @return Option
      */
@@ -103,6 +103,18 @@ class Option
     public function setValidation($function)
     {
         $this->argument->setValidation($function);
+        return $this;
+    }
+
+    /**
+     * Set the argumentName.
+     *
+     * @param $name
+     * @return $this
+     */
+    public function setArgumentName($name)
+    {
+        $this->argument->setName($name);
         return $this;
     }
 
