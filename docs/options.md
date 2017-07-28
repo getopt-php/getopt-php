@@ -18,8 +18,7 @@ recommend to use the usual way to create objects.
 
 ### Creating Options
 
-```php
-<?php
+```php?start_inline=true
 $optionAlpha = new \GetOpt\Option('a', 'alpha', \GetOpt\GetOpt::REQUIRED_ARGUMENT);
 $optionAlpha->setDescription(
     'This description could be very long ' .
@@ -30,8 +29,7 @@ $optionAlpha->setValidation('is_numeric');
 
 And add them to the `GetOpt\GetOpt` object:
 
-```php
-<?php
+```php?start_inline=true
 // in constructor
 $getopt = new GetOpt([$optionAlpha, $optionBeta]);
 
@@ -47,8 +45,7 @@ $getopt->addOption($optionAlpha)->addOption($optionBeta);
 The setters can be chained and for convenience there is also a public static method create which allows to write the 
 above command this way:
 
-```php
-<?php
+```php?start_inline=true
 $getopt = new \GetOpt\GetOpt([
     
     \GetOpt\Option::create('a', 'alpha', \GetOpt\GetOpt::REQUIRED_ARGUMENT)
@@ -69,8 +66,7 @@ Options can be defined by a string with the exact same syntax as
 [PHP's `getopt()` function](http://php.net/manual/en/function.getopt.php) and the original GNU getopt. It is the
 shortest way to set up GetOpt, but it does not support long options or any advanced features:
 
-```php
-<?php
+```php?start_inline=true
 $getopt = new GetOpt('ab:c::');
 ```
 
@@ -83,17 +79,16 @@ determine if the option can or must have an argument:
 
 ### Options From Array
 
-There is also a helper that creates an `GetOpt\Option` from array. These method allows the most important options and
+There is also a helper that creates an `GetOpt\Option` from array. These method allows the most important features and
 can look very clean too:
 
-```php
-<?php
+```php?start_inline=true
 $getopt = new \GetOpt\GetOpt([
    
-    // creates a short option a without a long alias and with the default argument mode
+    // creates an option a without a long alias and with the default argument mode
     ['a'],
     
-    // creates a short option wihout a short alias and with the default argument mode
+    // creates an option without a short alias and with the default argument mode
     ['beta'],
     
     // you can define the argument mode
@@ -111,13 +106,120 @@ $getopt = new \GetOpt\GetOpt([
 This method does not allow to specify the validation or the argument name but you can get the option and define it
 afterwards:
 
-```php
-<?php
+```php?start_inline=true
 $getopt->getOption('beta', true)
     ->setDescription('Provide a beta version')
     ->setMode(\GetOpt\GetOpt::OPTIONAL_ARGUMENT)
-    ->setArgument(new \GetOpt\Argument(null, null, 'beta version'));
+    ->setArgumentName('beta version');
 ```
 
-## Specifying Arguments
+The default mode is `NO_ARGUMENT` you can overwrite this with the setting `SETTING_DEFAULT_MODE` from GetOpt:
 
+```php?start_inline=true
+$getopt = new \GetOpt\GetOpt([
+    ['a']
+], [
+    \GetOpt\GetOpt::SETTING_DEFAULT_MODE => \GetOpt\GetOpt::OPTIONAL_ARGUMENT
+]);
+```
+
+## Arguments
+
+The mode of an option specifies the existence of an argument. It can be one of the following constants:
+
+```php?start_inline=true
+\GetOpt\GetOpt::NO_ARGUMENT;       // ':noArg'
+\GetOpt\GetOpt::REQUIRED_ARGUMENT; // ':requiredArg'
+\GetOpt\GetOpt::OPTIONAL_ARGUMENT; // ':optionalArg'
+\GetOpt\GetOpt::MULTIPLE_ARGUMENT; // ':multipleArg'
+```
+
+> **Attention:** the type and value of these constants changed in version 3.
+
+This mode is defined during construction of the option. The default value is `NO_ARGUMENT`. It changes the
+visualization for the help text and if the mode is **not** `NO_ARGUMENT` then a following argument will be assigned as
+the value for the option:
+
+```console
+$ php program.php -c "this is the value of option c"
+```
+
+`REQUIRED_ARGUMENT` and `MULTIPLE_ARGUMENT` will fail if no value is defined.
+
+### Define the name
+
+For better understanding you can define the name of the argument that gets shown in the help:
+
+```php?start_inline=true
+$getopt = new \GetOpt\GetOpt([
+    \GetOpt\Option::create('c', 'config', \GetOpt\GetOpt::REQUIRED_ARGUMENT)
+        ->setArgumentName('ini-file')
+]);
+echo $getopt->getHelpText();
+// Usage: program.php [options] [operands]
+// Options:
+//   -c --config <ini-file>
+```
+
+### Set up a default value
+
+For options with arguments you might want to define a default value. An option that is not defined in the command line
+returns the default value for `Option::getValue()` and `GetOpt::getOption()`:
+
+```php?start_inline=true
+$getopt = new \GetOpt\GetOpt([
+    \GetOpt\Option::create('c', 'config', \GetOpt\GetOpt::REQUIRED_ARGUMENT)
+        ->setDefaultValue('/etc/program.ini')
+]);
+
+echo $getopt->getOption('config'); // /etc/program.ini
+```
+
+### Validation
+
+This library does not come with a bunch of validators that you can use and extend. Instead you provide a callable or
+closure that has to return a truthy value if the value is valid (further called the validator).
+
+The validator gets the value as first and only parameter. For a lot of php standard functions this is enough (eg. 
+`is_numeric`). The value will always be a string or null. Here comes an example that shows how to check that it has
+a valid json value:
+
+```php?start_inline=true
+$getopt = new \GetOpt\GetOpt([
+    \GetOpt\Option::create(null, 'data', \GetOpt\GetOpt::REQUIRED_ARGUMENT)
+        ->setValidation(function ($value) {
+            return $value === 'null' || json_decode($value) !== null;
+        })
+]);
+```
+
+```console
+$ php program.php --data null
+$ php program.php --data []
+$ php program.php --data '{"a":"alpha"}'
+$ php program.php --data invalid
+```
+
+#### Advanced Validation
+
+The validator is also executed if the option mode is `NO_ARGUMENT`. This way we can also check other circumstances
+inside our application as well as the current status of options.
+
+A use case for this could be to define exclusive options (which is also the reason because it was asked in a feature
+request). Let's say our program has the options `alpha` and `omega` but when you define `alpha` the `omega` option is
+forbidden and vise versa:
+
+```php?start_inline=true
+$getopt = new \GetOpt\GetOpt();
+
+$getopt->addOptions([
+    \GetOpt\Option::create(null, 'alpha', \GetOpt\GetOpt::REQUIRED_ARGUMENT)
+        ->setValidation(function () use ($getopt) {
+            return !$getopt->getOption('omega');
+        }),
+    \GetOpt\Option::create(null, 'omega', \GetOpt\GetOpt::REQUIRED_ARGUMENT)
+        ->setValidation(function () use ($getopt) {
+            return !$getopt->getOption('alpha');
+        }),
+]);
+```
