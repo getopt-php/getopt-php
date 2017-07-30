@@ -44,25 +44,6 @@ class OptionTest extends TestCase
         ];
     }
 
-    /** @dataProvider dataMatches
-     * @param Option $option
-     * @param string $string
-     * @param bool   $matches
-     */
-    public function testMatches(Option $option, $string, $matches)
-    {
-        $this->assertEquals($matches, $option->matches($string));
-    }
-    public function dataMatches()
-    {
-        return [
-            [ new Option('v', null), 'v', true ],
-            [ new Option(null, 'verbose'), 'verbose', true ],
-            [ new Option(null, 'verbose'), 'v', false ],
-            [ new Option('v', 'verbose'), 'v', true ]
-        ];
-    }
-
     public function testSetArgument()
     {
         $option = new Option('a', null, GetOpt::OPTIONAL_ARGUMENT);

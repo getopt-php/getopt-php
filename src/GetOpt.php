@@ -24,21 +24,19 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     const SETTING_STRICT_OPTIONS = 'strictOptions';
     const SETTING_STRICT_OPERANDS = 'strictOperands';
 
-    /** @var OptionParser */
-    protected $optionParser;
+    use WithOptions {
+        getOption as getOptionObject;
+        getOptions as getOptionObjects;
+    }
 
     /** @var HelpInterface */
     protected $help;
 
     /** @var array */
     protected $settings = [
-        self::SETTING_DEFAULT_MODE => self::NO_ARGUMENT,
         self::SETTING_STRICT_OPTIONS => true,
         self::SETTING_STRICT_OPERANDS => false,
     ];
-
-    /** @var Option[] */
-    protected $options = [];
 
     /** @var Command[] */
     protected $commands = [];
@@ -49,9 +47,6 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     /** The command that is executed determined by process
      * @var Command */
     protected $command;
-
-    /** @var Option[] */
-    protected $optionMapping = [];
 
     /** @var string[] */
     protected $operandValues = [];
@@ -65,7 +60,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      * The argument $options can be either a string in the format accepted by the PHP library
      * function getopt() or an array.
      *
-     * @param array $options
+     * @param array|string $options
      * @param array $settings
      * @link https://www.gnu.org/s/hello/manual/libc/Getopt.html GNU GetOpt manual
      */
@@ -95,7 +90,14 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      */
     public function set($setting, $value)
     {
-        $this->settings[$setting] = $value;
+        switch ($setting) {
+            case self::SETTING_DEFAULT_MODE:
+                OptionParser::$defaultMode = $value;
+                break;
+            default:
+                $this->settings[$setting] = $value;
+                break;
+        }
         return $this;
     }
 
@@ -133,7 +135,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
         }
 
         $setOption = function ($name, callable $getValue) {
-            $option = $this->getOption($name, true);
+            $option = $this->getOptionObject($name);
 
             if (!$option) {
                 if (!$this->get(self::SETTING_STRICT_OPTIONS)) {
@@ -187,83 +189,6 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * Add $options to the list of options
-     *
-     * $options can be a string as for phps `getopt()` function, an array of Option instances or an array of arrays.
-     *
-     * You can also mix Option instances and arrays. Eg.:
-     * $getopt->addOptions([
-     *   ['?', 'help', GetOpt::NO_ARGUMENT, 'Show this help'],
-     *   new Option('v', 'verbose'),
-     *   (new Option(null, 'version'))->setDescription('Print version and exit'),
-     *   Option::create('q', 'quiet')->setDescription('Don\'t write any output')
-     *   new Option(
-     *     'c',
-     *     'config',
-     *     GetOpt::REQUIRED_ARGUMENT,
-     *     new Argument(getenv('HOME') . '/.myapp.inc', 'file_exists', 'file')
-     *   )
-     * ]);
-     *
-     * @see OptionParser::parseArray() fo see how to use arrays
-     * @param string|array|Option[] $options
-     * @return self
-     */
-    public function addOptions($options)
-    {
-        if (is_string($options)) {
-            $options = $this->getOptionParser()->parseString($options);
-        }
-
-        if (!is_array($options)) {
-            throw new \InvalidArgumentException('GetOpt(): argument must be string or array');
-        }
-
-        foreach ($options as $option) {
-            $this->addOption($option);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Add $option to the list of options
-     *
-     * $option can also be a string in format of php`s `getopt()` function. But only the first option will be added.
-     *
-     * Otherwise it has to be an array or an Option instance.
-     *
-     * @see GetOpt::addOptions() for more details
-     * @param string|array|Option $option
-     * @return self
-     */
-    public function addOption($option)
-    {
-        if (!$option instanceof Option) {
-            if (is_string($option)) {
-                $options = $this->getOptionParser()->parseString($option);
-                // this is addOption - so we use only the first one
-                $option = $options[0];
-            } elseif (is_array($option)) {
-                $option = $this->getOptionParser()->parseArray($option);
-            } else {
-                throw new \InvalidArgumentException(sprintf(
-                    '$option has to be a string, an array or an Option. %s given',
-                    gettype($option)
-                ));
-            }
-        }
-
-        if ($this->getOption($option->short(), true) || $this->getOption($option->long(), true)) {
-            throw new \InvalidArgumentException('$option`s short and long name have to be unique');
-        }
-
-        $this->options[] = $option;
-
-        return $this;
-    }
-
-    /**
      * Get an option by $name
      *
      * @param string $name   Short or long name of the option
@@ -272,21 +197,13 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      */
     public function getOption($name, $object = false)
     {
-        if (!isset($this->optionMapping[$name])) {
-            $this->optionMapping[$name] = null;
-            foreach ($this->options as $option) {
-                if ($option->matches($name)) {
-                    $this->optionMapping[$name] = $option;
-                    break;
-                }
-            }
-        }
+        $option = $this->getOptionObject($name);
 
         if ($object) {
-            return $this->optionMapping[$name];
+            return $option;
         }
 
-        if ($this->optionMapping[$name] !== null) {
+        if (isset($this->optionMapping[$name])) {
             return $this->optionMapping[$name]->getValue();
         }
 
@@ -294,19 +211,12 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * Returns the list of options. Must be invoked after parse() (otherwise it returns an empty array).
+     * Returns the list of options with a value.
      *
-     * If $object is set to true it returns an array of Option instances.
-     *
-     * @param bool $objects
      * @return array
      */
-    public function getOptions($objects = false)
+    public function getOptions()
     {
-        if ($objects) {
-            return $this->options;
-        }
-
         $result = [];
 
         foreach ($this->options as $option) {
@@ -325,6 +235,9 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
         return $result + $this->additionalOptions;
     }
 
+    /**
+     * @return bool
+     */
     public function hasOptions()
     {
         return !empty($this->options);
@@ -353,7 +266,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     public function addCommand(Command $command)
     {
         foreach ($command->getOptions() as $option) {
-            if ($this->getOption($option->short(), true) || $this->getOption($option->long(), true)) {
+            if ($this->conflicts($option)) {
                 throw new \InvalidArgumentException('$command has conflicting options');
             }
         }
@@ -563,20 +476,6 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
         return $this->getHelp()->render($this, $data);
     }
 
-    /**
-     * Create or get the OptionParser
-     *
-     * @return OptionParser
-     */
-    protected function getOptionParser()
-    {
-        if ($this->optionParser === null) {
-            $this->optionParser = new OptionParser($this->settings[self::SETTING_DEFAULT_MODE]);
-        }
-
-        return $this->optionParser;
-    }
-
     // backward compatibility
 
     /**
@@ -625,7 +524,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
 
     public function offsetExists($offset)
     {
-        $option = $this->getOption($offset, true);
+        $option = $this->getOptionObject($offset);
         if ($option && $option->getValue() !== null) {
             return true;
         }
@@ -635,7 +534,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
 
     public function offsetGet($offset)
     {
-        $option = $this->getOption($offset, true);
+        $option = $this->getOptionObject($offset);
         if ($option) {
             return $option->getValue();
         }

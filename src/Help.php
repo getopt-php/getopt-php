@@ -105,7 +105,7 @@ class Help implements HelpInterface
 
         // when we have options we add them too
         if ($getopt->hasOptions()) {
-            $data['options'] = $getopt->getOptions(true);
+            $data['options'] = $getopt->getOptionObjects();
             $helpText .= $this->renderTemplate($this->optionsTemplate, $data);
         }
 
