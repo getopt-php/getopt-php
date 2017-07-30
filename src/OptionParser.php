@@ -10,17 +10,7 @@ namespace GetOpt;
  */
 class OptionParser
 {
-    private $defaultMode;
-
-    /**
-     * Creates a new instance.
-     *
-     * @param int $defaultMode will be assigned to options when no mode is given for them.
-     */
-    public function __construct($defaultMode)
-    {
-        $this->defaultMode = $defaultMode;
-    }
+    public static $defaultMode = GetOpt::NO_ARGUMENT;
 
     /**
      * Parse a GNU-style option string.
@@ -29,7 +19,7 @@ class OptionParser
      * @return Option[]
      * @throws \InvalidArgumentException
      */
-    public function parseString($string)
+    public static function parseString($string)
     {
         if (!mb_strlen($string)) {
             throw new \InvalidArgumentException('Option string must not be empty');
@@ -72,7 +62,7 @@ class OptionParser
      * @param array $array
      * @return Option
      */
-    public function parseArray(array $array)
+    public static function parseArray(array $array)
     {
         if (empty($array)) {
             throw new \InvalidArgumentException('Invalid option array (at least a name has to be given)');
@@ -80,7 +70,7 @@ class OptionParser
 
         $rowSize = count($array);
         if ($rowSize < 3) {
-            $array = $this->completeOptionArray($array);
+            $array = self::completeOptionArray($array);
         }
 
         $option = new Option($array[0], $array[1], $array[2]);
@@ -106,7 +96,7 @@ class OptionParser
      * @param array $row
      * @return array
      */
-    private function completeOptionArray(array $row)
+    protected static function completeOptionArray(array $row)
     {
         $short = (strlen($row[0]) == 1) ? $row[0] : null;
 
@@ -117,7 +107,7 @@ class OptionParser
             $long = $row[1];
         }
 
-        $mode = $this->defaultMode;
+        $mode = self::$defaultMode;
         if (count($row) == 2 && $row[1][0] === ':') {
             $mode = $row[1];
         }

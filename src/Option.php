@@ -134,21 +134,6 @@ class Option
     }
 
     /**
-     * Returns true if the given string is equal to either the short or the long name.
-     *
-     * @param string $string
-     * @return bool
-     */
-    public function matches($string)
-    {
-        if ($string === null) {
-            return false;
-        }
-
-        return ($string === $this->short) || ($string === $this->long);
-    }
-
-    /**
      * Change the short name
      *
      * @param string $short

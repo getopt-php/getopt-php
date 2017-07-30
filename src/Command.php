@@ -10,15 +10,16 @@ namespace GetOpt;
  */
 class Command
 {
+    use WithOptions;
+
     /** @var string */
     protected $name;
+
     /** @var string */
     protected $shortDescription;
+
     /** @var string */
     protected $longDescription;
-
-    /** @var Option[] */
-    protected $options = [];
 
     /** @var Operand[] */
     protected $operands = [];
@@ -32,21 +33,24 @@ class Command
      * @param string $name
      * @param string $shortDescription
      * @param mixed  $handler
-     * @param array  $options
+     * @param array|string  $options
      * @param string $longDescription
      */
     public function __construct(
         $name,
         $shortDescription,
         $handler,
-        array $options = [],
+        $options = null,
         $longDescription = ''
     ) {
         $this->setName($name);
         $this->shortDescription = $shortDescription;
         $this->handler          = $handler;
-        $this->options          = $options;
         $this->longDescription  = $longDescription ?: $shortDescription;
+
+        if ($options !== null) {
+            $this->addOptions($options);
+        }
     }
 
     /**
@@ -71,38 +75,6 @@ class Command
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * Add options to this command.
-     *
-     * @param Option[] $options
-     * @return self
-     */
-    public function addOptions(array $options)
-    {
-        foreach ($options as $option) {
-            $this->addOption($option);
-        }
-        return $this;
-    }
-
-    /**
-     * @param Option $option
-     * @return self
-     */
-    public function addOption(Option $option)
-    {
-        $this->options[] = $option;
-        return $this;
-    }
-
-    /**
-     * @return Option[]
-     */
-    public function getOptions()
-    {
-        return $this->options;
     }
 
     /**
