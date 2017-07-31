@@ -27,14 +27,15 @@ class OperandsTest extends TestCase
         $getopt->addOperand($operand1);
         $getopt->addOperands([$operand2, $operand3]);
 
-        self::assertSame([$operand1, $operand2, $operand3], $getopt->getOperands(true));
+        self::assertSame([$operand1, $operand2, $operand3], $getopt->getOperandObjects());
     }
 
     public function testOperandValidation()
     {
-        $operand = new Operand('op1', false, null, function ($value) {
-            return $value === null; // this validator is always false
-        });
+        $operand = Operand::create('op1')
+            ->setValidation(function ($value) {
+                return $value === null; // this validator is always false
+            });
 
         $getopt = new GetOpt();
         $getopt->addOperand($operand);
@@ -45,7 +46,7 @@ class OperandsTest extends TestCase
 
     public function testOptionalOperand()
     {
-        $operand = new Operand('op1', false); // false is default
+        $operand = new Operand('op1', Operand::OPTIONAL); // false is default
 
         $getopt = new GetOpt();
         $getopt->addOperand($operand);
@@ -56,7 +57,7 @@ class OperandsTest extends TestCase
 
     public function testRequiredOperand()
     {
-        $operand = new Operand('op1', true);
+        $operand = new Operand('op1', Operand::REQUIRED);
 
         $getopt = new GetOpt();
         $getopt->addOperand($operand);
@@ -79,6 +80,7 @@ class OperandsTest extends TestCase
     public function testGetOperandByNameThrows()
     {
         $getopt = new GetOpt();
+        $getopt->addOperand(new Operand('any'));
         $getopt->process('42');
 
         $this->setExpectedException('InvalidArgumentException');
@@ -87,7 +89,8 @@ class OperandsTest extends TestCase
 
     public function testDefaultValue()
     {
-        $operand = new Operand('op1', false, 42);
+        $operand = Operand::create('op1')
+            ->setDefaultValue(42);
 
         $getopt = new GetOpt();
         $getopt->addOperand($operand);
@@ -98,13 +101,13 @@ class OperandsTest extends TestCase
 
     public function testAllPreviousOperandsGetRequiredToo()
     {
-        $operand1 = new Operand('op1', false); // this is not required
-        $operand2 = new Operand('op2', true);
+        $operand1 = new Operand('op1', Operand::OPTIONAL);
+        $operand2 = new Operand('op2', Operand::REQUIRED);
 
         $getopt = new GetOpt();
         $getopt->addOperands([$operand1, $operand2]);
 
-        self::assertTrue($getopt->getOperands(true)[0]->isRequired());
+        self::assertTrue($getopt->getOperandObjects()[0]->isRequired());
     }
 
     public function testCommandsCanHaveOperands()
@@ -171,8 +174,8 @@ class OperandsTest extends TestCase
 
     public function testValueForMultiple()
     {
-        $operand1 = new Operand('op1', false, null, null, false);
-        $operand2 = new Operand('op2', false, null, null, true);
+        $operand1 = new Operand('op1', Operand::OPTIONAL);
+        $operand2 = new Operand('op2', Operand::MULTIPLE);
 
         $getopt = new GetOpt();
         $getopt->addOperands([$operand1, $operand2]);
@@ -185,7 +188,8 @@ class OperandsTest extends TestCase
 
     public function testDefaultValueForMultiple()
     {
-        $operand = new Operand('op1', false, 42, null, true);
+        $operand = Operand::create('op1', Operand::MULTIPLE)
+            ->setDefaultValue(42);
 
         $getopt = new GetOpt();
         $getopt->addOperand($operand);
@@ -207,7 +211,7 @@ class OperandsTest extends TestCase
 
     public function testRequiredMultipleNotToThrow()
     {
-        $operand = new Operand('op1', true, null, null, true);
+        $operand = new Operand('op1', Operand::REQUIRED + Operand::MULTIPLE);
 
         $getopt = new GetOpt();
         $getopt->addOperand($operand);
@@ -218,9 +222,10 @@ class OperandsTest extends TestCase
 
     public function testValidationOfMultiple()
     {
-        $operand1 = new Operand('op1', false, null, function ($value) {
-            return $value <= 42;
-        }, true);
+        $operand1 = Operand::create('op1', Operand::MULTIPLE)
+            ->setValidation(function ($value) {
+                return $value <= 42;
+            });
 
         $getopt = new GetOpt();
         $getopt->addOperand($operand1);
@@ -231,8 +236,8 @@ class OperandsTest extends TestCase
 
     public function testRestrictsAddingAfterMultiple()
     {
-        $operand1 = new Operand('op1', false, null, null, true);
-        $operand2 = new Operand('op2', false, null, null, false);
+        $operand1 = new Operand('op1', Operand::MULTIPLE);
+        $operand2 = new Operand('op2', Operand::OPTIONAL);
 
         $getopt = new GetOpt();
         $getopt->addOperand($operand1);
@@ -243,7 +248,7 @@ class OperandsTest extends TestCase
 
     public function testHelpTextForMultiple()
     {
-        $operand = new Operand('op1', false, null, null, true);
+        $operand = new Operand('op1', Operand::MULTIPLE);
         $script = $_SERVER['PHP_SELF'];
 
         $getopt = new GetOpt();
@@ -257,7 +262,7 @@ class OperandsTest extends TestCase
 
     public function testHelpTextForRequiredMultiple()
     {
-        $operand = new Operand('op1', true, null, null, true);
+        $operand = new Operand('op1', Operand::MULTIPLE + Operand::REQUIRED);
         $script = $_SERVER['PHP_SELF'];
 
         $getopt = new GetOpt();
@@ -302,5 +307,41 @@ class OperandsTest extends TestCase
             'Usage: ' . $script . ' <file> ' . PHP_EOL,
             $getopt->getHelpText()
         );
+    }
+
+    // __toString
+
+    public function testToStringWithoutValue()
+    {
+        $operand = Operand::create('file');
+
+        self::assertSame('', (string)$operand);
+    }
+
+    public function testToStringWithDefaultValue()
+    {
+        $operand = Operand::create('file')
+            ->setDefaultValue('/dev/random');
+
+        self::assertSame('/dev/random', (string)$operand);
+    }
+
+    public function testToStringWithValue()
+    {
+        $operand = Operand::create('file');
+
+        $operand->setValue('/dev/null');
+
+        self::assertSame('/dev/null', (string)$operand);
+    }
+
+    public function testToStringWithMultipleValue()
+    {
+        $operand = Operand::create('files', Operand::MULTIPLE);
+
+        $operand->setValue('/dev/null');
+        $operand->setValue('/dev/random');
+
+        self::assertSame('/dev/null,/dev/random', (string)$operand);
     }
 }

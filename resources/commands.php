@@ -7,13 +7,13 @@ echo 'Commands:' . PHP_EOL;
 $data      = [];
 $nameWidth = 0;
 foreach ($commands as $command) {
-    if (strlen($command->getName()) > $nameWidth) {
-        $nameWidth = strlen($command->getName());
+    if (strlen($command->name()) > $nameWidth) {
+        $nameWidth = strlen($command->name());
     }
 
     $data[] = [
-        $command->getName(),
-        $command->getDescription(true)
+        $command->name(),
+        $command->description(true)
     ];
 }
 

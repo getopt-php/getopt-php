@@ -122,4 +122,12 @@ trait WithOptions
     {
         return isset($this->optionMapping[$name]) ? $this->optionMapping[$name] : null;
     }
+
+    /**
+     * @return bool
+     */
+    public function hasOptions()
+    {
+        return !empty($this->options);
+    }
 }

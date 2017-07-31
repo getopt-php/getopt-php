@@ -29,7 +29,7 @@ class CommandTest extends TestCase
 
     public function testConstructorSavesName()
     {
-        self::assertSame('the-name', $this->command->getName());
+        self::assertSame('the-name', $this->command->name());
     }
 
     /** @dataProvider dataNamesNotAllowed
@@ -52,17 +52,17 @@ class CommandTest extends TestCase
 
     public function testConstructorSavesDescription()
     {
-        self::assertSame('a short description', $this->command->getDescription(true));
+        self::assertSame('a short description', $this->command->description(true));
     }
 
     public function testConstructorSavesLongDescription()
     {
-        self::assertSame('a long description might be longer', $this->command->getDescription());
+        self::assertSame('a long description might be longer', $this->command->description());
     }
 
     public function testConstructorSavesHandler()
     {
-        self::assertSame([ '\PDO', 'getAvailableDrivers' ], $this->command->getHandler());
+        self::assertSame([ '\PDO', 'getAvailableDrivers' ], $this->command->handler());
     }
 
     public function testConstructorSavesOptions()
@@ -86,7 +86,7 @@ class CommandTest extends TestCase
             'var_dump'
         );
 
-        self::assertSame('short description', $command->getDescription());
+        self::assertSame('short description', $command->description());
     }
 
     public function testGetHelpForExecutedCommand()

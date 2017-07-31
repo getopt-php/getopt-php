@@ -48,6 +48,7 @@ class Arguments
             }
 
             if ($this->isValue($arg)) {
+                $operands = $getopt->getOperands();
                 if (empty($operands) && $command = $getopt->getCommand($arg)) {
                     $setCommand($command);
                 } else {

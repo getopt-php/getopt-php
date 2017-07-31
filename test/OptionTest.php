@@ -58,15 +58,6 @@ class OptionTest extends TestCase
         $option->setArgument(new Argument());
     }
 
-    public function testSetArgumentFromConstructor()
-    {
-        $argument = new Argument();
-
-        $option = new Option('a', null, GetOpt::OPTIONAL_ARGUMENT, $argument);
-
-        self::assertSame($argument, $option->getArgument());
-    }
-
     public function testSetDefaultValue()
     {
         $option = new Option('a', null, GetOpt::OPTIONAL_ARGUMENT);

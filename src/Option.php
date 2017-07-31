@@ -29,9 +29,8 @@ class Option
      * @param string   $long  The option's long name (a string of 2+ letter/digit/_/- characters, starting with a letter
      *                        or digit) or null for short-only options
      * @param string   $mode  Whether the option can/must have an argument (optional, defaults to no argument)
-     * @param Argument $argument The argument definition
      */
-    public function __construct($short, $long = null, $mode = GetOpt::NO_ARGUMENT, Argument $argument = null)
+    public function __construct($short, $long = null, $mode = GetOpt::NO_ARGUMENT)
     {
         if (!$short && !$long) {
             throw new \InvalidArgumentException("The short and long name may not both be empty");
@@ -39,12 +38,7 @@ class Option
         $this->setShort($short);
         $this->setLong($long);
         $this->setMode($mode);
-
-        if ($argument !== null) {
-            $this->setArgument($argument);
-        } else {
-            $this->argument = new Argument();
-        }
+        $this->argument = new Argument();
     }
 
     /**
@@ -54,12 +48,11 @@ class Option
      * @param string   $short
      * @param string   $long
      * @param string   $mode
-     * @param Argument $argument
-     * @return Option
+     * @return static
      */
-    public static function create($short, $long = null, $mode = GetOpt::NO_ARGUMENT, Argument $argument = null)
+    public static function create($short, $long = null, $mode = GetOpt::NO_ARGUMENT)
     {
-        return new self($short, $long, $mode, $argument);
+        return new static($short, $long, $mode);
     }
 
     /**
@@ -77,7 +70,7 @@ class Option
     /**
      * @return string
      */
-    public function getDescription()
+    public function description()
     {
         return $this->description;
     }
@@ -233,6 +226,7 @@ class Option
      * Internal method to set the current value
      *
      * @param mixed $value
+     * @return $this
      */
     public function setValue($value = null)
     {
@@ -259,6 +253,8 @@ class Option
         } else {
             $this->value = $value;
         }
+
+        return $this;
     }
 
     /**
@@ -266,7 +262,7 @@ class Option
      *
      * @return mixed
      */
-    public function getValue()
+    public function value()
     {
         switch ($this->mode) {
             case GetOpt::OPTIONAL_ARGUMENT:
@@ -289,7 +285,7 @@ class Option
      */
     public function __toString()
     {
-        $value = $this->getValue();
+        $value = $this->value();
         return !is_array($value) ? (string)$value : implode(',', $value);
     }
 }
