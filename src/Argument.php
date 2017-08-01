@@ -13,11 +13,11 @@ class Argument
     const CLASSNAME = __CLASS__;
 
     /** @var mixed */
-    private $default;
+    protected $default;
     /** @var callable */
-    private $validation;
+    protected $validation;
     /** @var string */
-    private $name;
+    protected $name;
 
     /**
      * Creates a new argument.

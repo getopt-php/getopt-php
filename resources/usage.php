@@ -9,7 +9,7 @@ use GetOpt\GetOpt;
 echo 'Usage: ' . $getopt->get(GetOpt::SETTING_SCRIPT_NAME) . ' ';
 
 if (isset($command)) {
-    echo $command->getName() . ' ';
+    echo $command->name() . ' ';
 } elseif ($getopt->hasCommands()) {
     echo '[command] ';
 }
@@ -20,7 +20,7 @@ if ($getopt->hasOptions() || !$getopt->get(GetOpt::SETTING_STRICT_OPTIONS)) {
 
 $lastOperandMultiple = false;
 if ($getopt->hasOperands()) {
-    foreach ($getopt->getOperands(true) as $operand) {
+    foreach ($getopt->getOperandObjects() as $operand) {
         $name = '<' . $operand->getName() . '>';
         if (!$operand->isRequired()) {
             $name = '[' . $name . ']';
@@ -40,5 +40,5 @@ if (!$lastOperandMultiple && !$getopt->get(GetOpt::SETTING_STRICT_OPERANDS)) {
 echo PHP_EOL;
 
 if (isset($command)) {
-    echo PHP_EOL . $command->getDescription() . PHP_EOL . PHP_EOL;
+    echo PHP_EOL . $command->description() . PHP_EOL . PHP_EOL;
 }

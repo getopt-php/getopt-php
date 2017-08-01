@@ -29,7 +29,7 @@ foreach ($options as $option) {
 
     $data[] = [
         $definition,
-        $option->getDescription()
+        $option->description()
     ];
 }
 

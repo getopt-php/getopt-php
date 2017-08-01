@@ -11,6 +11,7 @@ namespace GetOpt;
 class Command
 {
     use WithOptions;
+    use WithOperands;
 
     /** @var string */
     protected $name;
@@ -20,9 +21,6 @@ class Command
 
     /** @var string */
     protected $longDescription;
-
-    /** @var Operand[] */
-    protected $operands = [];
 
     /** @var mixed */
     protected $handler;
@@ -72,47 +70,15 @@ class Command
     /**
      * @return string
      */
-    public function getName()
+    public function name()
     {
         return $this->name;
     }
 
     /**
-     * Add operands to this command.
-     *
-     * @param array $operands
-     * @return self
-     */
-    public function addOperands(array $operands)
-    {
-        foreach ($operands as $operand) {
-            $this->addOperand($operand);
-        }
-        return $this;
-    }
-
-    /**
-     * @param Operand $operand
-     * @return self
-     */
-    public function addOperand(Operand $operand)
-    {
-        $this->operands[] = $operand;
-        return $this;
-    }
-
-    /**
-     * @return Operand[]
-     */
-    public function getOperands()
-    {
-        return $this->operands;
-    }
-
-    /**
      * @return callable
      */
-    public function getHandler()
+    public function handler()
     {
         return $this->handler;
     }
@@ -123,7 +89,7 @@ class Command
      * @param bool $short
      * @return string
      */
-    public function getDescription($short = false)
+    public function description($short = false)
     {
         return $short ? $this->shortDescription : $this->longDescription;
     }

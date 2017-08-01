@@ -85,18 +85,18 @@ class OptionParserTest extends TestCase
             case 'a':
                 $this->assertEquals('alpha', $option->long());
                 $this->assertEquals(GetOpt::OPTIONAL_ARGUMENT, $option->mode());
-                $this->assertEquals('Description', $option->getDescription());
+                $this->assertEquals('Description', $option->description());
                 $this->assertEquals(42, $option->getArgument()->getDefaultValue());
                 break;
             case 'b':
                 $this->assertEquals('beta', $option->long());
                 $this->assertEquals(GetOpt::REQUIRED_ARGUMENT, $option->mode());
-                $this->assertEquals('', $option->getDescription());
+                $this->assertEquals('', $option->description());
                 break;
             case 'c':
                 $this->assertNull($option->long());
                 $this->assertEquals(GetOpt::REQUIRED_ARGUMENT, $option->mode());
-                $this->assertEquals('', $option->getDescription());
+                $this->assertEquals('', $option->description());
                 $this->assertFalse($option->getArgument()->hasDefaultValue());
                 break;
             default:

@@ -2,7 +2,6 @@
 
 namespace GetOpt;
 
-use GetOpt\ArgumentException\Invalid;
 use GetOpt\ArgumentException\Missing;
 use GetOpt\ArgumentException\Unexpected;
 
@@ -29,6 +28,11 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
         getOptions as getOptionObjects;
     }
 
+    use WithOperands {
+        getOperand as getOperandObject;
+        getOperands as getOperandObjects;
+    }
+
     /** @var HelpInterface */
     protected $help;
 
@@ -38,18 +42,18 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
         self::SETTING_STRICT_OPERANDS => false,
     ];
 
+    /** @var int */
+    protected $operandsCount = 0;
+
     /** @var Command[] */
     protected $commands = [];
-
-    /** @var Operand[] */
-    protected $operands = [];
 
     /** The command that is executed determined by process
      * @var Command */
     protected $command;
 
     /** @var string[] */
-    protected $operandValues = [];
+    protected $additionalOperands = [];
 
     /** @var array */
     protected $additionalOptions = [];
@@ -164,20 +168,21 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
 
         $addOperand = function ($value) {
             $operand = $this->nextOperand();
-            if ($operand && $operand->hasValidation() && !$operand->validates($value)) {
-                throw new Invalid(sprintf('Operand %s has an invalid value', $operand->getName()));
-            } elseif ($this->get(self::SETTING_STRICT_OPERANDS) && !$operand) {
+            if ($operand) {
+                $operand->setValue($value);
+            } elseif ($this->get(self::SETTING_STRICT_OPERANDS)) {
                 throw new Unexpected(sprintf(
                     'No more operands expected - got %s',
                     $value
                 ));
+            } else {
+                $this->additionalOperands[] = $value;
             }
-
-            $this->operandValues[] = $value;
         };
 
-        $this->additionalOptions = [];
-        $this->operandValues = [];
+        $this->additionalOptions  = [];
+        $this->additionalOperands = [];
+        $this->operandsCount = 0;
 
         $arguments->process($this, $setOption, $setCommand, $addOperand);
 
@@ -204,7 +209,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
         }
 
         if (isset($this->optionMapping[$name])) {
-            return $this->optionMapping[$name]->getValue();
+            return $this->optionMapping[$name]->value();
         }
 
         return isset($this->additionalOptions[$name]) ? $this->additionalOptions[$name] : null;
@@ -220,7 +225,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
         $result = [];
 
         foreach ($this->options as $option) {
-            $value = $option->getValue();
+            $value = $option->value();
             if ($value !== null) {
                 $result[$option->short() ?: $option->long()] = $value;
                 if ($short = $option->short()) {
@@ -233,14 +238,6 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
         }
 
         return $result + $this->additionalOptions;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasOptions()
-    {
-        return !empty($this->options);
     }
 
     /**
@@ -270,7 +267,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
                 throw new \InvalidArgumentException('$command has conflicting options');
             }
         }
-        $this->commands[$command->getName()] = $command;
+        $this->commands[$command->name()] = $command;
         return $this;
     }
 
@@ -308,93 +305,46 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * Add an array of $operands
-     *
-     * @param Operand[] $operands
-     * @return self
-     */
-    public function addOperands(array $operands)
-    {
-        foreach ($operands as $operand) {
-            $this->addOperand($operand);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Add an $operand
-     *
-     * @param Operand $operand
-     * @return self
-     */
-    public function addOperand(Operand $operand)
-    {
-        if ($operand->isRequired()) {
-            foreach ($this->operands as $previousOperand) {
-                $previousOperand->required();
-            }
-        }
-
-        if ($this->hasOperands()) {
-            /** @var Operand $lastOperand */
-            $lastOperand = array_slice($this->operands, -1)[0];
-            if ($lastOperand->isMultiple()) {
-                throw new \InvalidArgumentException(sprintf(
-                    'Operand %s is multiple - no more operands allowed',
-                    $lastOperand->getName()
-                ));
-            }
-        }
-
-        $this->operands[] = $operand;
-
-        return $this;
-    }
-
-    /**
      * Get the next operand
      *
-     * @return Operand|null
+     * @return Operand
      */
     protected function nextOperand()
     {
-        if (!$this->hasOperands()) {
-            return null;
+        if (isset($this->operands[$this->operandsCount])) {
+            $operand = $this->operands[$this->operandsCount];
+            if (!$operand->isMultiple()) {
+                $this->operandsCount++;
+            }
+            return $operand;
         }
 
-        if (count($this->operands) > count($this->operandValues)) {
-            return $this->operands[count($this->operandValues)];
-        }
-
-        /** @var Operand $operand */
-        $operand = array_slice($this->operands, -1)[0];
-        return $operand->isMultiple() ? $operand : null;
-    }
-
-    /**
-     * Check if operands are defined
-     *
-     * @return bool
-     */
-    public function hasOperands()
-    {
-        return !empty($this->operands);
+        return null;
     }
 
     /**
      * Returns the list of operands. Must be invoked after parse().
      *
-     * @param bool $objects Whether to return the operand specifications
-     * @return array|Operand[]
+     * @return array
      */
-    public function getOperands($objects = false)
+    public function getOperands()
     {
-        if ($objects) {
-            return $this->operands;
+        $operandValues = [];
+        foreach ($this->getOperandObjects() as $operand) {
+            $value = $operand->value();
+
+            if ($value === null) {
+                continue;
+            }
+
+            if ($operand->isMultiple()) {
+                $operandValues = array_merge($operandValues, $value);
+            } else {
+                $operandValues[] = $value;
+            }
         }
 
-        return $this->operandValues;
+        return array_merge($operandValues, $this->additionalOperands);
     }
 
     /**
@@ -407,30 +357,18 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      */
     public function getOperand($index)
     {
-        if (is_string($index)) {
-            $name = $index;
-            foreach ($this->operands as $index => $operand) {
-                if ($operand->getName() === $name) {
-                    if ($index >= count($this->operandValues) && $operand->isMultiple()) {
-                        $default = $operand->getDefaultValue();
-                        return $default ? [$default] : [];
-                    } elseif ($operand->isMultiple()) {
-                        return array_slice($this->operandValues, $index);
-                    } elseif ($index >= count($this->operandValues)) {
-                        return $operand->getDefaultValue();
-                    }
-                    break;
-                }
-            }
-            if ($index === $name) {
-                throw new \InvalidArgumentException(sprintf(
-                    'Operand %s is not defined',
-                    $name
-                ));
-            }
+        $operand = $this->getOperandObject($index);
+        if ($operand) {
+            return $operand->value();
+        } elseif (is_int($index)) {
+            $i = $index - count($this->operands);
+            return $i >= 0 && isset($this->additionalOperands[$i]) ? $this->additionalOperands[$i] : null;
         }
 
-        return isset($this->operandValues[$index]) ? $this->operandValues[$index] : null;
+        throw new \InvalidArgumentException(sprintf(
+            'Operand %s is not defined',
+            $index
+        ));
     }
 
     /**
@@ -513,7 +451,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
         $result = [];
 
         foreach ($this->options as $option) {
-            if ($value = $option->getValue()) {
+            if ($value = $option->value()) {
                 $name = $option->short() ?: $option->long();
                 $result[$name] = $value;
             }
@@ -525,7 +463,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     public function offsetExists($offset)
     {
         $option = $this->getOptionObject($offset);
-        if ($option && $option->getValue() !== null) {
+        if ($option && $option->value() !== null) {
             return true;
         }
 
@@ -536,7 +474,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     {
         $option = $this->getOptionObject($offset);
         if ($option) {
-            return $option->getValue();
+            return $option->value();
         }
 
         return isset($this->additionalOptions[$offset]) ? $this->additionalOptions[$offset] : null;
