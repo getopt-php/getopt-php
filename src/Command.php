@@ -22,9 +22,6 @@ class Command
     /** @var string */
     protected $longDescription;
 
-    /** @var Operand[] */
-    protected $operands = [];
-
     /** @var mixed */
     protected $handler;
 
