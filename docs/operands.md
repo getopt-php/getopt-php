@@ -30,8 +30,7 @@ By logic there are some restrictions because of the strict order:
 When you add a required operand after optional operands all previous operands will become required. But when you try
 to add an operand after a multiple operand it will throw an `InvalidArgumentException`.
 
-```php
-<?php
+```php?start_inline=true
 $getopt = new \GetOpt\GetOpt();
 $getopt->addOperand(new \GetOpt\Operand('file', \GetOpt\Operand::REQUIRED));
 $getopt->addOperands([
@@ -50,8 +49,7 @@ use other setters.
 The default value can be defined the same way as for options. A default value will appear in `GetOpt::getOperands()` as
 well as in `GetOpt::getOperand()` and the following example might give an unexpected result for you:
 
-```php
-<?php
+```php?start_inline=true
 $getopt = new \GetOpt\GetOpt();
 $getopt->addOperands([
     \GetOpt\Operand::create('operand1'),
@@ -68,8 +66,7 @@ you are planning such things you should consider using `->getOperand('operand1')
 Again: it is the same functionality as for validating options. It follows a small example. See 
 [Options Validation](options.html#validation) for more details.
 
-```php
-<?php
+```php?start_inline=true
 $getopt = new \GetOpt\GetOpt();
 $getopt->addOperands([
     \GetOpt\Operand::create('file', \GetOpt\Operand::REQUIRED)
