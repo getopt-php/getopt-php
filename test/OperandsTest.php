@@ -113,7 +113,7 @@ class OperandsTest extends TestCase
     public function testCommandsCanHaveOperands()
     {
         $operand = new Operand('op1');
-        $command = new Command('command1', 'Command 1', 'var_dump');
+        $command = new Command('command1', 'var_dump');
         $command->addOperands([$operand]);
 
         self::assertSame([$operand], $command->getOperands());
@@ -122,7 +122,7 @@ class OperandsTest extends TestCase
     public function testCommandWithOperand()
     {
         $getopt = new GetOpt();
-        $command = new Command('command', 'This is any command', 'var_dump');
+        $command = new Command('command', 'var_dump');
         $operand = new Operand('file');
         $command->addOperand($operand);
         $getopt->addCommand($command);
@@ -154,7 +154,7 @@ class OperandsTest extends TestCase
         $script = $_SERVER['PHP_SELF'];
 
         $getopt = new GetOpt();
-        $command = new Command('command', 'This is any command', 'var_dump');
+        $command =Command::create('command', 'var_dump')->setDescription('This is any command');
         $command->addOperands([$operand1, $operand2]);
         $getopt->addCommand($command);
 

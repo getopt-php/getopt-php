@@ -20,10 +20,8 @@ class CommandTest extends TestCase
         ];
         $this->command = new Command(
             'the-name',
-            'a short description',
             [ '\PDO', 'getAvailableDrivers' ],
-            $this->options,
-            'a long description might be longer'
+            $this->options
         );
     }
 
@@ -50,16 +48,6 @@ class CommandTest extends TestCase
         ];
     }
 
-    public function testConstructorSavesDescription()
-    {
-        self::assertSame('a short description', $this->command->description(true));
-    }
-
-    public function testConstructorSavesLongDescription()
-    {
-        self::assertSame('a long description might be longer', $this->command->description());
-    }
-
     public function testConstructorSavesHandler()
     {
         self::assertSame([ '\PDO', 'getAvailableDrivers' ], $this->command->handler());
@@ -78,28 +66,35 @@ class CommandTest extends TestCase
         self::assertSame([ $this->options[0], $this->options[1], $optionC ], $this->command->getOptions());
     }
 
-    public function testConstructorUsesShortDescription()
+    public function testShortDescriptionUsedForDescription()
     {
-        $command = new Command(
-            'test',
-            'short description',
-            'var_dump'
-        );
+        $command = new Command('test', 'var_dump');
+
+        $command->setShortDescription('short description');
 
         self::assertSame('short description', $command->description());
+    }
+
+    public function testDescriptionUsedForShortDescription()
+    {
+        $command = new Command('test', 'var_dump');
+
+        $command->setDescription('long description');
+
+        self::assertSame('long description', $command->shortDescription());
     }
 
     public function testGetHelpForExecutedCommand()
     {
         $longDescription = 'This is a very long description.' . PHP_EOL . 'It also may have line breaks.';
         $getopt = new GetOpt();
-        $getopt->addCommand(new Command(
-            'test',
-            '',
-            'var_dump',
-            [ Option::create('a', 'alpha')->setDescription('enable alpha') ],
-            $longDescription
-        ));
+        $getopt->addCommand(
+            Command::create(
+                'test',
+                'var_dump',
+                [ Option::create('a', 'alpha')->setDescription('enable alpha') ]
+            )->setDescription($longDescription)
+        );
         $script = $_SERVER['PHP_SELF'];
 
         $getopt->process('test');
@@ -117,8 +112,8 @@ class CommandTest extends TestCase
 
     public function testGetHelpForCommands()
     {
-        $cmd1 = new Command('help', 'Shows help for a command', 'var_dump');
-        $cmd2 = new Command('run:tests', 'Executes the tests', 'var_dump');
+        $cmd1 = Command::create('help', 'var_dump')->setDescription('Shows help for a command');
+        $cmd2 = Command::create('run:tests', 'var_dump')->setDescription('Executes the tests');
         $getopt = new GetOpt([
             Option::create('h', 'help')->setDescription('Shows this help')
         ]);
@@ -144,12 +139,13 @@ class CommandTest extends TestCase
         $getopt = new GetOpt([
             Option::create('h', 'help')->setDescription('Shows this help')
         ]);
-        $getopt->addCommands([new Command(
-            'help',
-            'This is a too long help text to have it on one row. It is also too long for a short description. ' .
-            'You should avoid such long texts for a short description.',
-            'var_dump'
-        )]);
+        $getopt->addCommands([
+            Command::create('help', 'var_dump')
+                ->setShortDescription(
+                    'This is a too long help text to have it on one row. It is also too long for a short ' .
+                    'description. You should avoid such long texts for a short description.'
+                )
+        ]);
         $script = $_SERVER['PHP_SELF'];
 
         $help = $getopt->getHelpText();
