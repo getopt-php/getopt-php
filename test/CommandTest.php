@@ -123,7 +123,7 @@ class CommandTest extends TestCase
         $help = $getopt->getHelpText();
 
         self::assertSame(
-            'Usage: ' . $script . ' [command] [options] [operands]' . PHP_EOL .
+            'Usage: ' . $script . ' <command> [options] [operands]' . PHP_EOL .
             'Options:' . PHP_EOL .
             '  -h, --help  Shows this help' . PHP_EOL .
             'Commands:' . PHP_EOL .
@@ -151,7 +151,7 @@ class CommandTest extends TestCase
         $help = $getopt->getHelpText();
 
         self::assertSame(
-            'Usage: ' . $script . ' [command] [options] [operands]' . PHP_EOL .
+            'Usage: ' . $script . ' <command> [options] [operands]' . PHP_EOL .
             'Options:' . PHP_EOL .
             '  -h, --help  Shows this help' . PHP_EOL .
             'Commands:' . PHP_EOL .

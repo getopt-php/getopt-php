@@ -154,7 +154,7 @@ class OperandsTest extends TestCase
         $script = $_SERVER['PHP_SELF'];
 
         $getopt = new GetOpt();
-        $command =Command::create('command', 'var_dump')->setDescription('This is any command');
+        $command = Command::create('command', 'var_dump')->setDescription('This is any command');
         $command->addOperands([$operand1, $operand2]);
         $getopt->addCommand($command);
 
