@@ -223,8 +223,8 @@ class GetoptTest extends TestCase
 
     public function testGetCommandByName()
     {
-        $cmd1 = new Command('help', 'Get help for command', 'var_dump');
-        $cmd2 = new Command('test', 'Test commands', 'var_dump');
+        $cmd1 = new Command('help', 'var_dump');
+        $cmd2 = new Command('test', 'var_dump');
         $getopt = new GetOpt();
 
         $getopt->addCOmmands([ $cmd1, $cmd2 ]);

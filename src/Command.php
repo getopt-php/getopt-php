@@ -29,22 +29,13 @@ class Command
      * Command constructor.
      *
      * @param string $name
-     * @param string $shortDescription
      * @param mixed  $handler
-     * @param array|string  $options
-     * @param string $longDescription
+     * @param mixed  $options
      */
-    public function __construct(
-        $name,
-        $shortDescription,
-        $handler,
-        $options = null,
-        $longDescription = ''
-    ) {
+    public function __construct($name, $handler, $options = null)
+    {
         $this->setName($name);
-        $this->shortDescription = $shortDescription;
-        $this->handler          = $handler;
-        $this->longDescription  = $longDescription ?: $shortDescription;
+        $this->handler = $handler;
 
         if ($options !== null) {
             $this->addOptions($options);
@@ -52,10 +43,23 @@ class Command
     }
 
     /**
+     * Fluent interface for constructor so commands can be added during construction
+     *
      * @param string $name
-     * @return self
+     * @param mixed  $handler
+     * @param mixed  $options
+     * @return static
      */
-    protected function setName($name)
+    public static function create($name, $handler, $options = null)
+    {
+        return new static($name, $handler, $options);
+    }
+
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name)
     {
         if (empty($name) || $name[0] === '-' || strpos($name, ' ') !== false) {
             throw new \InvalidArgumentException(sprintf(
@@ -68,6 +72,42 @@ class Command
     }
 
     /**
+     * @param mixed $handler
+     * @return $this
+     */
+    public function setHandler($handler)
+    {
+        $this->handler = $handler;
+        return $this;
+    }
+
+    /**
+     * @param string $longDescription
+     * @return $this
+     */
+    public function setDescription($longDescription)
+    {
+        $this->longDescription = $longDescription;
+        if ($this->shortDescription === null) {
+            $this->shortDescription = $longDescription;
+        }
+        return $this;
+    }
+
+    /**
+     * @param string $shortDescription
+     * @return $this
+     */
+    public function setShortDescription($shortDescription)
+    {
+        $this->shortDescription = $shortDescription;
+        if ($this->longDescription === null) {
+            $this->longDescription = $shortDescription;
+        }
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function name()
@@ -76,7 +116,7 @@ class Command
     }
 
     /**
-     * @return callable
+     * @return mixed
      */
     public function handler()
     {
@@ -86,11 +126,15 @@ class Command
     /**
      * Get description
      *
-     * @param bool $short
      * @return string
      */
-    public function description($short = false)
+    public function description()
     {
-        return $short ? $this->shortDescription : $this->longDescription;
+        return $this->longDescription;
+    }
+
+    public function shortDescription()
+    {
+        return $this->shortDescription;
     }
 }
