@@ -208,8 +208,8 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
             return $option;
         }
 
-        if (isset($this->optionMapping[$name])) {
-            return $this->optionMapping[$name]->value();
+        if ($option) {
+            return $option->value();
         }
 
         return isset($this->additionalOptions[$name]) ? $this->additionalOptions[$name] : null;

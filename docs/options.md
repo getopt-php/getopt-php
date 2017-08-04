@@ -123,6 +123,47 @@ $getopt = new \GetOpt\GetOpt([
 ]);
 ```
 
+## Working With Options
+
+After the options have been defined you can process the command line arguments. The method `GetOpt::process()` takes
+an array or string function of the arguments that should be processed. If the parameter is omitted the method uses
+`$_SERVER['argv']` for processing.
+
+```php?start_inline=true
+$getopt = new \GetOpt\GetOpt();
+// add your options
+
+// process $_SERVER['argv']
+$getopt->process();
+
+// process an arguments string
+$getopt->process('-b --beta -a"this is the value of a"');
+
+// process an array
+$getopt->process(['-b', '--beta', '-a', 'this is the value of a']);
+```
+
+After processing you can access the value of a specific option with `GetOpt::getOption(string)` or getting all values
+with `GetOpt::getOptions()`.
+
+```php?start_inline=true
+// access by long name (suggested)
+$beta = $getopt->getOption('beta');
+
+// access by short name
+$beta = $getopt->getOption('b');
+
+// access all values
+$options = $getopt->getOptions();
+var_dump($options);
+// [
+//   'b' => 2,
+//   'beta' => 2,
+//   'a' => 'this is the value of a',
+//   'alpha' => 'this is the value of a'
+// ]
+```
+
 ## Arguments
 
 The mode of an option specifies the existence of an argument. It can be one of the following constants:
@@ -174,6 +215,20 @@ $getopt = new \GetOpt\GetOpt([
 
 echo $getopt->getOption('config'); // /etc/program.ini
 ```
+
+### Multiple Argument
+
+An option with a multiple argument always returns an array. An empty array if the option is not set and no default is
+given, an array with only the default value if not set and default value is given or an array of all values given.
+
+```php?start_inline=true
+$getopt = new \GetOpt\GetOpt([
+    \GetOpt\Option::create('d', 'domain', \GetOpt\GetOpt::MULTIPLE_ARGUMENT)
+]);
+$getopt->process('-d example.com --domain example.org');
+
+var_dump($getopt->getOption('domain')); // ['example.com', 'example.org']
+``` 
 
 ### Validation
 
