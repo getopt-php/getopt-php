@@ -77,3 +77,19 @@ $getopt->addOperands([
         }),
 ]);
 ```
+
+## Working With Operands
+
+After processing the arguments you can retrieve all operands with `GetOpt::getOperands()` or a specific operand by it's
+position (**starting with 0**) with `GetOpt::getOperand(int)` (exactly the same behaviour as in version 2). Since
+operands can have names you can also retrieve the value of an operand by calling `GetOpt::getOperand(string)`.
+
+```php?start_inline=true
+$getopt = new \GetOpt\GetOpt();
+$getopt->addOperand(\GetOpt\Operand::create('alpha', \GetOpt\Operand::MULTIPLE+\GetOpt\Operand::REQUIRED));
+$getopt->process('a b c');
+var_dump($getopt->getOperands()); // ['a', 'b', 'c']
+var_dump($getopt->getOperand(0)); // ['a', 'b', 'c']
+var_dump($getopt->getOperand('alpha')); // ['a', 'b', 'c']
+var_dump($getopt->getOperand(1)); // null because operand 0 is multiple
+```
