@@ -270,7 +270,10 @@ class Option
                 return $this->value === null ? $this->argument->getDefaultValue() : $this->value;
 
             case GetOpt::MULTIPLE_ARGUMENT:
-                return $this->value === null ? [ $this->argument->getDefaultValue() ] : $this->value;
+                if ($this->value === null) {
+                    return $this->argument->getDefaultValue() ? [ $this->argument->getDefaultValue() ] : [];
+                }
+                return $this->value;
 
             case GetOpt::NO_ARGUMENT:
             default:

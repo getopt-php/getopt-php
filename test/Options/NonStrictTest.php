@@ -1,7 +1,8 @@
 <?php
 
-namespace GetOpt;
+namespace GetOpt\Test\Options;
 
+use GetOpt\GetOpt;
 use PHPUnit\Framework\TestCase;
 
 class NonStrictTest extends TestCase

@@ -1,7 +1,10 @@
 <?php
 
-namespace GetOpt;
+namespace GetOpt\Test;
 
+use GetOpt\GetOpt;
+use GetOpt\Option;
+use GetOpt\OptionParser;
 use PHPUnit\Framework\TestCase;
 
 class OptionParserTest extends TestCase
