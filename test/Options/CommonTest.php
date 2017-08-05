@@ -1,10 +1,13 @@
 <?php
 
-namespace GetOpt;
+namespace GetOpt\Test\Options;
 
+use GetOpt\Argument;
+use GetOpt\GetOpt;
+use GetOpt\Option;
 use PHPUnit\Framework\TestCase;
 
-class OptionTest extends TestCase
+class CommonTest extends TestCase
 {
     public function testConstruct()
     {
@@ -70,31 +73,5 @@ class OptionTest extends TestCase
         $option = new Option('a', null, GetOpt::OPTIONAL_ARGUMENT);
         $this->assertEquals($option, $option->setValidation('is_numeric'));
         $this->assertTrue($option->getArgument()->hasValidation());
-    }
-
-    public function testToStringWithoutArgument()
-    {
-        $option = new Option('a', null);
-        $option->setValue(null);
-        $option->setValue(null);
-
-        $this->assertSame('2', (string)$option);
-    }
-
-    public function testToStringWithArgument()
-    {
-        $option = new Option('a', null, GetOpt::REQUIRED_ARGUMENT);
-        $option->setValue('valueA');
-
-        $this->assertSame('valueA', (string)$option);
-    }
-
-    public function testToStringWithMultipleArguments()
-    {
-        $option = new Option('a', null, GetOpt::MULTIPLE_ARGUMENT);
-        $option->setValue('valueA');
-        $option->setValue('valueB');
-
-        $this->assertSame('valueA,valueB', (string)$option);
     }
 }

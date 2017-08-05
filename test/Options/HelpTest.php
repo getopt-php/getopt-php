@@ -1,7 +1,9 @@
 <?php
 
-namespace GetOpt;
+namespace GetOpt\Test\Options;
 
+use GetOpt\GetOpt;
+use GetOpt\Option;
 use PHPUnit\Framework\TestCase;
 
 class HelpTest extends TestCase

@@ -1,7 +1,8 @@
 <?php
 
-namespace GetOpt;
+namespace GetOpt\Test;
 
+use GetOpt\Argument;
 use PHPUnit\Framework\TestCase;
 
 class ArgumentTest extends TestCase

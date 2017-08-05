@@ -26,6 +26,11 @@
             "GetOpt\\": "src"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "GetOpt\\Test\\": "test"
+        }
+    },
     "scripts": {
         "code-style": "phpcs --standard=PSR2 src && phpcs --standard=PSR2 test"
     }

@@ -41,7 +41,7 @@ class Argument
      * Set the default value
      *
      * @param mixed $value The value has to be a scalar value
-     * @return Argument this object (for chaining calls)
+     * @return $this
      * @throws \InvalidArgumentException
      */
     public function setDefaultValue($value)
@@ -58,7 +58,7 @@ class Argument
      * The function must take a string and return true if it is valid, false otherwise.
      *
      * @param callable $callable
-     * @return Argument this object (for chaining calls)
+     * @return $this
      * @throws \InvalidArgumentException
      */
     public function setValidation(callable $callable)
