@@ -452,7 +452,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
 
         foreach ($this->options as $option) {
             if ($value = $option->value()) {
-                $name = $option->short() ?: $option->long();
+                $name = $option->long() ?: $option->short();
                 $result[$name] = $value;
             }
         }

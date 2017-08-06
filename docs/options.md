@@ -175,7 +175,33 @@ var_dump($options);
 
 ### Accessing Options By ArrayAccess
 
-**TEXT MISSING**
+You can also access options by array and therefore you can iterate over your `GetOpt` instance. *But keep in mind* that
+you will **only** get the long name options if defined (**changed since version 3**). Take a look at this example:
+
+```php
+<?php
+$getopt = new \GetOpt\GetOpt([
+    \GetOpt\Option::create('a', null, \GetOpt\GetOpt::OPTIONAL_ARGUMENT),
+    \GetOpt\Option::create('b', 'beta', \GetOpt\GetOpt::REQUIRED_ARGUMENT),
+    \GetOpt\Option::create('v', 'verbose'),
+]);
+$getopt->process('-vvv -a "value of alpha" -b value');
+
+foreach ($getopt as $key => $value) {
+    echo sprintf('%s: %s', $key, $value) . PHP_EOL;
+}
+// a: value of alpha
+// beta: value
+// verbose: 3 
+```
+
+Even if foreach does not iterate over the key value pair `['b' => 'value']` you can access it directly:
+
+```php
+<?php
+var_dump(array_key_exists('b', $getopt)); // true
+var_dump($getopt['b']); // 'value'
+```
 
 ## Arguments
 
