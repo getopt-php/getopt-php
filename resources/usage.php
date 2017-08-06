@@ -11,7 +11,7 @@ echo 'Usage: ' . $getopt->get(GetOpt::SETTING_SCRIPT_NAME) . ' ';
 if (isset($command)) {
     echo $command->name() . ' ';
 } elseif ($getopt->hasCommands()) {
-    echo '[command] ';
+    echo '<command> ';
 }
 
 if ($getopt->hasOptions() || !$getopt->get(GetOpt::SETTING_STRICT_OPTIONS)) {

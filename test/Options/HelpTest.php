@@ -19,13 +19,14 @@ class HelpTest extends TestCase
 
         $script = $_SERVER['PHP_SELF'];
 
-        $expected = "Usage: $script [options] [operands]\n";
-        $expected .= "Options:\n";
-        $expected .= "  -a, --alpha     Short and long options with no argument\n";
-        $expected .= "  --beta [<arg>]  Long option only with an optional argument\n";
-        $expected .= "  -c <arg>        Short option only with a mandatory argument\n";
-
-        self::assertSame($expected, $getopt->getHelpText());
+        self::assertSame(
+            'Usage: ' . $script . ' [options] [operands]' . PHP_EOL .
+            PHP_EOL . 'Options:' . PHP_EOL .
+            '  -a, --alpha     Short and long options with no argument' . PHP_EOL .
+            '  --beta [<arg>]  Long option only with an optional argument' . PHP_EOL .
+            '  -c <arg>        Short option only with a mandatory argument' . PHP_EOL,
+            $getopt->getHelpText()
+        );
     }
 
     public function testHelpTextWithoutDescriptions()
@@ -35,22 +36,23 @@ class HelpTest extends TestCase
             [ null, 'beta', GetOpt::OPTIONAL_ARGUMENT ],
             [ 'c', null, GetOpt::REQUIRED_ARGUMENT ]
         ]);
-        $getopt->process('');
 
         $script = $_SERVER['PHP_SELF'];
 
-        $expected = "Usage: $script [options] [operands]\n";
-        $expected .= "Options:\n";
-        $expected .= "  -a, --alpha     \n";
-        $expected .= "  --beta [<arg>]  \n";
-        $expected .= "  -c <arg>        \n";
-
-        self::assertSame($expected, $getopt->getHelpText());
+        self::assertSame(
+            'Usage: ' . $script . ' [options] [operands]' . PHP_EOL .
+            PHP_EOL . 'Options:' . PHP_EOL .
+            '  -a, --alpha     ' . PHP_EOL .
+            '  --beta [<arg>]  ' . PHP_EOL .
+            '  -c <arg>        ' . PHP_EOL,
+            $getopt->getHelpText()
+        );
     }
 
     public function testHelpTextWithLongDescriptions()
     {
         defined('COLUMNS') || define('COLUMNS', 90);
+
         $getopt = new GetOpt([
             [
                 'a', 'alpha', GetOpt::NO_ARGUMENT, 'Short and long options with no argument and a very long text ' .
@@ -59,18 +61,17 @@ class HelpTest extends TestCase
             [ null, 'beta', GetOpt::OPTIONAL_ARGUMENT, 'Long option only with an optional argument' ],
             [ 'c', null, GetOpt::REQUIRED_ARGUMENT, 'Short option only with a mandatory argument' ]
         ]);
-        $getopt->process('');
 
         $script = $_SERVER['PHP_SELF'];
-
-        $expected = "Usage: $script [options] [operands]\n" .
-                    "Options:\n" .
-                    "  -a, --alpha     Short and long options with no argument and a very long text that\n" .
-                    "                  exceeds the length of the row\n" .
-                    "  --beta [<arg>]  Long option only with an optional argument\n" .
-                    "  -c <arg>        Short option only with a mandatory argument\n";
-
-        self::assertSame($expected, $getopt->getHelpText());
+        self::assertSame(
+            'Usage: ' . $script . ' [options] [operands]' . PHP_EOL .
+            PHP_EOL . 'Options:' . PHP_EOL .
+            '  -a, --alpha     Short and long options with no argument and a very long text that' . PHP_EOL .
+            '                  exceeds the length of the row' . PHP_EOL .
+            '  --beta [<arg>]  Long option only with an optional argument' . PHP_EOL .
+            '  -c <arg>        Short option only with a mandatory argument' . PHP_EOL,
+            $getopt->getHelpText()
+        );
     }
 
     public function testHelpTextWithArgumentName()
@@ -83,7 +84,7 @@ class HelpTest extends TestCase
         $script = $_SERVER['PHP_SELF'];
         self::assertSame(
             'Usage: ' . $script . ' [options] [operands]' . PHP_EOL .
-            'Options:' . PHP_EOL .
+            PHP_EOL . 'Options:' . PHP_EOL .
             '  -a, --alpha <alpha>  ' . PHP_EOL,
             $getopt->getHelpText()
         );

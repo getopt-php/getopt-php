@@ -107,7 +107,7 @@ class CommandTest extends TestCase
             'Usage: ' . $script . ' test [options] [operands]' . PHP_EOL .
             '' . PHP_EOL .
             $longDescription . PHP_EOL . PHP_EOL .
-            'Options:' . PHP_EOL .
+            PHP_EOL . 'Options:' . PHP_EOL .
             '  -a, --alpha  enable alpha' . PHP_EOL,
             $help
         );
@@ -126,10 +126,10 @@ class CommandTest extends TestCase
         $help = $getopt->getHelpText();
 
         self::assertSame(
-            'Usage: ' . $script . ' [command] [options] [operands]' . PHP_EOL .
-            'Options:' . PHP_EOL .
+            'Usage: ' . $script . ' <command> [options] [operands]' . PHP_EOL .
+            PHP_EOL . 'Options:' . PHP_EOL .
             '  -h, --help  Shows this help' . PHP_EOL .
-            'Commands:' . PHP_EOL .
+            PHP_EOL . 'Commands:' . PHP_EOL .
             '  help       Shows help for a command' . PHP_EOL .
             '  run:tests  Executes the tests' . PHP_EOL,
             $help
@@ -154,10 +154,10 @@ class CommandTest extends TestCase
         $help = $getopt->getHelpText();
 
         self::assertSame(
-            'Usage: ' . $script . ' [command] [options] [operands]' . PHP_EOL .
-            'Options:' . PHP_EOL .
+            'Usage: ' . $script . ' <command> [options] [operands]' . PHP_EOL .
+            PHP_EOL . 'Options:' . PHP_EOL .
             '  -h, --help  Shows this help' . PHP_EOL .
-            'Commands:' . PHP_EOL .
+            PHP_EOL . 'Commands:' . PHP_EOL .
             '  help  This is a too long help text to have it on one row. It is also too long for a' . PHP_EOL .
             '        short description. You should avoid such long texts for a short description.' . PHP_EOL,
             $help

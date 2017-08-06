@@ -70,10 +70,6 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      */
     public function __construct($options = null, array $settings = [])
     {
-        if ($options !== null) {
-            $this->addOptions($options);
-        }
-
         $this->set(
             self::SETTING_SCRIPT_NAME,
             isset($_SERVER['argv'][0]) ? $_SERVER['argv'][0] : (
@@ -82,6 +78,10 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
         );
         foreach ($settings as $setting => $value) {
             $this->set($setting, $value);
+        }
+
+        if ($options !== null) {
+            $this->addOptions($options);
         }
     }
 
@@ -208,8 +208,8 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
             return $option;
         }
 
-        if (isset($this->optionMapping[$name])) {
-            return $this->optionMapping[$name]->value();
+        if ($option) {
+            return $option->value();
         }
 
         return isset($this->additionalOptions[$name]) ? $this->additionalOptions[$name] : null;
@@ -452,7 +452,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
 
         foreach ($this->options as $option) {
             if ($value = $option->value()) {
-                $name = $option->short() ?: $option->long();
+                $name = $option->long() ?: $option->short();
                 $result[$name] = $value;
             }
         }

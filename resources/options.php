@@ -2,7 +2,7 @@
 
 use GetOpt\GetOpt;
 
-echo 'Options:' . PHP_EOL;
+echo PHP_EOL . 'Options:' . PHP_EOL;
 
 /** @var \GetOpt\Option[] $options */
 
@@ -34,7 +34,7 @@ foreach ($options as $option) {
 }
 
 $screenWidth = defined('COLUMNS') ? COLUMNS : @getenv('COLUMNS') ?: @exec('tput cols 2>/dev/null') ?: 90;
-$screenWidth = min([ 120, $screenWidth ]); // max 120
+$screenWidth = min([ isset($maxWidth) ? $maxWidth : 120, $screenWidth ]);
 foreach ($data as $dataRow) {
     $row = sprintf('  % -' . $definitionWidth . 's  %s', $dataRow[0], $dataRow[1]);
 

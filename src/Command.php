@@ -74,6 +74,7 @@ class Command
     /**
      * @param mixed $handler
      * @return $this
+     * @codeCoverageIgnore trivial
      */
     public function setHandler($handler)
     {

@@ -50,16 +50,29 @@ Anything that is not an option or option's argument is called an operand. The fo
 determine what is parsed as an operand:
 
  - As soon as a command line argument is encountered that cannot be parsed as an option or
-    as an option's argument, it and all subsequent command line arguments are parsed as operands.
- - If the command line contains the string ` -- `, all arguments after it are parsed as operands.
+    as an option's argument, it is parsed as an operand.
+ - If the command line contains an argument `--`, all arguments after it are parsed as operands.
 
-In both of the following commands, `-a` is parsed as an operand even though it looks like an option.
-That is because it follows after either `--` or after `foo`, which is itself an operand.
-Git-style subcommands are not supported yet.
+In the following commands, `-a` is parsed as an operand even though it looks like an option.
 
 ```console
-$ php program.php foo -a
 $ php program.php -- -a
+```
+
+Depending on the definition of `-f` the following `value` can either be an operand or the argument of `-f`:
+
+```console
+$ php program.php -f value -o --option
+```
+
+## Commands
+
+When using commands for routing the command has to be provided as first operand. Also no command specific option can
+be provided in front of the command. The following examples shows the basic syntax and a concrete usage:
+
+```console
+$ php program.php [common options] <command> [common and specific options] [operands]
+$ php program.php -c /path/to/config.inc drop-table --cascade users
 ```
 
 ## Quoting
@@ -70,7 +83,17 @@ vise versa. They can be concatenated like usually in bash scripts.
 
 ```console
 $ php program.php "this is one operand"
+['this is one operand']
+
+$ php program.php "you can concatenate"' by connecting them'
+['you can concatenate by connecting them']
+
 $ php program.php 'this can contain "'
+['this can contain "']
+
 $ php program.php "this can contain '"
+['this can contain \'']
+
 $ php program.php "you may want both '"'"'
+['you man want both \'"']
 ```

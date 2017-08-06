@@ -1,6 +1,6 @@
 <?php
 
-echo 'Commands:' . PHP_EOL;
+echo PHP_EOL . 'Commands:' . PHP_EOL;
 
 /** @var \GetOpt\Command[] $commands */
 
@@ -18,7 +18,7 @@ foreach ($commands as $command) {
 }
 
 $screenWidth = defined('COLUMNS') ? COLUMNS : @getenv('COLUMNS') ?: @exec('tput cols 2>/dev/null') ?: 90;
-$screenWidth = min([ 120, $screenWidth ]); // max 120
+$screenWidth = min([ isset($maxWidth) ? $maxWidth : 120, $screenWidth ]);
 foreach ($data as $dataRow) {
     $row = sprintf('  % -' . $nameWidth . 's  %s', $dataRow[0], $dataRow[1]);
 

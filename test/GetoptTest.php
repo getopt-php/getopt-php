@@ -136,7 +136,8 @@ class GetoptTest extends TestCase
             [ 'b', 'beta', GetOpt::REQUIRED_ARGUMENT ]
         ]);
         $getopt->process('--alpha -b foo');
-        $expected = [ 'alpha' => 1, 'b' => 'foo' ]; // 'beta' should not occur
+
+        $expected = [ 'alpha' => 1, 'beta' => 'foo' ];
         foreach ($getopt as $option => $value) {
             $this->assertEquals($expected[$option], $value);
         }
