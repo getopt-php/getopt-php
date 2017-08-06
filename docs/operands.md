@@ -30,7 +30,8 @@ By logic there are some restrictions because of the strict order:
 When you add a required operand after optional operands all previous operands will become required. But when you try
 to add an operand after a multiple operand it will throw an `InvalidArgumentException`.
 
-```php?start_inline=true
+```php
+<?php
 $getopt = new \GetOpt\GetOpt();
 $getopt->addOperand(new \GetOpt\Operand('file', \GetOpt\Operand::REQUIRED));
 $getopt->addOperands([
@@ -49,7 +50,8 @@ use other setters.
 The default value can be defined the same way as for options. A default value will appear in `GetOpt::getOperands()` as
 well as in `GetOpt::getOperand()` and the following example might give an unexpected result for you:
 
-```php?start_inline=true
+```php
+<?php
 $getopt = new \GetOpt\GetOpt();
 $getopt->addOperands([
     \GetOpt\Operand::create('operand1'),
@@ -66,7 +68,8 @@ you are planning such things you should consider using `->getOperand('operand1')
 Again: it is the same functionality as for validating options. It follows a small example. See 
 [Options Validation](options.html#validation) for more details.
 
-```php?start_inline=true
+```php
+<?php
 $getopt = new \GetOpt\GetOpt();
 $getopt->addOperands([
     \GetOpt\Operand::create('file', \GetOpt\Operand::REQUIRED)
@@ -84,7 +87,8 @@ After processing the arguments you can retrieve all operands with `GetOpt::getOp
 position (**starting with 0**) with `GetOpt::getOperand(int)` (exactly the same behaviour as in version 2). Since
 operands can have names you can also retrieve the value of an operand by calling `GetOpt::getOperand(string)`.
 
-```php?start_inline=true
+```php
+<?php
 $getopt = new \GetOpt\GetOpt();
 $getopt->addOperand(\GetOpt\Operand::create('alpha', \GetOpt\Operand::MULTIPLE+\GetOpt\Operand::REQUIRED));
 $getopt->process('a b c');
@@ -93,3 +97,17 @@ var_dump($getopt->getOperand(0)); // ['a', 'b', 'c']
 var_dump($getopt->getOperand('alpha')); // ['a', 'b', 'c']
 var_dump($getopt->getOperand(1)); // null because operand 0 is multiple
 ```
+
+## Limit Operands
+
+By default a user is allowed to enter any operands. You may want `STRICT_OPERANDS`. This is working the same way as
+`STRICT_OPTIONS` for options. When you set `GetOpt::SETTING_STRICT_OPERANDS = true` `GetOpt` will throw an exception
+when the user provides an extra operand.
+
+```php
+<?php
+$getopt = new \GetOpt\GetOpt(null, [\GetOpt\GetOpt::SETTING_STRICT_OPERANDS => true]);
+$getopt->addOperand(\GetOpt\Operand::create('file', \GetOpt\Operand::OPTIONAL));
+
+$getopt->process('/path/to/file "any other operand"'); // throws GetOpt\ArgumentException\Unexpected
+``` 

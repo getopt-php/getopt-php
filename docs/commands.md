@@ -15,7 +15,8 @@ create) we create commands.
 A command can has at least a name and a handler. The handler can be anything that makes clear what has to be executed
 (a `colsure` makes sense, but an array `['Controller', 'method']` too).
 
-```php?start_inline=true
+```php
+<?php
 $getopt = new \GetOpt\GetOpt();
 $getopt->addCommand(new \GetOpt\Command('create', 'User::create'));
 ```
@@ -46,7 +47,8 @@ Options:
 
 You can only define one description that is used for both or you define both descriptions:
 
-```php?start_inline=true
+```php
+<?php
 $getopt = new \GetOpt\GetOpt();
 $getopt->addCommands([
     \GetOpt\Command::create('setup', 'Setup::setup')
@@ -66,7 +68,8 @@ $getopt->addCommands([
 A command can have specific options. Like for `GetOpt` you can pass the options through constructor or using the
 methods `addOption(Option)` and `addOptions(Option[])`.
 
-```php?start_inline=true
+```php
+<?php
 $getopt = new \GetOpt\GetOpt();
 $getopt->addCommands([
     \GetOpt\Command::create('user:delete', 'User::delete', [
@@ -84,7 +87,8 @@ $getopt->addCommands([
 
 You can also reuse the options and share options for different commands:
 
-```php?start_inline=true
+```php
+<?php
 /** @var \GetOpt\Option[] $options */
 $options = [];
 $options['userId'] = \GetOpt\Option::create('u', 'userId', \GetOpt\GetOpt::REQUIRED_ARGUMENT);
@@ -108,7 +112,8 @@ $getopt->addCommands([
 You can specify operands that are only valid for a specific command the same way as for `GetOpt`. Also you can reuse
 these Operands for different commands.
 
-```php?start_inline=true
+```php
+<?php
 $operandUserId = \GetOpt\Operand::create('userId', \GetOpt\Operand::MULTIPLE);
 
 $getopt = new \GetOpt\GetOpt();
@@ -140,7 +145,8 @@ parameter. It returns the Command object and we can use the getters `Command::na
 `Command::description()` and `Command:shortDescription()` to identify the command. If no command is specified it will
 return `null`.
 
-```php?start_inline=true
+```php
+<?php
 $getopt = new \GetOpt\GetOpt();
 // define options and commands
 

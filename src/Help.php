@@ -43,10 +43,12 @@ class Help implements HelpInterface
     /**
      * @param string $usageTemplate
      * @codeCoverageIgnore trivial
+     * @return $this
      */
     public function setUsageTemplate($usageTemplate)
     {
         $this->usageTemplate = $usageTemplate;
+        return $this;
     }
 
     /**
@@ -61,10 +63,12 @@ class Help implements HelpInterface
     /**
      * @param string $optionsTemplate
      * @codeCoverageIgnore trivial
+     * @return $this
      */
     public function setOptionsTemplate($optionsTemplate)
     {
         $this->optionsTemplate = $optionsTemplate;
+        return $this;
     }
 
     /**
@@ -79,10 +83,12 @@ class Help implements HelpInterface
     /**
      * @param string $commandsTemplate
      * @codeCoverageIgnore trivial
+     * @return $this
      */
     public function setCommandsTemplate($commandsTemplate)
     {
         $this->commandsTemplate = $commandsTemplate;
+        return $this;
     }
 
     /**
@@ -95,10 +101,7 @@ class Help implements HelpInterface
     public function render(GetOpt $getopt, array $data = [])
     {
         $data['getopt'] = $getopt;
-
-        if ($getopt->getCommand()) {
-            $data['command'] = $getopt->getCommand();
-        }
+        $data['command'] = $getopt->getCommand();
 
         // we always append the usage
         $helpText = $this->renderTemplate($this->usageTemplate, $data);

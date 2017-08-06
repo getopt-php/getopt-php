@@ -18,7 +18,8 @@ recommend to use the usual way to create objects.
 
 ### Creating Options
 
-```php?start_inline=true
+```php
+<?php
 $optionAlpha = new \GetOpt\Option('a', 'alpha', \GetOpt\GetOpt::REQUIRED_ARGUMENT);
 $optionAlpha->setDescription(
     'This description could be very long ' .
@@ -29,7 +30,8 @@ $optionAlpha->setValidation('is_numeric');
 
 And add them to the `GetOpt\GetOpt` object:
 
-```php?start_inline=true
+```php
+<?php
 // in constructor
 $getopt = new GetOpt([$optionAlpha, $optionBeta]);
 
@@ -45,7 +47,8 @@ $getopt->addOption($optionAlpha)->addOption($optionBeta);
 The setters can be chained and for convenience there is also a public static method create which allows to write the 
 above command this way:
 
-```php?start_inline=true
+```php
+<?php
 $getopt = new \GetOpt\GetOpt([
     
     \GetOpt\Option::create('a', 'alpha', \GetOpt\GetOpt::REQUIRED_ARGUMENT)
@@ -66,7 +69,8 @@ Options can be defined by a string with the exact same syntax as
 [PHP's `getopt()` function](http://php.net/manual/en/function.getopt.php) and the original GNU getopt. It is the
 shortest way to set up GetOpt, but it does not support long options or any advanced features:
 
-```php?start_inline=true
+```php
+<?php
 $getopt = new GetOpt('ab:c::');
 ```
 
@@ -82,7 +86,8 @@ determine if the option can or must have an argument:
 There is also a helper that creates an `GetOpt\Option` from array. These method allows the most important features and
 can look very clean too:
 
-```php?start_inline=true
+```php
+<?php
 $getopt = new \GetOpt\GetOpt([
    
     // creates an option a without a long alias and with the default argument mode
@@ -106,7 +111,8 @@ $getopt = new \GetOpt\GetOpt([
 This method does not allow to specify the validation or the argument name but you can get the option and define it
 afterwards:
 
-```php?start_inline=true
+```php
+<?php
 $getopt->getOption('beta', true)
     ->setDescription('Provide a beta version')
     ->setMode(\GetOpt\GetOpt::OPTIONAL_ARGUMENT)
@@ -115,7 +121,8 @@ $getopt->getOption('beta', true)
 
 The default mode is `NO_ARGUMENT` you can overwrite this with the setting `SETTING_DEFAULT_MODE` from GetOpt:
 
-```php?start_inline=true
+```php
+<?php
 $getopt = new \GetOpt\GetOpt([
     ['a']
 ], [
@@ -129,7 +136,8 @@ After the options have been defined you can process the command line arguments. 
 an array or string function of the arguments that should be processed. If the parameter is omitted the method uses
 `$_SERVER['argv']` for processing.
 
-```php?start_inline=true
+```php
+<?php
 $getopt = new \GetOpt\GetOpt();
 // add your options
 
@@ -146,7 +154,8 @@ $getopt->process(['-b', '--beta', '-a', 'this is the value of a']);
 After processing you can access the value of a specific option with `GetOpt::getOption(string)` or getting all values
 with `GetOpt::getOptions()`.
 
-```php?start_inline=true
+```php
+<?php
 // access by long name (suggested)
 $beta = $getopt->getOption('beta');
 
@@ -164,11 +173,16 @@ var_dump($options);
 // ]
 ```
 
+### Accessing Options By ArrayAccess
+
+**TEXT MISSING**
+
 ## Arguments
 
 The mode of an option specifies the existence of an argument. It can be one of the following constants:
 
-```php?start_inline=true
+```php
+<?php
 \GetOpt\GetOpt::NO_ARGUMENT;       // ':noArg'
 \GetOpt\GetOpt::REQUIRED_ARGUMENT; // ':requiredArg'
 \GetOpt\GetOpt::OPTIONAL_ARGUMENT; // ':optionalArg'
@@ -191,7 +205,8 @@ $ php program.php -c "this is the value of option c"
 
 For better understanding you can define the name of the argument that gets shown in the help:
 
-```php?start_inline=true
+```php
+<?php
 $getopt = new \GetOpt\GetOpt([
     \GetOpt\Option::create('c', 'config', \GetOpt\GetOpt::REQUIRED_ARGUMENT)
         ->setArgumentName('ini-file')
@@ -207,7 +222,8 @@ echo $getopt->getHelpText();
 For options with arguments you might want to define a default value. An option that is not defined in the command line
 returns the default value for `Option::getValue()` and `GetOpt::getOption()`:
 
-```php?start_inline=true
+```php
+<?php
 $getopt = new \GetOpt\GetOpt([
     \GetOpt\Option::create('c', 'config', \GetOpt\GetOpt::REQUIRED_ARGUMENT)
         ->setDefaultValue('/etc/program.ini')
@@ -221,7 +237,8 @@ echo $getopt->getOption('config'); // /etc/program.ini
 An option with a multiple argument always returns an array. An empty array if the option is not set and no default is
 given, an array with only the default value if not set and default value is given or an array of all values given.
 
-```php?start_inline=true
+```php
+<?php
 $getopt = new \GetOpt\GetOpt([
     \GetOpt\Option::create('d', 'domain', \GetOpt\GetOpt::MULTIPLE_ARGUMENT)
 ]);
@@ -239,7 +256,8 @@ The validator gets the value as first and only parameter. For a lot of php stand
 `is_numeric`). The value will always be a string or null. Here comes an example that shows how to check that it has
 a valid json value:
 
-```php?start_inline=true
+```php
+<?php
 $getopt = new \GetOpt\GetOpt([
     \GetOpt\Option::create(null, 'data', \GetOpt\GetOpt::REQUIRED_ARGUMENT)
         ->setValidation(function ($value) {
@@ -264,7 +282,8 @@ A use case for this could be to define exclusive options (which is also the reas
 request). Let's say our program has the options `alpha` and `omega` but when you define `alpha` the `omega` option is
 forbidden and vise versa:
 
-```php?start_inline=true
+```php
+<?php
 $getopt = new \GetOpt\GetOpt();
 
 $getopt->addOptions([
@@ -277,4 +296,23 @@ $getopt->addOptions([
             return !$getopt->getOption('alpha');
         }),
 ]);
+```
+
+## Allow Custom Options
+
+By default only options are allowed that are defined before you run `GetOpt::process()`. This we called
+`STRICT_OPTIONS`. For a quick and dirty application you may want to allow everything. When you setup your `GetOpt` with
+`GetOpt::SETTING_STRICT_OPTIONS = false` every option is allowed with an optional argument. 
+
+```php
+<?php
+$getopt = new \GetOpt\GetOpt(null, [\GetOpt\GetOpt::SETTING_STRICT_OPTIONS => false]);
+
+$getopt->process('-a "hello world" --alpha -vvv');
+var_dump($getopt->getOptions());
+// [
+//     'a' => 'hello world',
+//     'alpha' => 1,
+//     'v' => 3
+// ];
 ```
