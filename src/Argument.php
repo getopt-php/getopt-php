@@ -1,26 +1,32 @@
 <?php
 
-namespace Ulrichsg\Getopt;
+namespace GetOpt;
 
+/**
+ * Class Argument
+ *
+ * @package GetOpt
+ * @author  Ulrich Schmidt-Goertz
+ */
 class Argument
 {
     const CLASSNAME = __CLASS__;
 
-    /** @var string */
-    private $default;
+    /** @var mixed */
+    protected $default;
     /** @var callable */
-    private $validation;
+    protected $validation;
     /** @var string */
-    private $name;
+    protected $name;
 
     /**
      * Creates a new argument.
      *
-     * @param scalar|null $default Default value or NULL
-     * @param callable|null $validation a validation function (optional)
-     * @throws \InvalidArgumentException
+     * @param mixed    $default    Default value or NULL
+     * @param callable $validation A validation function
+     * @param string   $name       A name for the argument
      */
-    public function __construct($default = null, $validation = null, $name = "arg")
+    public function __construct($default = null, callable $validation = null, $name = "arg")
     {
         if (!is_null($default)) {
             $this->setDefaultValue($default);
@@ -34,8 +40,8 @@ class Argument
     /**
      * Set the default value
      *
-     * @param scalar $value
-     * @return Argument this object (for chaining calls)
+     * @param mixed $value The value has to be a scalar value
+     * @return $this
      * @throws \InvalidArgumentException
      */
     public function setDefaultValue($value)
@@ -52,15 +58,22 @@ class Argument
      * The function must take a string and return true if it is valid, false otherwise.
      *
      * @param callable $callable
-     * @return Argument this object (for chaining calls)
+     * @return $this
      * @throws \InvalidArgumentException
      */
-    public function setValidation($callable)
+    public function setValidation(callable $callable)
     {
-        if (!is_callable($callable)) {
-            throw new \InvalidArgumentException("Validation must be a callable");
-        }
         $this->validation = $callable;
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
         return $this;
     }
 
@@ -92,13 +105,13 @@ class Argument
      */
     public function hasDefaultValue()
     {
-        return !empty($this->default);
+        return !is_null($this->default);
     }
 
     /**
      * Retrieve the default value
      *
-     * @return scalar|null
+     * @return mixed
      */
     public function getDefaultValue()
     {

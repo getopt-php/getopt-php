@@ -1,23 +1,16 @@
 <?php
 
-namespace Ulrichsg\Getopt;
+namespace GetOpt;
 
 /**
  * Converts user-given option specifications into Option objects.
+ *
+ * @package GetOpt
+ * @author  Ulrich Schmidt-Goertz
  */
 class OptionParser
 {
-    private $defaultMode;
-
-    /**
-     * Creates a new instance.
-     *
-     * @param int $defaultMode will be assigned to options when no mode is given for them.
-     */
-    public function __construct($defaultMode)
-    {
-        $this->defaultMode = $defaultMode;
-    }
+    public static $defaultMode = GetOpt::NO_ARGUMENT;
 
     /**
      * Parse a GNU-style option string.
@@ -26,12 +19,12 @@ class OptionParser
      * @return Option[]
      * @throws \InvalidArgumentException
      */
-    public function parseString($string)
+    public static function parseString($string)
     {
         if (!mb_strlen($string)) {
             throw new \InvalidArgumentException('Option string must not be empty');
         }
-        $options        = array();
+        $options        = [];
         $eol            = mb_strlen($string) - 1;
         $nextCanBeColon = false;
         for ($i = 0; $i <= $eol; ++$i) {
@@ -44,14 +37,14 @@ class OptionParser
                 );
             }
             if ($i == $eol || $string[$i + 1] != ':') {
-                $options[]      = new Option($ch, null, Getopt::NO_ARGUMENT);
+                $options[]      = new Option($ch, null, GetOpt::NO_ARGUMENT);
                 $nextCanBeColon = true;
             } elseif ($i < $eol - 1 && $string[$i + 2] == ':') {
-                $options[]      = new Option($ch, null, Getopt::OPTIONAL_ARGUMENT);
+                $options[]      = new Option($ch, null, GetOpt::OPTIONAL_ARGUMENT);
                 $i              += 2;
                 $nextCanBeColon = false;
             } else {
-                $options[] = new Option($ch, null, Getopt::REQUIRED_ARGUMENT);
+                $options[] = new Option($ch, null, GetOpt::REQUIRED_ARGUMENT);
                 ++$i;
                 $nextCanBeColon = true;
             }
@@ -60,57 +53,42 @@ class OptionParser
     }
 
     /**
-     * Processes an option array. The array elements can either be Option objects or arrays conforming to the format
+     * Processes an option array. The array should be conform to the format
      * (short, long, mode [, description [, default]]). See documentation for details.
      *
      * Developer note: Please don't add any further elements to the array. Future features should be configured only
      * through the Option class's methods.
      *
      * @param array $array
-     * @return Option[]
-     * @throws \InvalidArgumentException
-     */
-    public function parseArray(array $array)
-    {
-        if (empty($array)) {
-            throw new \InvalidArgumentException('No options given');
-        }
-        $options = array();
-        foreach ($array as $row) {
-            if ($row instanceof Option) {
-                $options[] = $row;
-            } elseif (is_array($row)) {
-                $options[] = $this->createOption($row);
-            } else {
-                throw new \InvalidArgumentException("Invalid option type, must be Option or array");
-            }
-        }
-        return $options;
-    }
-
-    /**
-     * @param array $row
      * @return Option
      */
-    private function createOption(array $row)
+    public static function parseArray(array $array)
     {
-        $rowSize = count($row);
+        if (empty($array)) {
+            throw new \InvalidArgumentException('Invalid option array (at least a name has to be given)');
+        }
+
+        $rowSize = count($array);
         if ($rowSize < 3) {
-            $row = $this->completeOptionArray($row);
+            $array = self::completeOptionArray($array);
         }
-        $option = new Option($row[0], $row[1], $row[2]);
+
+        $option = new Option($array[0], $array[1], $array[2]);
+
         if ($rowSize >= 4) {
-            $option->setDescription($row[3]);
+            $option->setDescription($array[3]);
         }
-        if ($rowSize >= 5 && $row[2] != Getopt::NO_ARGUMENT) {
-            $option->setArgument(new Argument($row[4]));
+
+        if ($rowSize >= 5 && $array[2] != GetOpt::NO_ARGUMENT) {
+            $option->setArgument(new Argument($array[4]));
         }
+
         return $option;
     }
 
     /**
      * When using arrays, instead of a full option spec ([short, long, type]) users can leave out one or more of
-     * these parts and have Getopt fill them in intelligently:
+     * these parts and have GetOpt fill them in intelligently:
      * - If either the short or the long option string is left out, the first element of the given array is interpreted
      *   as either short (if it has length 1) or long, and the other one is set to null.
      * - If the type is left out, it is set to NO_ARGUMENT.
@@ -118,22 +96,22 @@ class OptionParser
      * @param array $row
      * @return array
      */
-    private function completeOptionArray(array $row)
+    protected static function completeOptionArray(array $row)
     {
         $short = (strlen($row[0]) == 1) ? $row[0] : null;
 
         $long = null;
         if (is_null($short)) {
             $long = $row[0];
-        } elseif (count($row) > 1 && !is_int($row[1])) {
+        } elseif (count($row) > 1 && $row[1][0] !== ':') {
             $long = $row[1];
         }
 
-        $mode = $this->defaultMode;
-        if (count($row) == 2 && is_int($row[1])) {
+        $mode = self::$defaultMode;
+        if (count($row) == 2 && $row[1][0] === ':') {
             $mode = $row[1];
         }
 
-        return array( $short, $long, $mode );
+        return [ $short, $long, $mode ];
     }
 }

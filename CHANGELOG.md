@@ -1,3 +1,38 @@
+## 3.0.0 (alpha)
+
+Features:
+* php 5.3 support dropped (solves #72)
+* moved to neutral namespace `GetOpt`
+* classname changed to `GetOpt`
+* second parameter for constructor got array of settings (use `GetOpt::SETTING_*` constants)
+* argument constants changed to string `:*Arg`
+* parse options after operands (gnu compatibility; solves #39)
+* added `GetOpt::MULTIPLE_ARGUMENT` for parameter aggregation (solves #57)
+* implemented `Command` for kinda routing in console applications (solves #41)
+* implemented `Operand` for named operands and validation (solves #27)
+* added strict modes for strict operand and parameter matches (default is true for options) (solves #14)
+* added `HelpInterface` for custom help implementations
+* refactored `GetOpt::getHelpText()` for better support of other features and customization
+* default help class uses templates
+
+Bugfixes:
+* `GetOpt::count()` returns the wrong value (solves #70)
+
+## 2.4.3 (2017-07-02)
+
+Features:
+* move documentation to master branch
+* added badges to readme
+
+## 2.4.2 (2017-07-01)
+
+Features:
+* don't show options when there are no options configured
+* allow arguments in quotes (allows single quote in double quote and vise versa)
+* get script name from argv[0] when parsing arguments from array or string
+* add method to set script name manually
+* support for php 7.1
+
 ## 2.3.0 (2015-03-28)
 
 Features:
@@ -29,7 +64,7 @@ Features:
 ## 2.0.0-RC.1 (2014-01-17)
 
 Changes:
-* Namespace is now Ulrichsg\Getopt
+* Namespace is now Ulrichsg\GetOpt
 * Public API has been cleaned up, please refer to the documentation
 
 

@@ -1,8 +1,11 @@
 <?php
 
-namespace Ulrichsg\Getopt;
+namespace GetOpt\Test;
 
-class ArgumentTest extends \PHPUnit_Framework_TestCase
+use GetOpt\Argument;
+use PHPUnit\Framework\TestCase;
+
+class ArgumentTest extends TestCase
 {
     public function testConstructor()
     {
@@ -16,7 +19,7 @@ class ArgumentTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('InvalidArgumentException');
         $argument = new Argument();
-        $argument->setDefaultValue(array());
+        $argument->setDefaultValue([]);
     }
 
     public function testValidates()
@@ -33,10 +36,10 @@ class ArgumentTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($argument->validates('test'));
     }
 
-    public function testSetValidationUncallable()
+    public function testFalsyDefaultValue()
     {
-        $this->setExpectedException('InvalidArgumentException');
-        $argument = new Argument();
-        $argument->setValidation('');
+        $argument = new Argument('');
+
+        self::assertTrue($argument->hasDefaultValue());
     }
 }

@@ -1,4 +1,4 @@
-# Getopt.PHP
+# GetOpt.PHP
 
 [![Build Status](https://travis-ci.org/getopt-php/getopt-php.svg?branch=master)](https://travis-ci.org/getopt-php/getopt-php)
 [![Coverage Status](https://coveralls.io/repos/github/getopt-php/getopt-php/badge.svg?branch=master)](https://coveralls.io/github/getopt-php/getopt-php?branch=master)
@@ -6,7 +6,7 @@
 [![Total Downloads](https://poser.pugx.org/ulrichsg/getopt-php/downloads.svg)](https://packagist.org/packages/ulrichsg/getopt-php) 
 [![License](https://poser.pugx.org/ulrichsg/getopt-php/license.svg)](https://packagist.org/packages/ulrichsg/getopt-php)
 
-Getopt.PHP is a library for command-line argument processing. It supports PHP version 5.3 and above.
+GetOpt.PHP is a library for command-line argument processing. It supports PHP version 5.4 and above.
 
 ## Features
 
@@ -26,4 +26,4 @@ Getopt.PHP is a library for command-line argument processing. It supports PHP ve
 
 ## License
 
-Getopt.PHP is published under the [MIT License](http://www.opensource.org/licenses/mit-license.php).
+GetOpt.PHP is published under the [MIT License](http://www.opensource.org/licenses/mit-license.php).
