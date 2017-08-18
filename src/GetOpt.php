@@ -365,10 +365,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
             return $i >= 0 && isset($this->additionalOperands[$i]) ? $this->additionalOperands[$i] : null;
         }
 
-        throw new \InvalidArgumentException(sprintf(
-            'Operand %s is not defined',
-            $index
-        ));
+        return null;
     }
 
     /**
