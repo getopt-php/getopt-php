@@ -79,16 +79,6 @@ class CommonTest extends TestCase
         self::assertSame('42', $getopt->getOperand('op1'));
     }
 
-    public function testGetOperandByNameThrows()
-    {
-        $getopt = new GetOpt();
-        $getopt->addOperand(new Operand('any'));
-        $getopt->process('42');
-
-        $this->setExpectedException('InvalidArgumentException');
-        $getopt->getOperand('op1');
-    }
-
     public function testDefaultValue()
     {
         $operand = Operand::create('op1')
@@ -132,5 +122,15 @@ class CommonTest extends TestCase
         $getopt->process('command path/to/file');
 
         self::assertSame('path/to/file', $getopt->getOperand('file'));
+    }
+
+    /** @test */
+    public function returnsNullForUnknownOperands()
+    {
+        $getopt = new GetOpt();
+
+        $result = $getopt->getOperand('file');
+
+        self::assertNull($result);
     }
 }
