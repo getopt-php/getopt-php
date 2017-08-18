@@ -7,14 +7,16 @@ use PHPUnit\Framework\TestCase;
 
 class ValueTest extends TestCase
 {
-    public function testToStringWithoutValue()
+    /** @test */
+    public function toStringWithoutValue()
     {
         $operand = Operand::create('file');
 
         self::assertSame('', (string)$operand);
     }
 
-    public function testToStringWithDefaultValue()
+    /** @test */
+    public function toStringWithDefaultValue()
     {
         $operand = Operand::create('file')
             ->setDefaultValue('/dev/random');
@@ -22,7 +24,8 @@ class ValueTest extends TestCase
         self::assertSame('/dev/random', (string)$operand);
     }
 
-    public function testToStringWithValue()
+    /** @test */
+    public function toStringWithValue()
     {
         $operand = Operand::create('file');
 
@@ -31,7 +34,8 @@ class ValueTest extends TestCase
         self::assertSame('/dev/null', (string)$operand);
     }
 
-    public function testToStringWithMultipleValue()
+    /** @test */
+    public function toStringWithMultipleValue()
     {
         $operand = Operand::create('files', Operand::MULTIPLE);
 

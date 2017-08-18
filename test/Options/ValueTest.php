@@ -8,16 +8,24 @@ use PHPUnit\Framework\TestCase;
 
 class ValueTest extends TestCase
 {
-    /** @dataProvider dataOptionsWithoutDefault */
-    public function testValueWithoutDefault(Option $option, $expected)
+    /** @dataProvider dataOptionsWithoutDefault
+     * @param Option $option
+     * @param mixed  $expected
+     * @test */
+    public function valueWithoutDefault(Option $option, $expected)
     {
         $result = $option->value();
 
         self::assertSame($expected, $result);
     }
 
-    /** @dataProvider dataOptionsWithoutDefault */
-    public function testValueWithoutDefaultButSetValue(Option $option, $dummy, $value, $expected)
+    /** @dataProvider dataOptionsWithoutDefault
+     * @param Option $option
+     * @param mixed  $dummy
+     * @param mixed  $value
+     * @param mixed  $expected
+     * @test */
+    public function valueWithoutDefaultButSetValue(Option $option, $dummy, $value, $expected)
     {
         $option->setValue($value);
 
@@ -37,7 +45,8 @@ class ValueTest extends TestCase
         ];
     }
 
-    public function testToStringWithoutArgument()
+    /** @test */
+    public function toStringWithoutArgument()
     {
         $option = new Option('a', null);
         $option->setValue(null);
@@ -46,7 +55,8 @@ class ValueTest extends TestCase
         $this->assertSame('2', (string)$option);
     }
 
-    public function testToStringWithArgument()
+    /** @test */
+    public function toStringWithArgument()
     {
         $option = new Option('a', null, GetOpt::REQUIRED_ARGUMENT);
         $option->setValue('valueA');
@@ -54,7 +64,8 @@ class ValueTest extends TestCase
         $this->assertSame('valueA', (string)$option);
     }
 
-    public function testToStringWithMultipleArguments()
+    /** @test */
+    public function toStringWithMultipleArguments()
     {
         $option = new Option('a', null, GetOpt::MULTIPLE_ARGUMENT);
         $option->setValue('valueA');

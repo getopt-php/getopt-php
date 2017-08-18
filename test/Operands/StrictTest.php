@@ -8,7 +8,8 @@ use PHPUnit\Framework\TestCase;
 
 class StrictTest extends TestCase
 {
-    public function testNoOperandsAllowed()
+    /** @test */
+    public function noOperandsAllowed()
     {
         $getopt = new GetOpt();
         $getopt->set(GetOpt::SETTING_STRICT_OPERANDS, true);
@@ -17,7 +18,8 @@ class StrictTest extends TestCase
         $getopt->process('"some operand"');
     }
 
-    public function testSpecifiedOperandsAllowed()
+    /** @test */
+    public function specifiedOperandsAllowed()
     {
         $getopt = new GetOpt();
         $getopt->set(GetOpt::SETTING_STRICT_OPERANDS, true);
@@ -28,7 +30,8 @@ class StrictTest extends TestCase
         self::assertSame('some operand', $getopt->getOperand('op1'));
     }
 
-    public function testHelpDoesNotShowAdditionalOperands()
+    /** @test */
+    public function helpDoesNotShowAdditionalOperands()
     {
         $getopt = new GetOpt();
         $getopt->set(GetOpt::SETTING_STRICT_OPERANDS, true);

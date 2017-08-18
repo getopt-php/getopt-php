@@ -17,7 +17,8 @@ class OptionParserTest extends TestCase
         $this->parser = new OptionParser(GetOpt::REQUIRED_ARGUMENT);
     }
 
-    public function testParseString()
+    /** @test */
+    public function parseString()
     {
         $options = $this->parser->parseString('ab:c::3');
         $this->assertInternalType('array', $options);
@@ -42,25 +43,29 @@ class OptionParserTest extends TestCase
         }
     }
 
-    public function testParseStringEmpty()
+    /** @test */
+    public function parseStringEmpty()
     {
         $this->setExpectedException('InvalidArgumentException');
         $this->parser->parseString('');
     }
 
-    public function testParseStringInvalidCharacter()
+    /** @test */
+    public function parseStringInvalidCharacter()
     {
         $this->setExpectedException('InvalidArgumentException');
         $this->parser->parseString('ab:c::dä');
     }
 
-    public function testParseStringStartsWithColon()
+    /** @test */
+    public function parseStringStartsWithColon()
     {
         $this->setExpectedException('InvalidArgumentException');
         $this->parser->parseString(':ab:c::d');
     }
 
-    public function testParseStringTripleColon()
+    /** @test */
+    public function parseStringTripleColon()
     {
         $this->setExpectedException('InvalidArgumentException');
         $this->parser->parseString('ab:c:::d');
@@ -75,11 +80,10 @@ class OptionParserTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideOptionArrays
+    /** @dataProvider provideOptionArrays
      * @param array $array
-     */
-    public function testParseArray($array)
+     * @test */
+    public function parseArray($array)
     {
         $option = $this->parser->parseArray($array);
 
@@ -107,13 +111,15 @@ class OptionParserTest extends TestCase
         }
     }
 
-    public function testParseArrayEmpty()
+    /** @test */
+    public function parseArrayEmpty()
     {
         $this->setExpectedException('InvalidArgumentException');
         $this->parser->parseArray([]);
     }
 
-    public function testParseArrayInvalid()
+    /** @test */
+    public function parseArrayInvalid()
     {
         $this->setExpectedException('InvalidArgumentException');
         $this->parser->parseArray([ 'a', 'b' ]);

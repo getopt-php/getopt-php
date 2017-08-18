@@ -28,15 +28,16 @@ class CommandTest extends TestCase
         );
     }
 
-    public function testConstructorSavesName()
+    /** @test */
+    public function constructorSavesName()
     {
         self::assertSame('the-name', $this->command->name());
     }
 
     /** @dataProvider dataNamesNotAllowed
      * @param string $name
-     */
-    public function testNamesNotAllowed($name)
+     * @test */
+    public function namesNotAllowed($name)
     {
         $this->setExpectedException('InvalidArgumentException');
         new Command($name, '', null);
@@ -51,17 +52,20 @@ class CommandTest extends TestCase
         ];
     }
 
-    public function testConstructorSavesHandler()
+    /** @test */
+    public function constructorSavesHandler()
     {
         self::assertSame([ '\PDO', 'getAvailableDrivers' ], $this->command->handler());
     }
 
-    public function testConstructorSavesOptions()
+    /** @test */
+    public function constructorSavesOptions()
     {
         self::assertSame($this->options, $this->command->getOptions());
     }
 
-    public function testAddOptionsAppendsOptions()
+    /** @test */
+    public function addOptionsAppendsOptions()
     {
         $optionC = new Option('c', 'optc');
         $this->command->addOptions([ $optionC ]);
@@ -69,7 +73,8 @@ class CommandTest extends TestCase
         self::assertSame([ $this->options[0], $this->options[1], $optionC ], $this->command->getOptions());
     }
 
-    public function testShortDescriptionUsedForDescription()
+    /** @test */
+    public function shortDescriptionUsedForDescription()
     {
         $command = new Command('test', 'var_dump');
 
@@ -78,7 +83,8 @@ class CommandTest extends TestCase
         self::assertSame('short description', $command->description());
     }
 
-    public function testDescriptionUsedForShortDescription()
+    /** @test */
+    public function descriptionUsedForShortDescription()
     {
         $command = new Command('test', 'var_dump');
 
@@ -87,7 +93,8 @@ class CommandTest extends TestCase
         self::assertSame('long description', $command->shortDescription());
     }
 
-    public function testGetHelpForExecutedCommand()
+    /** @test */
+    public function getHelpForExecutedCommand()
     {
         $longDescription = 'This is a very long description.' . PHP_EOL . 'It also may have line breaks.';
         $getopt = new GetOpt();
@@ -113,7 +120,8 @@ class CommandTest extends TestCase
         );
     }
 
-    public function testGetHelpForCommands()
+    /** @test */
+    public function getHelpForCommands()
     {
         $cmd1 = Command::create('help', 'var_dump')->setDescription('Shows help for a command');
         $cmd2 = Command::create('run:tests', 'var_dump')->setDescription('Executes the tests');
@@ -136,7 +144,8 @@ class CommandTest extends TestCase
         );
     }
 
-    public function testTooLongShortDescription()
+    /** @test */
+    public function tooLongShortDescription()
     {
         defined('COLUMNS') || define('COLUMNS', 90);
         $getopt = new GetOpt([

@@ -9,7 +9,8 @@ use PHPUnit\Framework\TestCase;
 
 class CommonTest extends TestCase
 {
-    public function testConstruct()
+    /** @test */
+    public function construct()
     {
         $option = new Option('a', 'az-AZ09_', GetOpt::OPTIONAL_ARGUMENT);
         $this->assertEquals('a', $option->short());
@@ -17,7 +18,8 @@ class CommonTest extends TestCase
         $this->assertEquals(GetOpt::OPTIONAL_ARGUMENT, $option->mode());
     }
 
-    public function testCreate()
+    /** @test */
+    public function create()
     {
         $option = Option::create('a', 'az-AZ09_', GetOpt::OPTIONAL_ARGUMENT);
         $this->assertEquals('a', $option->short());
@@ -28,9 +30,9 @@ class CommonTest extends TestCase
     /** @dataProvider dataConstructFails
      * @param string $short
      * @param string $long
-     * @param int $mode
-     */
-    public function testConstructFails($short, $long, $mode)
+     * @param int    $mode
+     * @test */
+    public function constructFails($short, $long, $mode)
     {
         $this->setExpectedException('InvalidArgumentException');
         new Option($short, $long, $mode);
@@ -47,28 +49,32 @@ class CommonTest extends TestCase
         ];
     }
 
-    public function testSetArgument()
+    /** @test */
+    public function setArgument()
     {
         $option = new Option('a', null, GetOpt::OPTIONAL_ARGUMENT);
         $this->assertEquals($option, $option->setArgument(new Argument()));
         $this->assertInstanceof(Argument::CLASSNAME, $option->getArgument());
     }
 
-    public function testSetArgumentWrongMode()
+    /** @test */
+    public function setArgumentWrongMode()
     {
         $this->setExpectedException('InvalidArgumentException');
         $option = new Option('a', null, GetOpt::NO_ARGUMENT);
         $option->setArgument(new Argument());
     }
 
-    public function testSetDefaultValue()
+    /** @test */
+    public function setDefaultValue()
     {
         $option = new Option('a', null, GetOpt::OPTIONAL_ARGUMENT);
         $this->assertEquals($option, $option->setDefaultValue(10));
         $this->assertEquals(10, $option->getArgument()->getDefaultValue());
     }
 
-    public function testSetValidation()
+    /** @test */
+    public function setValidation()
     {
         $option = new Option('a', null, GetOpt::OPTIONAL_ARGUMENT);
         $this->assertEquals($option, $option->setValidation('is_numeric'));

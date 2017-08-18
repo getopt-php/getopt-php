@@ -8,7 +8,8 @@ use PHPUnit\Framework\TestCase;
 
 class MultipleTest extends TestCase
 {
-    public function testValueForMultiple()
+    /** @test */
+    public function valueForMultiple()
     {
         $operand1 = new Operand('op1', Operand::OPTIONAL);
         $operand2 = new Operand('op2', Operand::MULTIPLE);
@@ -22,7 +23,8 @@ class MultipleTest extends TestCase
         self::assertSame(['a', 'b', 'c'], $getopt->getOperands());
     }
 
-    public function testDefaultValueForMultiple()
+    /** @test */
+    public function defaultValueForMultiple()
     {
         $operand = Operand::create('op1', Operand::MULTIPLE)
             ->setDefaultValue(42);
@@ -34,7 +36,8 @@ class MultipleTest extends TestCase
         self::assertSame([42], $getopt->getOperand('op1'));
     }
 
-    public function testRequiredMultiple()
+    /** @test */
+    public function requiredMultiple()
     {
         $operand = new Operand('op1', true, null, null, true);
 
@@ -45,7 +48,8 @@ class MultipleTest extends TestCase
         $getopt->process('');
     }
 
-    public function testRequiredMultipleNotToThrow()
+    /** @test */
+    public function requiredMultipleNotToThrow()
     {
         $operand = new Operand('op1', Operand::REQUIRED + Operand::MULTIPLE);
 
@@ -56,7 +60,8 @@ class MultipleTest extends TestCase
         self::assertSame(['42'], $getopt->getOperand('op1'));
     }
 
-    public function testValidationOfMultiple()
+    /** @test */
+    public function validationOfMultiple()
     {
         $operand1 = Operand::create('op1', Operand::MULTIPLE)
             ->setValidation(function ($value) {
@@ -70,7 +75,8 @@ class MultipleTest extends TestCase
         $getopt->process('42 43');
     }
 
-    public function testRestrictsAddingAfterMultiple()
+    /** @test */
+    public function restrictsAddingAfterMultiple()
     {
         $operand1 = new Operand('op1', Operand::MULTIPLE);
         $operand2 = new Operand('op2', Operand::OPTIONAL);

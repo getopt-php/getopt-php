@@ -9,7 +9,8 @@ use PHPUnit\Framework\TestCase;
 
 class GetoptTest extends TestCase
 {
-    public function testAddOptions()
+    /** @test */
+    public function addOptions()
     {
         $getopt = new GetOpt();
         $getopt->addOptions('a:');
@@ -26,7 +27,8 @@ class GetoptTest extends TestCase
         $this->assertEquals('sparam', $getopt->getOption('s'));
     }
 
-    public function testAddOptionsChooseShortOrLongAutomatically()
+    /** @test */
+    public function addOptionsChooseShortOrLongAutomatically()
     {
         $getopt = new GetOpt();
         $getopt->addOptions([
@@ -39,7 +41,8 @@ class GetoptTest extends TestCase
         $this->assertEquals('1', $getopt->getOption('s'));
     }
 
-    public function testAddOptionsUseDefaultArgumentType()
+    /** @test */
+    public function addOptionsUseDefaultArgumentType()
     {
         $getopt = new GetOpt(null, [
             GetOpt::SETTING_DEFAULT_MODE => GetOpt::REQUIRED_ARGUMENT
@@ -55,14 +58,16 @@ class GetoptTest extends TestCase
         $this->assertEquals('someOtherThing', $getopt->getOption('long'));
     }
 
-    public function testAddOptionsFailsOnInvalidArgument()
+    /** @test */
+    public function addOptionsFailsOnInvalidArgument()
     {
         $this->setExpectedException('\InvalidArgumentException');
         $getopt = new GetOpt(null);
         $getopt->addOptions(new Option('a', 'alpha'));
     }
 
-    public function testChangeModeAfterwards()
+    /** @test */
+    public function changeModeAfterwards()
     {
         $getopt = new GetOpt([
             [ 'a', null, GetOpt::REQUIRED_ARGUMENT ]
@@ -75,7 +80,8 @@ class GetoptTest extends TestCase
         $this->assertEquals('foo', $getopt->getOperand(0));
     }
 
-    public function testAddOptionsFailsOnConflict()
+    /** @test */
+    public function addOptionsFailsOnConflict()
     {
         $this->setExpectedException('\InvalidArgumentException');
         $getopt = new GetOpt([
@@ -86,7 +92,8 @@ class GetoptTest extends TestCase
         ]);
     }
 
-    public function testParseUsesGlobalArgvWhenNoneGiven()
+    /** @test */
+    public function parseUsesGlobalArgvWhenNoneGiven()
     {
         $_SERVER['argv'] = [ 'foo.php', '-a' ];
 
@@ -95,7 +102,8 @@ class GetoptTest extends TestCase
         $this->assertEquals(1, $getopt->getOption('a'));
     }
 
-    public function testAccessMethods()
+    /** @test */
+    public function accessMethods()
     {
         $getopt = new GetOpt('a');
         $getopt->process('-a foo');
@@ -111,7 +119,8 @@ class GetoptTest extends TestCase
         $this->assertEquals('foo', $getopt->getOperand(0));
     }
 
-    public function testCountable()
+    /** @test */
+    public function countable()
     {
         $getopt = new GetOpt([
             new Option('a', 'alpha'),
@@ -122,14 +131,16 @@ class GetoptTest extends TestCase
         $this->assertEquals(3, count($getopt));
     }
 
-    public function testArrayAccess()
+    /** @test */
+    public function arrayAccess()
     {
         $getopt = new GetOpt('q');
         $getopt->process('-q');
         $this->assertEquals(1, $getopt['q']);
     }
 
-    public function testIterable()
+    /** @test */
+    public function iterable()
     {
         $getopt = new GetOpt([
             [ null, 'alpha', GetOpt::NO_ARGUMENT ],
@@ -143,7 +154,8 @@ class GetoptTest extends TestCase
         }
     }
 
-    public function testHelpTextWithCustomScriptName()
+    /** @test */
+    public function helpTextWithCustomScriptName()
     {
         $getopt = new GetOpt();
         $getopt->set(GetOpt::SETTING_SCRIPT_NAME, 'test');
@@ -151,7 +163,8 @@ class GetoptTest extends TestCase
         $this->assertSame($expected, $getopt->getHelpText());
     }
 
-    public function testThrowsWithInvalidParameter()
+    /** @test */
+    public function throwsWithInvalidParameter()
     {
         $this->setExpectedException('InvalidArgumentException');
         $getopt = new GetOpt();
@@ -159,7 +172,8 @@ class GetoptTest extends TestCase
         $getopt->process(42);
     }
 
-    public function testAddOptionByString()
+    /** @test */
+    public function addOptionByString()
     {
         $getopt = new GetOpt();
         $getopt->addOption('c');
@@ -167,7 +181,8 @@ class GetoptTest extends TestCase
         $this->assertEquals(new Option('c', null), $getopt->getOption('c', true));
     }
 
-    public function testThrowsForUnparsableString()
+    /** @test */
+    public function throwsForUnparsableString()
     {
         $this->setExpectedException('InvalidArgumentException');
         $getopt = new GetOpt();
@@ -175,7 +190,8 @@ class GetoptTest extends TestCase
         $getopt->addOption('');
     }
 
-    public function testThrowsForInvalidParameter()
+    /** @test */
+    public function throwsForInvalidParameter()
     {
         $this->setExpectedException('InvalidArgumentException');
         $getopt = new GetOpt();
@@ -183,7 +199,8 @@ class GetoptTest extends TestCase
         $getopt->addOption(42);
     }
 
-    public function testIssetArrayAccess()
+    /** @test */
+    public function issetArrayAccess()
     {
         $getopt = new GetOpt();
         $getopt->addOption('a');
@@ -194,7 +211,8 @@ class GetoptTest extends TestCase
         self::assertTrue($result);
     }
 
-    public function testRestirctsArraySet()
+    /** @test */
+    public function restirctsArraySet()
     {
         $this->setExpectedException('LogicException');
         $getopt = new GetOpt();
@@ -202,7 +220,8 @@ class GetoptTest extends TestCase
         $getopt['a'] = 'test';
     }
 
-    public function testRestirctsArrayUnset()
+    /** @test */
+    public function restrictsArrayUnset()
     {
         $this->setExpectedException('LogicException');
         $getopt = new GetOpt();
@@ -212,7 +231,8 @@ class GetoptTest extends TestCase
         unset($getopt['a']);
     }
 
-    public function testAddCommandWithConflictingOptions()
+    /** @test */
+    public function addCommandWithConflictingOptions()
     {
         $this->setExpectedException('InvalidArgumentException');
 
@@ -225,7 +245,8 @@ class GetoptTest extends TestCase
         ]));
     }
 
-    public function testGetCommandByName()
+    /** @test */
+    public function getCommandByName()
     {
         $cmd1 = new Command('help', 'var_dump');
         $cmd2 = new Command('test', 'var_dump');

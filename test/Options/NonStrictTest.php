@@ -17,14 +17,16 @@ class NonStrictTest extends TestCase
         ]);
     }
 
-    public function testAdditionalOptionsDoNotThrow()
+    /** @test */
+    public function additionalOptionsDoNotThrow()
     {
         $this->getopt->process('-a --beta');
 
         $this->addToAssertionCount(1); // it did not throw - that is positive
     }
 
-    public function testStoresTheArgument()
+    /** @test */
+    public function storesTheArgument()
     {
         $this->getopt->process('-a aValue --beta betaValue -ccValue');
 
@@ -36,7 +38,8 @@ class NonStrictTest extends TestCase
         self::assertSame('aValue', $this->getopt->getOption('a'));
     }
 
-    public function testAdditionalOptionsAreResetted()
+    /** @test */
+    public function additionalOptionsAreResetted()
     {
         $this->getopt->process('-a aValue --beta betaValue -ccValue');
 
@@ -45,7 +48,8 @@ class NonStrictTest extends TestCase
         self::assertSame([], $this->getopt->getOptions());
     }
 
-    public function testIteratesOverAdditionalOptions()
+    /** @test */
+    public function iteratesOverAdditionalOptions()
     {
         $this->getopt->process('-a aValue --beta betaValue');
 
@@ -55,28 +59,32 @@ class NonStrictTest extends TestCase
         ], iterator_to_array($this->getopt->getIterator()));
     }
 
-    public function testOffsetExists()
+    /** @test */
+    public function offsetExists()
     {
         $this->getopt->process('--alpha alphaValue');
 
         self::assertTrue($this->getopt->offsetExists('alpha'));
     }
 
-    public function testOffsetGet()
+    /** @test */
+    public function offsetGet()
     {
         $this->getopt->process('--alpha alphaValue');
 
         self::assertSame('alphaValue', $this->getopt['alpha']);
     }
 
-    public function testStoresTheCountWithoutValue()
+    /** @test */
+    public function storesTheCountWithoutValue()
     {
         $this->getopt->process('-a -a -a');
 
         self::assertSame(3, $this->getopt->getOption('a'));
     }
 
-    public function testShowsOptionsInUsage()
+    /** @test */
+    public function showsOptionsInUsage()
     {
         $script = $_SERVER['PHP_SELF'];
 

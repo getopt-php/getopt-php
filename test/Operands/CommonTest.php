@@ -9,7 +9,8 @@ use PHPUnit\Framework\TestCase;
 
 class CommonTest extends TestCase
 {
-    public function testOperandsAreResetted()
+    /** @test */
+    public function operandsAreResetted()
     {
         $getopt = new GetOpt();
         $getopt->process('"any operand"');
@@ -19,7 +20,8 @@ class CommonTest extends TestCase
         self::assertSame([], $getopt->getOperands());
     }
 
-    public function testAddOperands()
+    /** @test */
+    public function addOperands()
     {
         $operand1 = new Operand('op1');
         $operand2 = new Operand('op2');
@@ -32,7 +34,8 @@ class CommonTest extends TestCase
         self::assertSame([$operand1, $operand2, $operand3], $getopt->getOperandObjects());
     }
 
-    public function testOperandValidation()
+    /** @test */
+    public function operandValidation()
     {
         $operand = Operand::create('op1')
             ->setValidation(function ($value) {
@@ -46,7 +49,8 @@ class CommonTest extends TestCase
         $getopt->process('"any value"');
     }
 
-    public function testOptionalOperand()
+    /** @test */
+    public function optionalOperand()
     {
         $operand = new Operand('op1', Operand::OPTIONAL); // false is default
 
@@ -57,7 +61,8 @@ class CommonTest extends TestCase
         self::assertSame([], $getopt->getOperands());
     }
 
-    public function testRequiredOperand()
+    /** @test */
+    public function requiredOperand()
     {
         $operand = new Operand('op1', Operand::REQUIRED);
 
@@ -68,7 +73,8 @@ class CommonTest extends TestCase
         $getopt->process('');
     }
 
-    public function testGetOperandByName()
+    /** @test */
+    public function getOperandByName()
     {
         $operand = new Operand('op1');
 
@@ -79,7 +85,8 @@ class CommonTest extends TestCase
         self::assertSame('42', $getopt->getOperand('op1'));
     }
 
-    public function testDefaultValue()
+    /** @test */
+    public function defaultValue()
     {
         $operand = Operand::create('op1')
             ->setDefaultValue(42);
@@ -91,7 +98,8 @@ class CommonTest extends TestCase
         self::assertSame(42, $getopt->getOperand('op1'));
     }
 
-    public function testAllPreviousOperandsGetRequiredToo()
+    /** @test */
+    public function allPreviousOperandsGetRequiredToo()
     {
         $operand1 = new Operand('op1', Operand::OPTIONAL);
         $operand2 = new Operand('op2', Operand::REQUIRED);
@@ -102,7 +110,8 @@ class CommonTest extends TestCase
         self::assertTrue($getopt->getOperandObjects()[0]->isRequired());
     }
 
-    public function testCommandsCanHaveOperands()
+    /** @test */
+    public function commandsCanHaveOperands()
     {
         $operand = new Operand('op1');
         $command = new Command('command1', 'var_dump');
@@ -111,7 +120,8 @@ class CommonTest extends TestCase
         self::assertSame([$operand], $command->getOperands());
     }
 
-    public function testCommandWithOperand()
+    /** @test */
+    public function commandWithOperand()
     {
         $getopt = new GetOpt();
         $command = new Command('command', 'var_dump');

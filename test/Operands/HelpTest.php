@@ -10,7 +10,8 @@ use PHPUnit\Framework\TestCase;
 
 class HelpTest extends TestCase
 {
-    public function testHelpContainsOperandNames()
+    /** @test */
+    public function helpContainsOperandNames()
     {
         $operand1 = new Operand('op1', true);
         $operand2 = new Operand('op2', false);
@@ -25,7 +26,8 @@ class HelpTest extends TestCase
         );
     }
 
-    public function testHelpCommandDefinesOperands()
+    /** @test */
+    public function helpCommandDefinesOperands()
     {
         $operand1 = new Operand('op1', true);
         $operand2 = new Operand('op2', false);
@@ -48,7 +50,8 @@ class HelpTest extends TestCase
         );
     }
 
-    public function testHelpTextForMultiple()
+    /** @test */
+    public function helpTextForMultiple()
     {
         $operand = new Operand('op1', Operand::MULTIPLE);
         $script = $_SERVER['PHP_SELF'];
@@ -62,7 +65,8 @@ class HelpTest extends TestCase
         );
     }
 
-    public function testHelpTextForRequiredMultiple()
+    /** @test */
+    public function helpTextForRequiredMultiple()
     {
         $operand = new Operand('op1', Operand::MULTIPLE + Operand::REQUIRED);
         $script = $_SERVER['PHP_SELF'];

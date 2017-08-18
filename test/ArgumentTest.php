@@ -7,7 +7,8 @@ use PHPUnit\Framework\TestCase;
 
 class ArgumentTest extends TestCase
 {
-    public function testConstructor()
+    /** @test */
+    public function constructor()
     {
         $argument1 = new Argument();
         $argument2 = new Argument(10);
@@ -15,14 +16,16 @@ class ArgumentTest extends TestCase
         $this->assertEquals(10, $argument2->getDefaultValue());
     }
 
-    public function testSetDefaultValueNotScalar()
+    /** @test */
+    public function setDefaultValueNotScalar()
     {
         $this->setExpectedException('InvalidArgumentException');
         $argument = new Argument();
         $argument->setDefaultValue([]);
     }
 
-    public function testValidates()
+    /** @test */
+    public function validates()
     {
         $test     = $this;
         $argument = new Argument();
@@ -36,7 +39,8 @@ class ArgumentTest extends TestCase
         $this->assertTrue($argument->validates('test'));
     }
 
-    public function testFalsyDefaultValue()
+    /** @test */
+    public function falsyDefaultValue()
     {
         $argument = new Argument('');
 

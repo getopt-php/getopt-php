@@ -8,7 +8,8 @@ use PHPUnit\Framework\TestCase;
 
 class HelpTest extends TestCase
 {
-    public function testHelpText()
+    /** @test */
+    public function helpText()
     {
         $getopt = new GetOpt([
             [ 'a', 'alpha', GetOpt::NO_ARGUMENT, 'Short and long options with no argument' ],
@@ -29,7 +30,8 @@ class HelpTest extends TestCase
         );
     }
 
-    public function testHelpTextWithoutDescriptions()
+    /** @test */
+    public function helpTextWithoutDescriptions()
     {
         $getopt = new GetOpt([
             [ 'a', 'alpha', GetOpt::NO_ARGUMENT ],
@@ -49,7 +51,8 @@ class HelpTest extends TestCase
         );
     }
 
-    public function testHelpTextWithLongDescriptions()
+    /** @test */
+    public function helpTextWithLongDescriptions()
     {
         defined('COLUMNS') || define('COLUMNS', 90);
 
@@ -74,7 +77,8 @@ class HelpTest extends TestCase
         );
     }
 
-    public function testHelpTextWithArgumentName()
+    /** @test */
+    public function helpTextWithArgumentName()
     {
         $getopt = new GetOpt([
             Option::create('a', 'alpha', GetOpt::REQUIRED_ARGUMENT)
