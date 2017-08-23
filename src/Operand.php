@@ -54,6 +54,9 @@ class Operand extends Argument
         return (bool)($this->mode & self::REQUIRED);
     }
 
+    /**
+     * @return bool
+     */
     public function isMultiple()
     {
         return (bool)($this->mode & self::MULTIPLE);
@@ -61,11 +64,21 @@ class Operand extends Argument
 
     /**
      * @param bool $required
-     * @return self
+     * @return $this
      */
     public function required($required = true)
     {
-        $this->mode += $required ? Operand::REQUIRED : Operand::REQUIRED * -1;
+        $required ? $this->mode |= Operand::REQUIRED : $this->mode &= ~Operand::REQUIRED;
+        return $this;
+    }
+
+    /**
+     * @param bool $multiple
+     * @return $this
+     */
+    public function multiple($multiple = true)
+    {
+        $multiple ? $this->mode |= Operand::MULTIPLE : $this->mode &= ~Operand::MULTIPLE;
         return $this;
     }
 
