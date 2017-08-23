@@ -143,4 +143,56 @@ class CommonTest extends TestCase
 
         self::assertNull($result);
     }
+
+    /** @test */
+    public function requireMakesRequired()
+    {
+        $operand = new Operand('op1');
+
+        $operand->required();
+
+        self::assertTrue($operand->isRequired());
+    }
+
+    /** @test */
+    public function requireFalse()
+    {
+        $operand = new Operand('op1', Operand::REQUIRED);
+
+        $operand->required(false);
+
+        self::assertFalse($operand->isRequired());
+    }
+
+    /** @test */
+    public function requireDoesNotMakeAnOperandMultiple()
+    {
+        $operand = new Operand('op1');
+
+        $operand->required();
+        $operand->required();
+
+        self::assertTrue($operand->isRequired());
+        self::assertFalse($operand->isMultiple());
+    }
+
+    /** @test */
+    public function multipleMakesMultiple()
+    {
+        $operand = new Operand('op1');
+
+        $operand->multiple();
+
+        self::assertTrue($operand->isMultiple());
+    }
+
+    /** @test */
+    public function multipleFalse()
+    {
+        $operand = new Operand('op1', Operand::MULTIPLE);
+
+        $operand->multiple(false);
+
+        self::assertFalse($operand->isMultiple());
+    }
 }
