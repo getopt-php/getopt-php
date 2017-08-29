@@ -9,7 +9,30 @@ This library can make console output that helps your user to understand how he c
 differs from what options, operands and commands you provide, if additional operands and custom options are allowed and
 so on.
 
-## Usage
+## Customizing Help
+
+By default `GetOpt::getHelpText()` uses the `GetOpt\Help` class that implements `GetOpt\HelpInterface`. You can provide
+your own help text generator with `GetOpt::setHelp(HelpInterface)`. The method `HelpInterface::render(GetOpt, array)`
+receives the `GetOpt` object where `getHelpText()` was called with additional customizable data in the second parameter.
+
+### Custom Templates
+
+Instead of developing an own help class you may copy and modify the default templates under `resources/*.php`. The
+output from these templates is getting the help text. To understand better what is happening you should have a look at
+[the code of `GetOpt\Help`](https://github.com/getopt-php/getopt-php/blob/master/src/Help.php).
+
+```php
+<?php
+$getopt = new \GetOpt\GetOpt();
+$getopt->getHelp()
+    ->setUsageTemplate('path/to/my/usageTemplate.php')
+    ->setOptionsTemplate('path/to/my/optionsTemplate.php')
+    ->setCommandsTemplate('path/to/my/commandsTemplate.php');
+```
+
+Now follows a description of the three templates and what they are showing by default.
+
+#### Usage
 
 The usage is the basic information how to run your application. It shows the script name, if a command has to be given,
 where the options should be entered and the name and order of operands.
@@ -21,7 +44,7 @@ where the options should be entered and the name and order of operands.
  - No commands, options and operands defined and strict operands:  
    `Usage: path/to/app`
 
-## Options
+#### Options
 
 Options are shown in a table with the definition of the option (including argument) in left column and the description
 of the option in the right column. When the description is longer it breaks after the last space that fits into the
@@ -40,7 +63,7 @@ Options:
   --version           Show version information and quit
 ``` 
 
-## Commands
+#### Commands
 
 Basically commands are shown in a table similar to options. Because they only have a name the list might look something
 like this:
@@ -54,12 +77,12 @@ Commands:
                  change the password to his current eMail address.
 ```
 
-The list of commands is only shown when at leas one command is defined and no command is set. When a command is set and
-the options and operands from the commands got added and the long description of the command is shown:
+The list of commands is only shown when at leas one command is defined and no command is set. When a command is set the
+options, operands and the long description from the command is shown:
 
 ```console
 $ ./app user:create --help
-Usage: ./app user:create [options]
+Usage: ./app user:create [options] [<username>]
 
 Create a new user.
 
@@ -70,26 +93,7 @@ Options:
   -c --config <file>  Use this configuration file. By default the configuration from user
                       is used (e. g. $HOME/.myapp.php.inc)
   --version           Show version information and quit
-  --username <arg>    Use this username
-```
-
-## Customizing Help
-
-By default `GetOpt::getHelpText()` uses the `GetOpt\Help` class that implements `GetOpt\HelpInterface`. You can provide
-your own help text generator with `GetOpt::setHelp(HelpInterface)`. The method `HelpInterface::render(GetOpt, array)`
-receives the `GetOpt` object that was request for a help text with additional customizable data in the second parameter.
-
-### Custom Templates
-
-Instead of developing an own Help function you can copy and modify the default templates under `resources/*.php`. These
-templates getting included and the output from these templates is getting buffered and then returned to
-`GetOpt::getHelpText()`.
-
-```php
-<?php
-$getopt = new \GetOpt\GetOpt();
-$getopt->getHelp()
-    ->setUsageTemplate('path/to/my/usageTemplate.php')
-    ->setOptionsTemplate('path/to/my/optionsTemplate.php')
-    ->setCommandsTemplate('path/to/my/commandsTemplate.php');
+  --password <arg>    The password for the user
+  --email <arg>       The email address for the user
+  --no-interaction    Throw an error when data is missing
 ```
