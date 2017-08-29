@@ -1,55 +1,77 @@
 ---
 layout: default
-title: Update GetOpt.PHP
+title: Upgrading GetOpt.PHP
 permalink: /update.html
 ---
 # {{ page.title }}
 
-A lot of things have changed since version 2.4 and there where also some breaking changes. Due to this changes you will
-need to adjust your code to the new interface.
+GetOpt.PHP version 3 introduced several backwards-incompatible changes that
+that will require a few minor code adjustments after upgrading the library.
 
-## Namespace And Class
+This page describes these breaking changes, and how to fix the code.
 
-Not only the namespace changed from `Ulrichsg\Getopt` to `GetOpt` also the class name of the main class changed from
-`Getopt` to `GetOpt`. For sure you will need at least one time to change it. If you are using it more often in one file
-we suggest to just update the use statement and alias the class name:
+## Namespace And Main Class Name
+
+The **namespace** changed from `Ulrichsg\Getopt` to just `GetOpt`, and
+the **main class name** changed from `Getopt` to `GetOpt` (with a capital `O`).
+
+This will require changing the namespace imports, and rename the class throughout the code.
+If it is used often, it may be easier to alias the class name in the use statement
+as shown below.
 
 ```php?start_inline=true
-// old:  
+// Legacy code:
 use Ulrichsg\Getopt\Getopt;
-use Ulrichsg\Getopt\Option; 
+use Ulrichsg\Getopt\Option;
+$opt = new Getopt();
 
-// new:
+// New GetOpt 3.x code:
+use GetOpt\GetOpt;
+use GetOpt\Option;
+$opt = new GetOpt();
+
+// New, with aliasing:
 use GetOpt\GetOpt as Getopt;
 use GetOpt\Option;
+$opt = new Getopt();
 ```
 
-## Constructor Changed
+## Constructor's Signature
 
-While the first parameter has still the same meaning and is compatible to version 2, the second parameter is now an
-array with settings. To provide the default option mode you have to change it this way:
+While the first parameter still has the same meaning and is compatible with version 2,
+the **second parameter is now an array of settings**.
+To set the default option mode, you have to change it as follows:
 
 ```php?start_inline=true
-// old:
+// Legacy code:
 $getOpt = new Getopt([], Getopt::OPTIONAL_ARGUMENT);
 
-// new:
+// New GetOpt 3.x code:
 $getOpt = new GetOpt([], [
     GetOpt::SETTING_DEFAULT_MODE => GetOpt::OPTIONAL_ARGUMENT
 ]);
-``` 
+```
 
 ## SetBanner And Padding Parameter Removed
 
-The method `Getopt::setBanner()` and the parameter padding for `Getopt::getHelpText()` got removed completely. To
-customize the usage message and option table consider reading the section [Help Text]({{ site.baseurl }}/help.html).
+The `Getopt::setBanner()` method got removed completely.
 
-Another improvement in this section is the automatic wrapping of text. You can remove line breaks and padding as this
-will happen automatically. The width of the console is determined automatically and long text breaks at the end (at
-the last space) of the line and the rest is moved to the next line.
+To customize the usage message, please refer to the [Help Text]({{ site.baseurl }}/help.html) section.
 
+## Help Text Generation
+
+The _padding_ parameter for `GetOpt::getHelpText()` method was removed.
+
+The generated help message is now automatically wrapped based on the console's width.
+Long option decriptions break on space at the end of the line, and
+remaining text is moved to the next line and indented as appropriate.
+
+You can therefore remove any manually added line breaks and padding from
+option description texts.
+
+Consider the following output:
 ```console
-$ php myapp.php --help
+$ php example.php --help
 Usage: example.php [options] [operands]
 
 Options:
@@ -57,5 +79,32 @@ Options:
   -o <arg>   This is a very long description text that wraps at column 80
              because the shell in which this command is executed has only
              80 columns.
-  -v         Make the output more verbose
+```
+
+Legacy code:
+```php?start_inline=true
+$opt = new Getopt([
+    Option::create(null, 'help', GetOpt::NO_ARGUMENT)
+        ->setDescription('Show this help text'),
+    Option::create('o', null, GetOpt::REQUIRED_ARGUMENT )
+        ->setDescription('This is a very long description text that wraps at column 80
+            because the shell in which this command is executed has only
+            80 columns.'),
+]);
+$opt->parse(); // To populate the script's name
+echo $opt->getHelpText(11);
+```
+
+New GetOpt 3.x code:
+```php?start_inline=true
+$opt = new GetOpt([
+    Option::create(null, 'help', GetOpt::NO_ARGUMENT)
+        ->setDescription('Show this help text'),
+    Option::create('o', null, GetOpt::REQUIRED_ARGUMENT )
+        // Remove wrapping and padding
+        ->setDescription('This is a very long description text that wraps at column 80 because the shell in which this command is executed has only 80 columns.'),
+]);
+// NOTE: calling parse() is not required in this example, as in v3
+// the script's name is populated in the Constructor
+echo $opt->getHelpText(); // Removed padding parameter
 ```
