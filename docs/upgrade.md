@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Upgrading GetOpt.PHP
-permalink: /update.html
+permalink: /upgrade.html
 ---
 # {{ page.title }}
 

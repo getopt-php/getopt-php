@@ -24,7 +24,7 @@ GetOpt.PHP is a library for command-line argument processing. It supports PHP ve
 If you are still using a legacy version of GetOpt.PHP, please consider upgrading to version 3.
 
 Only a few adjustments to your code are required to benefit from a lot of improvements.
-Have a look the [upgrade documentation](https://getopt-php.github.io/getopt-php/) for details.
+Refer to the [upgrade guide](https://getopt-php.github.io/getopt-php/upgrade.html) for details.
 
 ## Documentation
 
