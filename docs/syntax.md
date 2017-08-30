@@ -27,7 +27,7 @@ $ php program.php -1a foo
 
 A short option with no argument may occur repeatedly. The number of repetitions becomes the
 option's value. The following two commands are thus equivalent except for the
-[option modes]({{ site.baseurl }}/basic/specifying-options.html) they are valid in:
+[option modes]({{ site.baseurl }}/options.html) they are valid in:
 
 ```console
 $ php program.php -vvv  # v must have an optional or no argument

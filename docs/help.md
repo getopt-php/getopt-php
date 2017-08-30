@@ -5,30 +5,66 @@ permalink: /help.html
 ---
 # {{ page.title }}
 
-This library can make console output that helps your user to understand how he can use your application. The output
-differs from what options, operands and commands you provide, if additional operands and custom options are allowed and
-so on.
+This library can generate console output that helps your users to understand how they can use your application.
+The output varies depending on what options, operands and commands you provide, if additional operands and
+custom options are allowed, and so on.
 
-## Usage
+## Customizing Help
 
-The usage is the basic information how to run your application. It shows the script name, if a command has to be given,
+By default, `GetOpt::getHelpText()` uses the `GetOpt\Help` class that implements `GetOpt\HelpInterface`.
+
+You can provide your own, custom help text generator with `GetOpt::setHelp(HelpInterface)`.
+The method `HelpInterface::render(GetOpt, array)` receives the `GetOpt` object from which
+`getHelpText()` was called, with additional custom data in the second parameter.
+
+### Custom Templates
+
+Instead of developing your own custom Help class, you may also copy and modify
+the default templates under `resources/*.php`. The output from these templates
+is used to generate the help text.
+
+For a better understanding of what is happening, you should have a look at
+the [source code of the `GetOpt\Help` class](https://github.com/getopt-php/getopt-php/blob/master/src/Help.php).
+
+```php
+<?php
+$getopt = new \GetOpt\GetOpt();
+$getopt->getHelp()
+    ->setUsageTemplate('path/to/my/usageTemplate.php')
+    ->setOptionsTemplate('path/to/my/optionsTemplate.php')
+    ->setCommandsTemplate('path/to/my/commandsTemplate.php');
+```
+
+In the following sections, you will find a complete description of the three
+templates, and what they are showing by default.
+
+#### Usage
+
+The _usage_ briefly describes how to run your application (i.e. the command's syntax).
+It shows the script name, if a command has to be given,
 where the options should be entered and the name and order of operands.
 
- - Default with commands and options defined:  
+ - Default with commands and options defined:
    `Usage: path/to/app <command> [options] [operands]`
- - Command `make:config` is given, options are defined, strict operands with operand `file` defined:  
+ - Command `make:config` is given, options are defined, strict operands with operand `file` defined:
    `Usage: path/to/app make:config [options] <file>`
- - No commands, options and operands defined and strict operands:  
+ - No commands, options and operands defined and strict operands:
    `Usage: path/to/app`
 
-## Options
+#### Options
 
-Options are shown in a table with the definition of the option (including argument) in left column and the description
-of the option in the right column. When the description is longer it breaks after the last space that fits into the
-terminal.
+Options are shown in a table with the options (including argument) in the left column, and
+the description of each option in the right column.
 
-The width of terminal is determined by a constant `COLUMNS`, an environment variable `COLUMNS`, the result from
-`tput cols` or `90` - what ever comes first. This is limited by `$maxWidth` or `120` if not defined.
+Long descriptions automatically break after the last space that fits into the
+terminal's width. The number of columns is determined in the following sequence:
+
+1. a constant `COLUMNS`,
+2. an environment variable `COLUMNS`,
+3. the result from `tput cols` command
+4. value `90`
+
+This is limited by `$maxWidth` or `120` if not defined.
 
 In the end it might look something like this:
 
@@ -38,11 +74,11 @@ Options:
   -c --config <file>  Use this configuration file. By default the configuration from user
                       is used (e. g. $HOME/.myapp.php.inc)
   --version           Show version information and quit
-``` 
+```
 
-## Commands
+#### Commands
 
-Basically commands are shown in a table similar to options. Because they only have a name the list might look something
+Commands are shown in a table similar to options. Because they only have a name the list might look something
 like this:
 
 ```
@@ -54,12 +90,12 @@ Commands:
                  change the password to his current eMail address.
 ```
 
-The list of commands is only shown when at leas one command is defined and no command is set. When a command is set and
-the options and operands from the commands got added and the long description of the command is shown:
+The list of commands is only shown when at least one command is defined, and no command is set. When a command is set, the
+options, operands and the long description from the command is shown:
 
 ```console
 $ ./app user:create --help
-Usage: ./app user:create [options]
+Usage: ./app user:create [options] [<username>]
 
 Create a new user.
 
@@ -70,26 +106,7 @@ Options:
   -c --config <file>  Use this configuration file. By default the configuration from user
                       is used (e. g. $HOME/.myapp.php.inc)
   --version           Show version information and quit
-  --username <arg>    Use this username
-```
-
-## Customizing Help
-
-By default `GetOpt::getHelpText()` uses the `GetOpt\Help` class that implements `GetOpt\HelpInterface`. You can provide
-your own help text generator with `GetOpt::setHelp(HelpInterface)`. The method `HelpInterface::render(GetOpt, array)`
-receives the `GetOpt` object that was request for a help text with additional customizable data in the second parameter.
-
-### Custom Templates
-
-Instead of developing an own Help function you can copy and modify the default templates under `resources/*.php`. These
-templates getting included and the output from these templates is getting buffered and then returned to
-`GetOpt::getHelpText()`.
-
-```php
-<?php
-$getopt = new \GetOpt\GetOpt();
-$getopt->getHelp()
-    ->setUsageTemplate('path/to/my/usageTemplate.php')
-    ->setOptionsTemplate('path/to/my/optionsTemplate.php')
-    ->setCommandsTemplate('path/to/my/commandsTemplate.php');
+  --password <arg>    The password for the user
+  --email <arg>       The email address for the user
+  --no-interaction    Throw an error when data is missing
 ```

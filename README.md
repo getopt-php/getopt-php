@@ -19,6 +19,13 @@ GetOpt.PHP is a library for command-line argument processing. It supports PHP ve
 * Collapsed short options with mandatory argument at the end (eg. `-ab 1` instead of `-a -b 1`)
 * Quoted arguments (eg. `--path "/some path/with spcaces"`)
 
+## Upgrading
+
+If you are still using a legacy version of GetOpt.PHP, please consider upgrading to version 3.
+
+Only a few adjustments to your code are required to benefit from a lot of improvements.
+Refer to the [upgrade guide](https://getopt-php.github.io/getopt-php/upgrade.html) for details.
+
 ## Documentation
 
 * [Documentation for the current version (3.0+)](http://getopt-php.github.io/getopt-php/)

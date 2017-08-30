@@ -13,7 +13,7 @@ options.
 Options are defined by an object of the class `GetOpt\Option`. There are two helpers to create these options but we
 recommend to use the usual way to create objects.
 
-> We are using argument definition in these examples have a look at [specifying arguments](#specifying-arguments) to
+> We are using argument definition in these examples have a look at [specifying arguments](#arguments) to
 > learn more about it.
 
 ### Creating Options
