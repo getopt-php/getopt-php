@@ -28,11 +28,11 @@ class Command
     /**
      * Command constructor.
      *
-     * @param string $name
-     * @param mixed  $handler
-     * @param mixed  $options
+     * @param string   $name
+     * @param callable $handler
+     * @param mixed    $options
      */
-    public function __construct($name, $handler, $options = null)
+    public function __construct($name, callable $handler, $options = null)
     {
         $this->setName($name);
         $this->handler = $handler;

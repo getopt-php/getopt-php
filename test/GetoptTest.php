@@ -252,7 +252,7 @@ class GetoptTest extends TestCase
             new Option('a'),
         ]);
 
-        $getopt->addCommand(new Command('test', 'Test that it throws', 'var_dump', [
+        $getopt->addCommand(new Command('test', 'var_dump', [
             new Option('a'),
         ]));
     }
