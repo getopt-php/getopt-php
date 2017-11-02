@@ -148,10 +148,22 @@ class GetoptTest extends TestCase
         ]);
         $getopt->process('--alpha -b foo');
 
-        $expected = [ 'alpha' => 1, 'beta' => 'foo' ];
-        foreach ($getopt as $option => $value) {
-            $this->assertEquals($expected[$option], $value);
-        }
+        $result = $getopt->getIterator();
+
+        self::assertEquals(new \ArrayIterator([ 'alpha' => 1, 'beta' => 'foo' ]), $result);
+    }
+
+    /** @test */
+    public function iteratesOverEmptyStrings()
+    {
+        $getopt = new GetOpt([
+            [ 'a', 'alpha' , GetOpt::REQUIRED_ARGUMENT ]
+        ]);
+        $getopt->process('--alpha ""');
+
+        $result = $getopt->getIterator();
+
+        self::assertEquals(new \ArrayIterator([ 'alpha' => '']), $result);
     }
 
     /** @test */
