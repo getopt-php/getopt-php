@@ -171,7 +171,7 @@ class GetoptTest extends TestCase
     {
         $getopt = new GetOpt();
         $getopt->set(GetOpt::SETTING_SCRIPT_NAME, 'test');
-        $expected = "Usage: test [operands]\n";
+        $expected = 'Usage: test [operands]' . PHP_EOL;
         $this->assertSame($expected, $getopt->getHelpText());
     }
 
