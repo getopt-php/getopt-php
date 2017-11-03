@@ -6,7 +6,8 @@ permalink: /operands.html
 # {{ page.title }}
 
 Since version 3 it is possible to specify operands. Other than options operands have to be defined and provided in the
-correct order. This limitation is because they don't have names.
+correct order. This limitation is because they don't have names. In other libraries they are often called positional
+arguments.
 
 ## Specifying Operands
 

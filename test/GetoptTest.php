@@ -149,10 +149,22 @@ class GetoptTest extends TestCase
         ]);
         $getopt->process('--alpha -b foo');
 
-        $expected = [ 'alpha' => 1, 'beta' => 'foo' ];
-        foreach ($getopt as $option => $value) {
-            $this->assertEquals($expected[$option], $value);
-        }
+        $result = $getopt->getIterator();
+
+        self::assertEquals(new \ArrayIterator([ 'alpha' => 1, 'beta' => 'foo' ]), $result);
+    }
+
+    /** @test */
+    public function iteratesOverEmptyStrings()
+    {
+        $getopt = new GetOpt([
+            [ 'a', 'alpha' , GetOpt::REQUIRED_ARGUMENT ]
+        ]);
+        $getopt->process('--alpha ""');
+
+        $result = $getopt->getIterator();
+
+        self::assertEquals(new \ArrayIterator([ 'alpha' => '']), $result);
     }
 
     /** @test */
@@ -163,7 +175,7 @@ class GetoptTest extends TestCase
 
         $helpText = $getopt->getHelpText();
 
-        $this->assertSame("Usage: test [operands]\n", $helpText);
+        $this->assertSame('Usage: test [operands]' . PHP_EOL, $helpText);
     }
 
     /** @test */
@@ -176,7 +188,11 @@ class GetoptTest extends TestCase
             Help::DESCRIPTION => 'Running the tests',
         ]);
 
-        $this->assertSame("Usage: test [operands]\n\nRunning the tests\n\n", $helpText);
+        $this->assertSame(
+          'Usage: test [operands]' . PHP_EOL . PHP_EOL .
+          'Running the tests' . PHP_EOL . PHP_EOL,
+          $helpText
+        );
     }
 
     /** @test */
