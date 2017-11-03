@@ -111,7 +111,7 @@ class Command
     /**
      * @return string
      */
-    public function name()
+    public function getName()
     {
         return $this->name;
     }
@@ -119,7 +119,7 @@ class Command
     /**
      * @return mixed
      */
-    public function handler()
+    public function getHandler()
     {
         return $this->handler;
     }
@@ -129,12 +129,15 @@ class Command
      *
      * @return string
      */
-    public function description()
+    public function getDescription()
     {
         return $this->longDescription;
     }
 
-    public function shortDescription()
+    /**
+     * @return string
+     */
+    public function getShortDescription()
     {
         return $this->shortDescription;
     }
