@@ -249,7 +249,17 @@ class Help implements HelpInterface
     protected function getScreenWidth()
     {
         if (!$this->screenWidth) {
-            $screenWidth = defined('COLUMNS') ? COLUMNS : @getenv('COLUMNS') ?: @exec('tput cols 2>/dev/null') ?: 90;
+            $columns = defined('COLUMNS') ? (int)COLUMNS : (int)@getenv('COLUMNS');
+            if (empty($columns)) {
+                $process = proc_open('tput cols', [
+                    1 => ['pipe', 'w'],
+                    2 => ['pipe', 'w'],
+                ], $pipes);
+                $columns = (int)stream_get_contents($pipes[1]);
+                proc_close($process);
+            }
+
+            $screenWidth = !empty($columns) ? $columns: 90;
             $this->screenWidth = min([ $this->settings[self::MAX_WIDTH], $screenWidth ]);
         }
 
