@@ -17,6 +17,7 @@ use GetOpt\GetOpt;
 use GetOpt\Option;
 use GetOpt\Command;
 use GetOpt\ArgumentException;
+use GetOpt\ArgumentException\Missing;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -49,7 +50,14 @@ $getOpt->addCommand(new DeleteCommand());
 
 // process arguments and catch user errors
 try {
-    $getOpt->process();
+    try {
+        $getopt->process();
+    } catch (Missing $exception) {
+        // catch missing exceptions if help is requested
+        if (!$getopt->getOption('help')) {
+            throw $exception;
+        }
+    }
 } catch (ArgumentException $exception) {
     file_put_contents('php://stderr', $exception->getMessage() . PHP_EOL);
     echo PHP_EOL . $getOpt->getHelpText();
