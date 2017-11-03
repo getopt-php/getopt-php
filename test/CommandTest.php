@@ -40,7 +40,7 @@ class CommandTest extends TestCase
     public function namesNotAllowed($name)
     {
         $this->setExpectedException('InvalidArgumentException');
-        new Command($name, '', null);
+        new Command($name, 'var_dump', null);
     }
 
     public function dataNamesNotAllowed()
