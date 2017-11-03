@@ -15,6 +15,9 @@ class Help implements HelpInterface
     const TRANSLATION_OPERANDS = 'translationOperands';
     const TRANSLATION_COMMAND  = 'translationCommand';
     const TRANSLATION_COMMANDS = 'translationCommands';
+    const TEMPLATE_USAGE       = 'usageTemplate';
+    const TEMPLATE_OPTIONS     = 'optionsTemplate';
+    const TEMPLATE_COMMANDS    = 'commandsTemplate';
     const DESCRIPTION          = 'description';
     const MAX_WIDTH            = 'maxWidth';
 
