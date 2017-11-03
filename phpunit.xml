@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit 
+<phpunit
     bootstrap="vendor/autoload.php"
     colors="true"
-    convertErrorsToExceptions="true"
-    convertNoticesToExceptions="true"
-    convertWarningsToExceptions="true"
-    stopOnFailure="false"
-    syntaxCheck="true"
+    beStrictAboutOutputDuringTests="true"
 >
     <testsuites>
         <testsuite name="basic">
@@ -32,5 +28,4 @@
             highLowerBound="70"
         />
     </logging>
-
 </phpunit>
