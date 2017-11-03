@@ -189,9 +189,9 @@ class GetoptTest extends TestCase
         ]);
 
         $this->assertSame(
-          'Usage: test [operands]' . PHP_EOL . PHP_EOL .
-          'Running the tests' . PHP_EOL . PHP_EOL,
-          $helpText
+            'Usage: test [operands]' . PHP_EOL . PHP_EOL .
+            'Running the tests' . PHP_EOL . PHP_EOL,
+            $helpText
         );
     }
 
