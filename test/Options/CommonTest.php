@@ -13,18 +13,18 @@ class CommonTest extends TestCase
     public function construct()
     {
         $option = new Option('a', 'az-AZ09_', GetOpt::OPTIONAL_ARGUMENT);
-        $this->assertEquals('a', $option->short());
-        $this->assertEquals('az-AZ09_', $option->long());
-        $this->assertEquals(GetOpt::OPTIONAL_ARGUMENT, $option->mode());
+        $this->assertEquals('a', $option->getShort());
+        $this->assertEquals('az-AZ09_', $option->getLong());
+        $this->assertEquals(GetOpt::OPTIONAL_ARGUMENT, $option->getMode());
     }
 
     /** @test */
     public function create()
     {
         $option = Option::create('a', 'az-AZ09_', GetOpt::OPTIONAL_ARGUMENT);
-        $this->assertEquals('a', $option->short());
-        $this->assertEquals('az-AZ09_', $option->long());
-        $this->assertEquals(GetOpt::OPTIONAL_ARGUMENT, $option->mode());
+        $this->assertEquals('a', $option->getShort());
+        $this->assertEquals('az-AZ09_', $option->getLong());
+        $this->assertEquals(GetOpt::OPTIONAL_ARGUMENT, $option->getMode());
     }
 
     /** @dataProvider dataConstructFails

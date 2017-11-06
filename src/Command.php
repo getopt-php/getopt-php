@@ -10,8 +10,7 @@ namespace GetOpt;
  */
 class Command
 {
-    use WithOptions;
-    use WithOperands;
+    use WithOptions, WithOperands, WithMagicGetter;
 
     /** @var string */
     protected $name;
@@ -111,6 +110,16 @@ class Command
     /**
      * @return string
      */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @deprecated will be removed in version 4
+     * @see getName
+     * @codeCoverageIgnore
+     */
     public function name()
     {
         return $this->name;
@@ -119,21 +128,52 @@ class Command
     /**
      * @return mixed
      */
+    public function getHandler()
+    {
+        return $this->handler;
+    }
+
+    /**
+     * @deprecated will be removed in version 4
+     * @see getHandler
+     * @codeCoverageIgnore
+     */
     public function handler()
     {
         return $this->handler;
     }
 
     /**
-     * Get description
-     *
      * @return string
+     */
+    public function getDescription()
+    {
+        return $this->longDescription;
+    }
+
+    /**
+     * @deprecated will be removed in version 4
+     * @see getDescription
+     * @codeCoverageIgnore
      */
     public function description()
     {
         return $this->longDescription;
     }
 
+    /**
+     * @return string
+     */
+    public function getShortDescription()
+    {
+        return $this->shortDescription;
+    }
+
+    /**
+     * @deprecated will be removed in version 4
+     * @see getShortDescription
+     * @codeCoverageIgnore
+     */
     public function shortDescription()
     {
         return $this->shortDescription;
