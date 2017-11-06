@@ -159,7 +159,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
                 }
             }
 
-            $option->setValue($option->mode() !== GetOpt::NO_ARGUMENT ? $getValue() : null);
+            $option->setValue($option->getMode() !== GetOpt::NO_ARGUMENT ? $getValue() : null);
         };
 
         $setCommand = function (Command $command) {
@@ -211,7 +211,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
         }
 
         if ($option) {
-            return $option->value();
+            return $option->getValue();
         }
 
         return isset($this->additionalOptions[$name]) ? $this->additionalOptions[$name] : null;
@@ -227,13 +227,13 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
         $result = [];
 
         foreach ($this->options as $option) {
-            $value = $option->value();
+            $value = $option->getValue();
             if ($value !== null) {
-                $result[$option->short() ?: $option->long()] = $value;
-                if ($short = $option->short()) {
+                $result[$option->getShort() ?: $option->getLong()] = $value;
+                if ($short = $option->getShort()) {
                     $result[$short] = $value;
                 }
-                if ($long = $option->long()) {
+                if ($long = $option->getLong()) {
                     $result[$long] = $value;
                 }
             }
@@ -333,7 +333,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     {
         $operandValues = [];
         foreach ($this->getOperandObjects() as $operand) {
-            $value = $operand->value();
+            $value = $operand->getValue();
 
             if ($value === null) {
                 continue;
@@ -361,7 +361,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     {
         $operand = $this->getOperandObject($index);
         if ($operand) {
-            return $operand->value();
+            return $operand->getValue();
         } elseif (is_int($index)) {
             $i = $index - count($this->operands);
             return $i >= 0 && isset($this->additionalOperands[$i]) ? $this->additionalOperands[$i] : null;
@@ -450,8 +450,8 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
         $result = [];
 
         foreach ($this->options as $option) {
-            if (($value = $option->value()) !== null) {
-                $name = $option->long() ?: $option->short();
+            if (($value = $option->getValue()) !== null) {
+                $name = $option->getLong() ?: $option->getShort();
                 $result[$name] = $value;
             }
         }
@@ -462,7 +462,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     public function offsetExists($offset)
     {
         $option = $this->getOptionObject($offset);
-        if ($option && $option->value() !== null) {
+        if ($option && $option->getValue() !== null) {
             return true;
         }
 
@@ -473,7 +473,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     {
         $option = $this->getOptionObject($offset);
         if ($option) {
-            return $option->value();
+            return $option->getValue();
         }
 
         return isset($this->additionalOptions[$offset]) ? $this->additionalOptions[$offset] : null;

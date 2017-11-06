@@ -14,7 +14,7 @@ class ValueTest extends TestCase
      * @test */
     public function valueWithoutDefault(Option $option, $expected)
     {
-        $result = $option->value();
+        $result = $option->getValue();
 
         self::assertSame($expected, $result);
     }
@@ -29,7 +29,7 @@ class ValueTest extends TestCase
     {
         $option->setValue($value);
 
-        $result = $option->value();
+        $result = $option->getValue();
 
         self::assertSame($expected, $result);
     }

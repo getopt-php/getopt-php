@@ -13,6 +13,8 @@ use GetOpt\ArgumentException\Missing;
  */
 class Option
 {
+    use WithMagicGetter;
+
     const CLASSNAME = __CLASS__;
 
     private $short;
@@ -69,6 +71,16 @@ class Option
 
     /**
      * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @deprecated will be removed in version 4
+     * @see getDescription
+     * @codeCoverageIgnore
      */
     public function description()
     {
@@ -147,6 +159,16 @@ class Option
     /**
      * @return string
      */
+    public function getShort()
+    {
+        return $this->short;
+    }
+
+    /**
+     * @deprecated will be removed in version 4
+     * @see getShort
+     * @codeCoverageIgnore
+     */
     public function short()
     {
         return $this->short;
@@ -172,6 +194,16 @@ class Option
 
     /**
      * @return string
+     */
+    public function getLong()
+    {
+        return $this->long;
+    }
+
+    /**
+     * @deprecated will be removed in version 4
+     * @see getLong
+     * @codeCoverageIgnore
      */
     public function long()
     {
@@ -207,6 +239,16 @@ class Option
     /**
      * @return mixed
      */
+    public function getMode()
+    {
+        return $this->mode;
+    }
+
+    /**
+     * @deprecated will be removed in version 4
+     * @see getMode
+     * @codeCoverageIgnore
+     */
     public function mode()
     {
         return $this->mode;
@@ -233,18 +275,18 @@ class Option
         if ($value === null && in_array($this->mode, [ GetOpt::REQUIRED_ARGUMENT, GetOpt::MULTIPLE_ARGUMENT ])) {
             throw new Missing(sprintf(
                 'Option \'%s\' must have a value',
-                $this->long() ?: $this->short()
+                $this->getLong() ?: $this->getShort()
             ));
         }
 
-        if ($value === null || $this->mode() === GetOpt::NO_ARGUMENT) {
+        if ($value === null || $this->getMode() === GetOpt::NO_ARGUMENT) {
             $value = $this->value === null ? 1 : $this->value + 1;
         }
 
         if ($this->getArgument()->hasValidation() && !$this->getArgument()->validates($value)) {
             throw new Invalid(sprintf(
                 'Option \'%s\' has an invalid value',
-                $this->long() ?: $this->short()
+                $this->getLong() ?: $this->getShort()
             ));
         }
 
@@ -262,7 +304,7 @@ class Option
      *
      * @return mixed
      */
-    public function value()
+    public function getValue()
     {
         switch ($this->mode) {
             case GetOpt::OPTIONAL_ARGUMENT:
@@ -282,13 +324,23 @@ class Option
     }
 
     /**
+     * @deprecated will be removed in version 4
+     * @see getValue
+     * @codeCoverageIgnore
+     */
+    public function value()
+    {
+        return $this->getValue();
+    }
+
+    /**
      * Get a string from value
      *
      * @return string
      */
     public function __toString()
     {
-        $value = $this->value();
+        $value = $this->getValue();
         return !is_array($value) ? (string)$value : implode(',', $value);
     }
 }
