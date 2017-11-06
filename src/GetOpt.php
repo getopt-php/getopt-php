@@ -33,6 +33,8 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
         getOperands as getOperandObjects;
     }
 
+    use WithMagicGetter;
+
     /** @var HelpInterface */
     protected $help;
 
@@ -267,7 +269,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
                 throw new \InvalidArgumentException('$command has conflicting options');
             }
         }
-        $this->commands[$command->name()] = $command;
+        $this->commands[$command->getName()] = $command;
         return $this;
     }
 
