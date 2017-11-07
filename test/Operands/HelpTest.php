@@ -21,7 +21,7 @@ class HelpTest extends TestCase
         $getopt->addOperands([$operand1, $operand2]);
 
         self::assertSame(
-            'Usage: ' . $script . ' <op1> [<op2>] [operands]' . PHP_EOL,
+            'Usage: ' . $script . ' <op1> [<op2>] [operands]' . PHP_EOL . PHP_EOL,
             $getopt->getHelpText()
         );
     }
@@ -60,7 +60,7 @@ class HelpTest extends TestCase
         $getopt->addOperand($operand);
 
         self::assertSame(
-            'Usage: ' . $script . ' [<op1>] [<op1>...]' . PHP_EOL,
+            'Usage: ' . $script . ' [<op1>] [<op1>...]' . PHP_EOL . PHP_EOL,
             $getopt->getHelpText()
         );
     }
@@ -75,7 +75,7 @@ class HelpTest extends TestCase
         $getopt->addOperand($operand);
 
         self::assertSame(
-            'Usage: ' . $script . ' <op1> [<op1>...]' . PHP_EOL,
+            'Usage: ' . $script . ' <op1> [<op1>...]' . PHP_EOL . PHP_EOL,
             $getopt->getHelpText()
         );
     }

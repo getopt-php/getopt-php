@@ -4,7 +4,7 @@
 
 use GetOpt\GetOpt;
 
-echo PHP_EOL . 'Available options:' . PHP_EOL;
+echo 'Available options:' . PHP_EOL;
 
 /** @var \GetOpt\Option[] $options */
 

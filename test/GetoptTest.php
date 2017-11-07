@@ -175,7 +175,7 @@ class GetoptTest extends TestCase
 
         $helpText = $getopt->getHelpText();
 
-        $this->assertSame('Usage: test [operands]' . PHP_EOL, $helpText);
+        $this->assertSame('Usage: test [operands]' . PHP_EOL . PHP_EOL, $helpText);
     }
 
     /** @test */

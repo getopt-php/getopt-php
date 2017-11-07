@@ -2,7 +2,7 @@
 
 // An example of a commands template
 
-echo PHP_EOL . 'Available commands:' . PHP_EOL;
+echo 'Available commands:' . PHP_EOL;
 
 /** @var \GetOpt\Command[] $commands */
 

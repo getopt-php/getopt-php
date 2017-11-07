@@ -10,11 +10,6 @@ namespace GetOpt;
  */
 class Help implements HelpInterface
 {
-    const TRANSLATION_USAGE    = 'translationUsage';
-    const TRANSLATION_OPTIONS  = 'translationOptions';
-    const TRANSLATION_OPERANDS = 'translationOperands';
-    const TRANSLATION_COMMAND  = 'translationCommand';
-    const TRANSLATION_COMMANDS = 'translationCommands';
     const TEMPLATE_USAGE       = 'usageTemplate';
     const TEMPLATE_OPTIONS     = 'optionsTemplate';
     const TEMPLATE_COMMANDS    = 'commandsTemplate';
@@ -32,12 +27,21 @@ class Help implements HelpInterface
 
     /** @var array */
     protected $settings = [
-        self::TRANSLATION_USAGE    => 'usage',
-        self::TRANSLATION_OPTIONS  => 'options',
-        self::TRANSLATION_OPERANDS => 'operands',
-        self::TRANSLATION_COMMAND  => 'command',
-        self::TRANSLATION_COMMANDS => 'commands',
         self::MAX_WIDTH            => 120,
+    ];
+
+    /** @var string[] */
+    protected $texts = [
+        'placeholder' => '<>',
+        'optional' => '[]',
+        'multiple' => '...',
+        'usage-title' => 'Usage: ',
+        'usage-command' => 'command',
+        'usage-options' => 'options',
+        'usage-operands' => 'operands',
+        'options-title' => "Options:\n",
+        'options-listing' => ', ',
+        'commands-title' => "Commands:\n"
     ];
 
     /** @var GetOpt */
@@ -63,7 +67,7 @@ class Help implements HelpInterface
      *
      * @param string $setting
      * @param mixed $value
-     * @return self
+     * @return $this
      */
     public function set($setting, $value)
     {
@@ -78,6 +82,21 @@ class Help implements HelpInterface
                 break;
         }
 
+        return $this;
+    }
+
+    /**
+     * Overwrite texts with $texts
+     *
+     * Texts is an associative array of strings. For a list of keys @see $texts.
+     *
+     * @param array $texts
+     * @see $texts
+     * @return $this
+     */
+    public function setTexts(array $texts)
+    {
+        $this->texts = array_merge($this->texts, $texts);
         return $this;
     }
 
@@ -127,32 +146,67 @@ class Help implements HelpInterface
         return $helpText;
     }
 
+    /**
+     * Get a cross platform save text for $key
+     *
+     * Platform save? Replaces \n with PHP_EOL.
+     *
+     * @param string $key
+     * @return string
+     */
+    protected function getText($key)
+    {
+        if (!isset($this->texts[$key])) {
+            return $key;
+        }
+
+        $text = $this->texts[$key];
+
+        if (PHP_EOL !== "\n") {
+            $text = str_replace("\n", PHP_EOL, $text);
+        }
+
+        return $text;
+    }
+
+    /**
+     * Surrounds $text with first and last character from $with
+     *
+     * @param string $text
+     * @param string $with
+     * @return string
+     */
+    protected function surround($text, $with)
+    {
+        return $with[0] . $text . substr($with, -1);
+    }
+
     protected function renderUsage()
     {
-        return  ucfirst($this->settings[self::TRANSLATION_USAGE]) . ': ' .
-                $this->getOpt->get(GetOpt::SETTING_SCRIPT_NAME) . ' ' .
+        return $this->getText('usage-title') .
+               $this->getOpt->get(GetOpt::SETTING_SCRIPT_NAME) . ' ' .
                 $this->renderUsageCommand() .
                 $this->renderUsageOptions() .
-                $this->renderUsageOperands() . PHP_EOL .
+                $this->renderUsageOperands() . PHP_EOL . PHP_EOL .
                 $this->renderDescription();
     }
 
     protected function renderOptions()
     {
-        $text = PHP_EOL . ucfirst($this->settings[self::TRANSLATION_OPTIONS]) . ':' . PHP_EOL;
+        $text = $this->getText('options-title');
 
         $data            = [];
         $definitionWidth = 0;
         foreach ($this->getOpt->getOptionObjects() as $option) {
-            $definition = implode(', ', array_filter([
-                $option->short() ? '-' . $option->short() : null,
-                $option->long() ? '--' . $option->long() : null,
+            $definition = implode($this->texts['options-listing'], array_filter([
+                $option->getShort() ? '-' . $option->getShort() : null,
+                $option->getLong() ? '--' . $option->getLong() : null,
             ]));
 
-            if ($option->mode() !== GetOpt::NO_ARGUMENT) {
-                $argument = '<' . $option->getArgument()->getName() . '>';
-                if ($option->mode() === GetOpt::OPTIONAL_ARGUMENT) {
-                    $argument = '[' . $argument . ']';
+            if ($option->getMode() !== GetOpt::NO_ARGUMENT) {
+                $argument = $this->surround($option->getArgument()->getName(), $this->texts['placeholder']);
+                if ($option->getMode() === GetOpt::OPTIONAL_ARGUMENT) {
+                    $argument = $this->surround($argument, $this->texts['optional']);
                 }
 
                 $definition .= ' ' . $argument;
@@ -164,39 +218,39 @@ class Help implements HelpInterface
 
             $data[] = [
                 $definition,
-                $option->description()
+                $option->getDescription()
             ];
         }
 
-        return $text . $this->renderColumns($definitionWidth, $data);
+        return $text . $this->renderColumns($definitionWidth, $data) . PHP_EOL;
     }
 
     protected function renderCommands()
     {
-        $text = PHP_EOL . ucfirst($this->settings[self::TRANSLATION_COMMANDS]) . ':' . PHP_EOL;
+        $text = $this->getText('commands-title');
 
         $data      = [];
         $nameWidth = 0;
         foreach ($this->getOpt->getCommands() as $command) {
-            if (strlen($command->name()) > $nameWidth) {
-                $nameWidth = strlen($command->name());
+            if (strlen($command->getName()) > $nameWidth) {
+                $nameWidth = strlen($command->getName());
             }
 
             $data[] = [
-                $command->name(),
-                $command->shortDescription()
+                $command->getName(),
+                $command->getShortDescription()
             ];
         }
 
-        return $text . $this->renderColumns($nameWidth, $data);
+        return $text . $this->renderColumns($nameWidth, $data) . PHP_EOL;
     }
 
     protected function renderUsageCommand()
     {
         if ($command = $this->getOpt->getCommand()) {
-            return $command->name() . ' ';
+            return $command->getName() . ' ';
         } elseif ($this->getOpt->hasCommands()) {
-            return '<' . $this->settings[self::TRANSLATION_COMMAND] . '> ';
+            return $this->surround($this->texts['usage-command'], $this->texts['placeholder']) . ' ';
         }
 
         return '';
@@ -205,7 +259,7 @@ class Help implements HelpInterface
     protected function renderUsageOptions()
     {
         if ($this->getOpt->hasOptions() || !$this->getOpt->get(GetOpt::SETTING_STRICT_OPTIONS)) {
-            return '[' . $this->settings[self::TRANSLATION_OPTIONS] . '] ';
+            return $this->surround($this->texts['usage-options'], $this->texts['optional']) . ' ';
         }
     }
     
@@ -216,20 +270,23 @@ class Help implements HelpInterface
         $lastOperandMultiple = false;
         if ($this->getOpt->hasOperands()) {
             foreach ($this->getOpt->getOperandObjects() as $operand) {
-                $name = '<' . $operand->getName() . '>';
+                $name = $this->surround($operand->getName(), $this->texts['placeholder']);
                 if (!$operand->isRequired()) {
-                    $name = '[' . $name . ']';
+                    $name = $this->surround($name, $this->texts['optional']);
                 }
                 $usage .= $name . ' ';
                 if ($operand->isMultiple()) {
-                    $usage .= '[<' . $operand->getName() . '>...]';
+                    $usage .= $this->surround(
+                        $this->surround($operand->getName(), $this->texts['placeholder']) . '...',
+                        $this->texts['optional']
+                    );
                     $lastOperandMultiple = true;
                 }
             }
         }
 
         if (!$lastOperandMultiple && !$this->getOpt->get(GetOpt::SETTING_STRICT_OPERANDS)) {
-            $usage .= '[' . $this->settings[self::TRANSLATION_OPERANDS] . ']';
+            $usage .= $this->surround($this->texts['usage-operands'], $this->texts['optional']);
         }
         
         return $usage;
@@ -238,9 +295,9 @@ class Help implements HelpInterface
     protected function renderDescription()
     {
         if ($command = $this->getOpt->getCommand()) {
-            return PHP_EOL . $command->description() . PHP_EOL . PHP_EOL;
+            return $command->getDescription() . PHP_EOL . PHP_EOL;
         } elseif (isset($this->settings[self::DESCRIPTION])) {
-            return PHP_EOL . $this->settings[self::DESCRIPTION] . PHP_EOL . PHP_EOL;
+            return $this->settings[self::DESCRIPTION] . PHP_EOL . PHP_EOL;
         }
 
         return '';
