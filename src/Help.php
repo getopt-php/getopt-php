@@ -151,9 +151,7 @@ class Help implements HelpInterface
     }
 
     /**
-     * Get a cross platform save text for $key
-     *
-     * Platform save? Replaces \n with PHP_EOL.
+     * Get text for $key or $key if text is not defined
      *
      * @param string $key
      * @return string
