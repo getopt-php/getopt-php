@@ -31,7 +31,7 @@ class CommandTest extends TestCase
     /** @test */
     public function constructorSavesName()
     {
-        self::assertSame('the-name', $this->command->name());
+        self::assertSame('the-name', $this->command->getName());
     }
 
     /** @dataProvider dataNamesNotAllowed
@@ -55,7 +55,7 @@ class CommandTest extends TestCase
     /** @test */
     public function constructorSavesHandler()
     {
-        self::assertSame([ '\PDO', 'getAvailableDrivers' ], $this->command->handler());
+        self::assertSame([ '\PDO', 'getAvailableDrivers' ], $this->command->getHandler());
     }
 
     /** @test */
@@ -80,7 +80,7 @@ class CommandTest extends TestCase
 
         $command->setShortDescription('short description');
 
-        self::assertSame('short description', $command->description());
+        self::assertSame('short description', $command->getDescription());
     }
 
     /** @test */
@@ -90,7 +90,7 @@ class CommandTest extends TestCase
 
         $command->setDescription('long description');
 
-        self::assertSame('long description', $command->shortDescription());
+        self::assertSame('long description', $command->getShortDescription());
     }
 
     /** @test */

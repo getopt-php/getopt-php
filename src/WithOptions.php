@@ -77,8 +77,8 @@ trait WithOptions
         }
 
         $this->options[] = $option;
-        $short = $option->short();
-        $long = $option->long();
+        $short = $option->getShort();
+        $long = $option->getLong();
         if ($short) {
             $this->optionMapping[$short] = $option;
         }
@@ -97,8 +97,8 @@ trait WithOptions
      */
     public function conflicts(Option $option)
     {
-        $short = $option->short();
-        $long = $option->long();
+        $short = $option->getShort();
+        $long = $option->getLong();
         return $short && isset($this->optionMapping[$short]) || $long && isset($this->optionMapping[$long]);
     }
 

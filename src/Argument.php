@@ -10,6 +10,8 @@ namespace GetOpt;
  */
 class Argument
 {
+    use WithMagicGetter;
+
     const CLASSNAME = __CLASS__;
 
     /** @var mixed */

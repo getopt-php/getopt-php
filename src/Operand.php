@@ -108,7 +108,7 @@ class Operand extends Argument
      *
      * @return mixed
      */
-    public function value()
+    public function getValue()
     {
         if ($this->value !== null) {
             return $this->value;
@@ -122,13 +122,23 @@ class Operand extends Argument
     }
 
     /**
+     * @deprecated will be removed in version 4
+     * @see getValue
+     * @codeCoverageIgnore
+     */
+    public function value()
+    {
+        return $this->getValue();
+    }
+
+    /**
      * Get a string from value
      *
      * @return string
      */
     public function __toString()
     {
-        $value = $this->value();
+        $value = $this->getValue();
         return !is_array($value) ? (string)$value : implode(',', $value);
     }
 }

@@ -12,14 +12,14 @@ $data            = [];
 $definitionWidth = 0;
 foreach ($options as $option) {
     $definition = implode(', ', array_filter([
-        $option->short() ? '-' . $option->short() : null,
-        $option->long() ? '--' . $option->long() : null,
+        $option->getShort() ? '-' . $option->getShort() : null,
+        $option->getLong() ? '--' . $option->getLong() : null,
     ]));
 
-    if ($option->mode() !== GetOpt::NO_ARGUMENT) {
+    if ($option->getMode() !== GetOpt::NO_ARGUMENT) {
         $name = $option->getArgument()->getName();
         $argument = '<' . $name . '>';
-        if ($option->mode() === GetOpt::OPTIONAL_ARGUMENT) {
+        if ($option->getMode() === GetOpt::OPTIONAL_ARGUMENT) {
             $argument = '[' . $argument . ']';
         }
 
@@ -32,7 +32,7 @@ foreach ($options as $option) {
 
     $data[] = [
         $definition,
-        $option->description()
+        $option->getDescription()
     ];
 }
 
