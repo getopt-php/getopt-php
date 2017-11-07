@@ -9,13 +9,13 @@ echo PHP_EOL . 'Available commands:' . PHP_EOL;
 $data      = [];
 $nameWidth = 0;
 foreach ($commands as $command) {
-    if (strlen($command->name()) > $nameWidth) {
-        $nameWidth = strlen($command->name());
+    if (strlen($command->getName()) > $nameWidth) {
+        $nameWidth = strlen($command->getName());
     }
 
     $data[] = [
-        $command->name(),
-        $command->description(true)
+        $command->getName(),
+        $command->getShortDescription()
     ];
 }
 
