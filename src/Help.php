@@ -60,6 +60,8 @@ class Help implements HelpInterface
         foreach ($settings as $setting => $value) {
             $this->set($setting, $value);
         }
+
+        $this->setTexts([]);
     }
 
     /**
@@ -96,7 +98,9 @@ class Help implements HelpInterface
      */
     public function setTexts(array $texts)
     {
-        $this->texts = array_merge($this->texts, $texts);
+        $this->texts = array_map(function ($text) {
+            return preg_replace('/\R/', PHP_EOL, $text);
+        }, array_merge($this->texts, $texts));
         return $this;
     }
 
@@ -156,17 +160,7 @@ class Help implements HelpInterface
      */
     protected function getText($key)
     {
-        if (!isset($this->texts[$key])) {
-            return $key;
-        }
-
-        $text = $this->texts[$key];
-
-        if (PHP_EOL !== "\n") {
-            $text = str_replace("\n", PHP_EOL, $text);
-        }
-
-        return $text;
+        return !isset($this->texts[$key]) ? $key : $this->texts[$key];
     }
 
     /**
