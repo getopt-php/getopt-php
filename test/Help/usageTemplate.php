@@ -1,12 +1,14 @@
 <?php
 
+// An example of a usage template
+
 use GetOpt\Command;
 use GetOpt\GetOpt;
 
 /** @var GetOpt $getopt */
 /** @var Command $command */
 
-echo 'Usage: ' . $getopt->get(GetOpt::SETTING_SCRIPT_NAME) . ' ';
+echo $getopt->get(GetOpt::SETTING_SCRIPT_NAME) . ' ';
 
 if (isset($command)) {
     echo $command->getName() . ' ';

@@ -89,7 +89,7 @@ class NonStrictTest extends TestCase
         $script = $_SERVER['PHP_SELF'];
 
         self::assertSame(
-            'Usage: ' . $script . ' [options] [operands]' . PHP_EOL,
+            'Usage: ' . $script . ' [options] [operands]' . PHP_EOL . PHP_EOL,
             $this->getopt->getHelpText()
         );
     }

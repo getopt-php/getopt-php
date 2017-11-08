@@ -18,7 +18,6 @@
     <filter>
         <whitelist>
             <directory suffix=".php">src</directory>
-            <directory suffix=".php">resources</directory>
         </whitelist>
     </filter>
 

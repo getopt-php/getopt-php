@@ -21,11 +21,11 @@ class HelpTest extends TestCase
         $script = $_SERVER['PHP_SELF'];
 
         self::assertSame(
-            'Usage: ' . $script . ' [options] [operands]' . PHP_EOL .
-            PHP_EOL . 'Options:' . PHP_EOL .
+            'Usage: ' . $script . ' [options] [operands]' . PHP_EOL . PHP_EOL .
+            'Options:' . PHP_EOL .
             '  -a, --alpha     Short and long options with no argument' . PHP_EOL .
             '  --beta [<arg>]  Long option only with an optional argument' . PHP_EOL .
-            '  -c <arg>        Short option only with a mandatory argument' . PHP_EOL,
+            '  -c <arg>        Short option only with a mandatory argument' . PHP_EOL . PHP_EOL,
             $getopt->getHelpText()
         );
     }
@@ -42,11 +42,11 @@ class HelpTest extends TestCase
         $script = $_SERVER['PHP_SELF'];
 
         self::assertSame(
-            'Usage: ' . $script . ' [options] [operands]' . PHP_EOL .
-            PHP_EOL . 'Options:' . PHP_EOL .
+            'Usage: ' . $script . ' [options] [operands]' . PHP_EOL . PHP_EOL .
+            'Options:' . PHP_EOL .
             '  -a, --alpha     ' . PHP_EOL .
             '  --beta [<arg>]  ' . PHP_EOL .
-            '  -c <arg>        ' . PHP_EOL,
+            '  -c <arg>        ' . PHP_EOL . PHP_EOL,
             $getopt->getHelpText()
         );
     }
@@ -67,12 +67,12 @@ class HelpTest extends TestCase
 
         $script = $_SERVER['PHP_SELF'];
         self::assertSame(
-            'Usage: ' . $script . ' [options] [operands]' . PHP_EOL .
-            PHP_EOL . 'Options:' . PHP_EOL .
+            'Usage: ' . $script . ' [options] [operands]' . PHP_EOL . PHP_EOL .
+            'Options:' . PHP_EOL .
             '  -a, --alpha     Short and long options with no argument and a very long text that' . PHP_EOL .
             '                  exceeds the length of the row' . PHP_EOL .
             '  --beta [<arg>]  Long option only with an optional argument' . PHP_EOL .
-            '  -c <arg>        Short option only with a mandatory argument' . PHP_EOL,
+            '  -c <arg>        Short option only with a mandatory argument' . PHP_EOL . PHP_EOL,
             $getopt->getHelpText()
         );
     }
@@ -87,9 +87,9 @@ class HelpTest extends TestCase
 
         $script = $_SERVER['PHP_SELF'];
         self::assertSame(
-            'Usage: ' . $script . ' [options] [operands]' . PHP_EOL .
-            PHP_EOL . 'Options:' . PHP_EOL .
-            '  -a, --alpha <alpha>  ' . PHP_EOL,
+            'Usage: ' . $script . ' [options] [operands]' . PHP_EOL . PHP_EOL .
+            'Options:' . PHP_EOL .
+            '  -a, --alpha <alpha>  ' . PHP_EOL . PHP_EOL,
             $getopt->getHelpText()
         );
     }

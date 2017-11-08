@@ -4,6 +4,7 @@ namespace GetOpt\Test;
 
 use GetOpt\Command;
 use GetOpt\GetOpt;
+use GetOpt\Help;
 use GetOpt\Option;
 use PHPUnit\Framework\TestCase;
 
@@ -171,8 +172,27 @@ class GetoptTest extends TestCase
     {
         $getopt = new GetOpt();
         $getopt->set(GetOpt::SETTING_SCRIPT_NAME, 'test');
-        $expected = 'Usage: test [operands]' . PHP_EOL;
-        $this->assertSame($expected, $getopt->getHelpText());
+
+        $helpText = $getopt->getHelpText();
+
+        $this->assertSame('Usage: test [operands]' . PHP_EOL . PHP_EOL, $helpText);
+    }
+
+    /** @test */
+    public function helpTextWithDescription()
+    {
+        $getopt = new GetOpt();
+        $getopt->set(GetOpt::SETTING_SCRIPT_NAME, 'test');
+
+        $helpText = $getopt->getHelpText([
+            Help::DESCRIPTION => 'Running the tests',
+        ]);
+
+        $this->assertSame(
+            'Usage: test [operands]' . PHP_EOL . PHP_EOL .
+            'Running the tests' . PHP_EOL . PHP_EOL,
+            $helpText
+        );
     }
 
     /** @test */

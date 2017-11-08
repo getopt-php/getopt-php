@@ -1,8 +1,10 @@
 <?php
 
+// An example of a options template
+
 use GetOpt\GetOpt;
 
-echo PHP_EOL . 'Options:' . PHP_EOL;
+echo 'Available options:' . PHP_EOL;
 
 /** @var \GetOpt\Option[] $options */
 
@@ -15,7 +17,8 @@ foreach ($options as $option) {
     ]));
 
     if ($option->getMode() !== GetOpt::NO_ARGUMENT) {
-        $argument = '<' . $option->getArgument()->getName() . '>';
+        $name = $option->getArgument()->getName();
+        $argument = '<' . $name . '>';
         if ($option->getMode() === GetOpt::OPTIONAL_ARGUMENT) {
             $argument = '[' . $argument . ']';
         }
@@ -33,16 +36,4 @@ foreach ($options as $option) {
     ];
 }
 
-$screenWidth = defined('COLUMNS') ? COLUMNS : @getenv('COLUMNS') ?: @exec('tput cols 2>/dev/null') ?: 90;
-$screenWidth = min([ isset($maxWidth) ? $maxWidth : 120, $screenWidth ]);
-foreach ($data as $dataRow) {
-    $row = sprintf('  % -' . $definitionWidth . 's  %s', $dataRow[0], $dataRow[1]);
-
-    while (mb_strlen($row) > $screenWidth) {
-        $p = strrpos(substr($row, 0, $screenWidth), ' ');
-        echo substr($row, 0, $p) . PHP_EOL;
-        $row = sprintf('  %s  %s', str_repeat(' ', $definitionWidth), substr($row, $p+1));
-    }
-
-    echo $row . PHP_EOL;
-}
+echo $this->renderColumns($definitionWidth, $data);

@@ -38,10 +38,10 @@ class MagicGettersTest extends TestCase
             [
                 $getOpt,
                 'helpText',
-                'Usage: ' . $getOpt->get(GetOpt::SETTING_SCRIPT_NAME) . ' test [options] [operands]' . PHP_EOL .
+                'Usage: ' . $getOpt->get(GetOpt::SETTING_SCRIPT_NAME) . ' test [options] [operands]' .
                 '' . PHP_EOL . PHP_EOL . PHP_EOL . PHP_EOL .
                 'Options:' . PHP_EOL .
-                '  -a, --alpha  ' . PHP_EOL
+                '  -a, --alpha  ' . PHP_EOL . PHP_EOL
             ],
             [ $getOpt, 'anything', null ],
         ];
