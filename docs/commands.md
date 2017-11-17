@@ -29,10 +29,13 @@ default shown when a command is given:
 ```console
 $ php program.php --help
 Usage: program.php <command> [options] [operands]
+
 Options:
   -h --help  Shows this help
+  
 Commands:
   setup  Short description of setup
+
 $ php program.php setup --help
 Usage: program.php setup [options] [operands]
 
@@ -43,6 +46,7 @@ It may describe in more details what happens when you call it.
 Options:
   -h --help    Shows this help
   -o --option  An option from the setup command
+
 ```
 
 You can only define one description that is used for both or you define both descriptions:
@@ -129,7 +133,7 @@ $getopt->addCommands([
 #### A command can not specify an option that is already defined "globally"
  
 `GetOpt` will throw an exception if you try to add a command with an option that conflicts with another option. You
-could anyway first add the command and later add the option. But anyway it will throw an exception when the command is
+could anyway first add the command and later add the option. But it will throw an exception when the command is
 getting executed. We suggest first to add common options and later commands.
 
 #### Command must be set before operands
@@ -161,8 +165,8 @@ if (!$command) {
     // no command given - show help?
 } else {
     // do something with the command - example:
-    list ($class, $method) = explode('::', $command->handler());
-    $controller = makeController($class);
+    list ($class, $method) = explode('::', $command->getHandler());
+    $controller = controllerFactory($class);
     call_user_func([$controller, $method], $getopt->getOptions(), $getopt->getOperands());
 }
 ```
