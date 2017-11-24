@@ -40,7 +40,8 @@ $getopt->getHelp()->setTexts([
 ```
 
 There is also a wrapper for `setTexts()` in `GetOpt\GetOpt::setHelpLang($language)`. This allows to change the language
-to a existing language file or a custom language file.
+to a existing language file (located under `vendor/ulrichsg/getopt-php/resources/localization/<$lang>.php`) or a
+custom language file.
 
 ```php
 <?php
@@ -69,6 +70,9 @@ $getopt->setHelp(new MyHelp());
 ```
 
 ### Custom Templates
+
+> The use of templates is **deprecated** please consider extending the help class and overwrite the `render*()`
+> methods instead.
 
 Instead of developing your own custom Help class, you may also create templates
 ([examples](https://github.com/getopt-php/getopt-php/tree/3.1.0-alpha.1/test/Help)) . The output from these templates
