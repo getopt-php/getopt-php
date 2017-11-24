@@ -290,4 +290,43 @@ class GetoptTest extends TestCase
         self::assertSame($cmd2, $getopt->getCommand('test'));
         self::assertNull($getopt->getCommand());
     }
+
+    /** @test */
+    public function setHelpLangToDe()
+    {
+        $getopt = new GetOpt();
+        $getopt->set(GetOpt::SETTING_SCRIPT_NAME, 'test');
+        $getopt->addOption(Option::create('v', 'verbose')->setDescription('Ausführliche Ausgaben aktivieren'));
+
+        $result = $getopt->setHelpLang('de');
+
+        self::assertTrue($result);
+        self::assertSame(
+            'Verwendung: test [Optionen] [Operanden]' . PHP_EOL . PHP_EOL .
+            'Optionen:' . PHP_EOL .
+            '  -v, --verbose  Ausführliche Ausgaben aktivieren' . PHP_EOL . PHP_EOL,
+            $getopt->getHelpText()
+        );
+    }
+
+    /** @test */
+    public function returnsFalseWhenFileDoesNotExist()
+    {
+        $getopt = new GetOpt();
+
+        $result = $getopt->setHelpLang('any/path/to/file.php');
+
+        self::assertFalse($result);
+    }
+
+    /** @test */
+    public function returnsFalseForCustomHelpImplementations()
+    {
+        $getopt = new GetOpt();
+        $getopt->setHelp(new HelpExample());
+
+        $result = $getopt->setHelpLang('de');
+
+        self::assertFalse($result);
+    }
 }
