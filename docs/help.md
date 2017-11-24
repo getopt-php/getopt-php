@@ -5,7 +5,7 @@ permalink: /help.html
 ---
 # {{ page.title }}
 
-This library can generate console output that helps your users to understand how they can use your application.
+This library can generate console output that helps your users understand how they can use your application.
 The output varies depending on what options, operands and commands you provide, if additional operands and
 custom options are allowed, and so on.
 
@@ -19,8 +19,40 @@ The method `HelpInterface::render(GetOpt, array)` receives the `GetOpt` object f
 
 ### Localization
 
-The `GetOpt\Help` class is able to change the default texts with `setTexts(array $texts)`. The array overwrite the
-existing localization which is by default english:
+By default, `GetOpt` displays standard help text in English. This can be customized in several ways.
+
+#### Switching to an existing language
+
+`GetOpt` comes bundled with help texts translated in 
+[several languages](https://github.com/getopt-php/getopt-php/tree/master/resources/localization).
+These are located under `vendor/ulrichsg/getopt-php/resources/localization/<lang>.php`.
+
+You can switch to one of these languages by calling `GetOpt\GetOpt::setHelpLang($language)`  
+
+```php
+<?php
+$getopt = new \GetOpt\GetOpt();
+$getopt->setHelpLang('de');                         
+```
+
+Translations for additional languages are welcome; if you would like to contribute, please 
+[submit a pull request](https://github.com/getopt-php/getopt-php/compare).
+
+#### Switching to a custom language
+
+It is also possible to use a custom language file by specifying its path; the script must return an array in the
+same format as the bundled language files. 
+
+```php
+<?php
+$getopt = new \GetOpt\GetOpt();
+$getopt->setHelpLang(__DIR__ . '/path/to/cn.php');
+```
+
+#### Override the localization
+
+The `GetOpt\Help` class can be used to define the standard help text, with the `setTexts(array $texts)` method. 
+The provided array overwrites the existing localization:
 
 ```php
 <?php
@@ -37,17 +69,6 @@ $getopt->getHelp()->setTexts([
     'options-listing' => ', ',
     'commands-title' => "Commands:\n"
 ]);
-```
-
-There is also a wrapper for `setTexts()` in `GetOpt\GetOpt::setHelpLang($language)`. This allows to change the language
-to a existing language file (located under `vendor/ulrichsg/getopt-php/resources/localization/<$lang>.php`) or a
-custom language file.
-
-```php
-<?php
-$getopt = new \GetOpt\GetOpt();
-$getopt->setHelpLang('de');
-$getopt->setHelpLang(__DIR__ . '/path/to/cn.php');
 ```
 
 ### Extending The Help Class
@@ -71,11 +92,11 @@ $getopt->setHelp(new MyHelp());
 
 ### Custom Templates
 
-> The use of templates is **deprecated** please consider extending the help class and overwrite the `render*()`
-> methods instead.
+> **The use of templates is deprecated**. 
+> Please consider extending the help class and overwrite the `render*()` methods instead.
 
 Instead of developing your own custom Help class, you may also create templates
-([examples](https://github.com/getopt-php/getopt-php/tree/3.1.0-alpha.1/test/Help)) . The output from these templates
+([examples](https://github.com/getopt-php/getopt-php/tree/3.1.0-alpha.1/test/Help)). The output from these templates
 is then used to generate the help text.
 
 ```php

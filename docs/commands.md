@@ -5,15 +5,18 @@ permalink: /commands.html
 ---
 # {{ page.title }}
 
-The concept behind commands is a single entry with different tasks. For example an administration backend with the
-option to create, read, update and delete users. Instead of defining a getopt with many optional options that later 
-getting required or need a different validation (username has to exists for update and delete, but has to be unique for
-create) we create commands.
+The concept behind commands is a single program offering different, related tasks, for example an administration  
+backend with the option to create, read, update and delete users. 
+
+Instead of defining a `GetOpt` with many non-mandatory options that, depending on context, may later become required  
+or need a different validation (username has to exist for update and delete, but must be unique for create), 
+we create commands and define specific options and arguments for each of them.
 
 ## Defining Commands
 
-A command can has at least a name and a handler. The handler can be anything that makes clear what has to be executed
-(a `colsure` makes sense, but an array `['Controller', 'method']` too).
+A command must have at least a _name_ and a _handler_. 
+The handler is a [PHP Callable](http://php.net/manual/en/language.types.callable.php) 
+specifying the code to execute, e.g. a `closure` or an array `['Controller', 'method']`.
 
 ```php
 <?php
@@ -21,35 +24,38 @@ $getopt = new \GetOpt\GetOpt();
 $getopt->addCommand(new \GetOpt\Command('create', 'User::create'));
 ```
 
-### Setup Description
+### Setup the command's Description
 
-There are two descriptions - the short version is shown in the list of commands while the long description is by
-default shown when a command is given:
+There are two descriptions:
 
-```console
-$ php program.php --help
-Usage: program.php <command> [options] [operands]
+- the *short version* is shown in the list of commands, on the program's main help page
+    ```console
+    $ php program.php --help
+    Usage: program.php <command> [options] [operands]
+    
+    Options:
+      -h --help  Shows this help
+      
+    Commands:
+      setup  Short description of setup
+    ```
 
-Options:
-  -h --help  Shows this help
-  
-Commands:
-  setup  Short description of setup
+- the *full description* is shown when displaying a specific command's help page 
+    ```console
+    $ php program.php setup --help
+    Usage: program.php setup [options] [operands]
+    
+    This is a longer description of the command.
+    
+    It may describe in more details what happens when you call it.
+    
+    Options:
+      -h --help    Shows this help
+      -o --option  An option from the setup command
+    ```
 
-$ php program.php setup --help
-Usage: program.php setup [options] [operands]
-
-This is a longer description of the command.
-
-It may describe in more details what happens when you call it.
-
-Options:
-  -h --help    Shows this help
-  -o --option  An option from the setup command
-
-```
-
-You can only define one description that is used for both or you define both descriptions:
+You can either define a single help text which will be used for both the short and full description, 
+or provide both descriptions, as shown in the example below:
 
 ```php
 <?php
@@ -67,10 +73,10 @@ $getopt->addCommands([
 ]);
 ```
 
-### Command Specific Options
+### Command-Specific Options
 
-A command can have specific options. Like for `GetOpt` you can pass the options through constructor or using the
-methods `addOption(Option)` and `addOptions(Option[])`.
+A command can have specific options. Like for `GetOpt` you can pass the options through the Constructor, 
+or using the `addOption(Option)` and `addOptions(Option[])` methods.
 
 ```php
 <?php
@@ -111,9 +117,9 @@ $getopt->addCommands([
 ]);
 ```
 
-### Command Specific Operands
+### Command-Specific Operands
 
-You can specify operands that are only valid for a specific command the same way as for `GetOpt`. Also you can reuse
+You can specify operands that are only valid for a specific command, the same way as for `GetOpt`. You can also reuse
 these Operands for different commands.
 
 ```php
@@ -130,24 +136,26 @@ $getopt->addCommands([
 
 ### Limitations
 
-#### A command can not specify an option that is already defined "globally"
+#### A command cannot specify an option that is already defined "globally"
  
-`GetOpt` will throw an exception if you try to add a command with an option that conflicts with another option. You
-could anyway first add the command and later add the option. But it will throw an exception when the command is
-getting executed. We suggest first to add common options and later commands.
+`GetOpt` will throw an exception if you try to add a command with an option that conflicts with another option. 
+If the command is added first and the option after, the exception will be thrown when the command is executed. 
 
-#### Command must be set before operands
+We recommend to add common, global options first, and commands later.
+
+#### Commands must be set before operands
 
 This is an artificial limitation. The command has to be the first operand. When you add common operands these will be
-the first operands after the command and followed by command specific operands. We suggest not to do so and don't add
-common operands.
+the first operands after the command, followed by the command-specific operands. 
+
+We suggest not to add common operands.
 
 ## Working With Commands
 
-After processing the command line arguments we can receive the current command with `GetOpt::getCommand()` without a
-parameter. It returns the Command object and we can use the getters `Command::name()`, `Command::handler()`,
-`Command::description()` and `Command:shortDescription()` to identify the command. If no command is specified it will
-return `null`.
+After processing the command-line arguments, we can retrieve the current command by calling `GetOpt::getCommand()` 
+without a parameter. It returns the Command object and we can use the `Command::name()`, `Command::handler()`,
+`Command::description()` and `Command:shortDescription()` getters to identify the command.  
+If no command is specified it will return `null`.
 
 ```php
 <?php
