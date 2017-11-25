@@ -384,6 +384,32 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     }
 
     /**
+     * Set the help texts to $language
+     *
+     * The language can either be a known language from resources/localization (feel free to contribute your language)
+     * or a path to a file that returns an array like the files in resources/localization.
+     *
+     * @param string $language
+     * @return bool Whether the language change was successful
+     */
+    public function setHelpLang($language = 'en')
+    {
+        $help = $this->getHelp();
+        if (!$help instanceof Help) {
+            return false;
+        }
+
+        $languageFile = file_exists($language) ?
+            $language : __DIR__ . '/../resources/localization/' . $language . '.php';
+        if (!file_exists($languageFile)) {
+            return false;
+        }
+
+        $help->setTexts(include $languageFile);
+        return true;
+    }
+
+    /**
      * Get the current Help instance
      *
      * @return HelpInterface

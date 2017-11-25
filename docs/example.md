@@ -78,7 +78,7 @@ if (!$command || $getOpt->getOption('help')) {
 }
 
 // call the requested command
-call_user_func($command->handler(), $getOpt);
+call_user_func($command->getHandler(), $getOpt);
 ```
 
 ## Copy Command
