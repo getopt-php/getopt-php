@@ -14,9 +14,9 @@ we create commands and define specific options and arguments for each of them.
 
 ## Defining Commands
 
-A command must have at least a _name_ and a _handler_. 
-The handler is a [PHP Callable](http://php.net/manual/en/language.types.callable.php) 
-specifying the code to execute, e.g. a `closure` or an array `['Controller', 'method']`.
+A command must have at least a _name_ and a _handler_. The _handler_ parameter does not necessarily have to be a
+[callable](http://php.net/manual/en/language.types.callable.php), it could also be a controller class name or any other
+kind of data you wish to associate with the command.
 
 ```php
 <?php
@@ -153,8 +153,8 @@ We suggest not to add common operands.
 ## Working With Commands
 
 After processing the command-line arguments, we can retrieve the current command by calling `GetOpt::getCommand()` 
-without a parameter. It returns the Command object and we can use the `Command::name()`, `Command::handler()`,
-`Command::description()` and `Command:shortDescription()` getters to identify the command.  
+without a parameter. It returns the Command object and we can use the `Command::getName()`, `Command::getHandler()`,
+`Command::getDescription()` and `Command:getShortDescription()` getters to identify the command.  
 If no command is specified it will return `null`.
 
 ```php
