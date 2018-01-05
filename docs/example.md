@@ -51,10 +51,10 @@ $getOpt->addCommand(new DeleteCommand());
 // process arguments and catch user errors
 try {
     try {
-        $getopt->process();
+        $getOpt->process();
     } catch (Missing $exception) {
         // catch missing exceptions if help is requested
-        if (!$getopt->getOption('help')) {
+        if (!$getOpt->getOption('help')) {
             throw $exception;
         }
     }
