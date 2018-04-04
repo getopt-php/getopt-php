@@ -1,3 +1,8 @@
+## 3.2.0
+
+Feature:
+* Added validation custom error message
+
 ## 3.0.0 (alpha)
 
 Features:
@@ -109,4 +114,3 @@ Bugfixes:
 
 Bugfixes:
 * Fixed bug where '0' could not be passed as an option value
-
