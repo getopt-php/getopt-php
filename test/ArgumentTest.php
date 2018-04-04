@@ -40,6 +40,50 @@ class ArgumentTest extends TestCase
     }
 
     /** @test */
+    public function doesNotValidateWithoutCustomMessage()
+    {
+        $test = $this;
+        $argument = new Argument();
+        $argument->setValidation(
+            function ($arg, $validator) use ($test, $argument) {
+                $test->assertNotEquals('notthis', $arg);
+            }
+        );
+        $this->assertFalse($argument->validates('test'));
+        $this->assertEquals('Option \'arg\' has an invalid value', $argument->getValidationMessage());
+    }
+
+    /** @test */
+    public function doesNotValidateWithCustomMessage()
+    {
+        $test = $this;
+        $argument = new Argument();
+        $argument->setValidation(
+            function ($arg, $validator) use ($test, $argument) {
+                $test->assertNotEquals('notthis', $arg);
+            },
+            'Custom message: %s'
+        );
+        $this->assertFalse($argument->validates('test'));
+        $this->assertEquals('Custom message: arg', $argument->getValidationMessage());
+    }
+
+    /** @test */
+    public function doesNotValidateWithCustomMessageInClosure()
+    {
+        $test = $this;
+        $argument = new Argument();
+        $argument->setValidation(
+            function ($arg, $validator) use ($test, $argument) {
+                $test->assertNotEquals('notthis', $arg);
+                $validator->setMessage('Custom message: %s');
+            }
+        );
+        $this->assertFalse($argument->validates('test'));
+        $this->assertEquals('Custom message: arg', $argument->getValidationMessage());
+    }
+
+    /** @test */
     public function falsyDefaultValue()
     {
         $argument = new Argument('');

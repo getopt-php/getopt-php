@@ -44,20 +44,20 @@ $getopt = new GetOpt();
 $getopt->addOption($optionAlpha)->addOption($optionBeta);
 ```
 
-The setters can be chained and for convenience there is also a public static method create which allows to write the 
+The setters can be chained and for convenience there is also a public static method create which allows to write the
 above command this way:
 
 ```php
 <?php
 $getopt = new \GetOpt\GetOpt([
-    
+
     \GetOpt\Option::create('a', 'alpha', \GetOpt\GetOpt::REQUIRED_ARGUMENT)
         ->setDescription('This is the description for the alpha option')
         ->setArgument(new \GetOpt\Argument(null, 'is_numeric', 'alpha')),
-    
+
     \GetOpt\Option::create('b', 'beta', \GetOpt\GetOpt::NO_ARGUMENT)
         ->setDescription('This is the description for the beta option'),
-        
+
 ]);
 ```
 
@@ -65,7 +65,7 @@ $getopt = new \GetOpt\GetOpt([
 
 ### Options From String (Short Options Only)
 
-Options can be defined by a string with the exact same syntax as 
+Options can be defined by a string with the exact same syntax as
 [PHP's `getopt()` function](http://php.net/manual/en/function.getopt.php) and the original GNU getopt. It is the
 shortest way to set up GetOpt, but it does not support long options or any advanced features:
 
@@ -89,22 +89,22 @@ can look very clean too:
 ```php
 <?php
 $getopt = new \GetOpt\GetOpt([
-   
+
     // creates an option a without a long alias and with the default argument mode
     ['a'],
-    
+
     // creates an option without a short alias and with the default argument mode
     ['beta'],
-    
+
     // you can define the argument mode
     ['c', \GetOpt\GetOpt::REQUIRED_ARGUMENT],
-    
+
     // you can define long, short, argument mode, description and default value
     ['d', 'delta', \GetOpt\GetOpt::MULTIPLE_ARGUMENT, 'Description for delta', 'default value'],
-    
+
     // note that you have to provide null values if you want to add a desciprtion or default value
     ['e', null, \GetOpt\GetOpt::NO_ARGUMENT, 'Enable something'],
-    
+
 ]);
 ```
 
@@ -192,7 +192,7 @@ foreach ($getopt as $key => $value) {
 }
 // a: value of alpha
 // beta: value
-// verbose: 3 
+// verbose: 3
 ```
 
 Even if foreach does not iterate over the key value pair `['b' => 'value']` you can access it directly:
@@ -271,14 +271,14 @@ $getopt = new \GetOpt\GetOpt([
 $getopt->process('-d example.com --domain example.org');
 
 var_dump($getopt->getOption('domain')); // ['example.com', 'example.org']
-``` 
+```
 
 ### Validation
 
 This library does not come with a bunch of validators that you can use and extend. Instead you provide a callable or
 closure that has to return a truthy value if the value is valid (further called the validator).
 
-The validator gets the value as first and only parameter. For a lot of php standard functions this is enough (eg. 
+The validator gets the value as first and only parameter. For a lot of php standard functions this is enough (eg.
 `is_numeric`). The value will always be a string or null. Here comes an example that shows how to check that it has
 a valid json value:
 
@@ -298,6 +298,47 @@ $ php program.php --data []
 $ php program.php --data '{"a":"alpha"}'
 $ php program.php --data invalid
 ```
+
+#### Validation custom error message
+
+As of version 3.2, you can specify a custom message to be displayed when the validation fails:
+
+```php
+<?php
+$getopt = new \GetOpt\GetOpt([
+    \GetOpt\Option::create(null, 'port', \GetOpt\GetOpt::REQUIRED_ARGUMENT)
+        ->setValidation('is_int', 'The port must be an integer')
+]);
+```
+
+You can also set the message from within the validation closure, since the argument validator is always passed as the second argument to the validation closure:
+
+```php
+<?php
+$getopt = new \GetOpt\GetOpt([
+    \GetOpt\Option::create(null, 'destination', \GetOpt\GetOpt::REQUIRED_ARGUMENT)
+        ->setValidation(function ($value, $validator) {
+            if (!is_dir($value)) {
+                $validator->setMessage('%s is not a directory');
+                return false;
+            }
+
+            if (!is_writable($value)) {
+                $validator->setMessage('The directory %s is not writable');
+                return false;
+            }
+
+            if (count(scandir($value)) === 2) {
+                $validator->setMessage('The directory %s is not empty');
+                return false;
+            }
+            return true;
+        })
+]);
+```
+
+The message will always be evaluated with sprintf and the option/operand name will be passed. You may then, like in the
+example above, use `%s` as a placeholder.
 
 #### Advanced Validation
 
@@ -328,7 +369,7 @@ $getopt->addOptions([
 
 By default only options are allowed that are defined before you run `GetOpt::process()`. This we called
 `STRICT_OPTIONS`. For a quick and dirty application you may want to allow everything. When you setup your `GetOpt` with
-`GetOpt::SETTING_STRICT_OPTIONS = false` every option is allowed with an optional argument. 
+`GetOpt::SETTING_STRICT_OPTIONS = false` every option is allowed with an optional argument.
 
 ```php
 <?php
