@@ -13,7 +13,7 @@ use GetOpt\ArgumentException\Missing;
  */
 class Option
 {
-    use WithMagicGetter;
+    use WithMagicGetter, WithValidator;
 
     const CLASSNAME = __CLASS__;
 
@@ -265,6 +265,16 @@ class Option
     }
 
     /**
+     * Retrieve the option's long name preferably, short name otherwise
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->getLong() ?: $this->getShort();
+    }
+
+    /**
      * Internal method to set the current value
      *
      * @param mixed $value
@@ -275,7 +285,7 @@ class Option
         if ($value === null && in_array($this->mode, [ GetOpt::REQUIRED_ARGUMENT, GetOpt::MULTIPLE_ARGUMENT ])) {
             throw new Missing(sprintf(
                 'Option \'%s\' must have a value',
-                $this->getLong() ?: $this->getShort()
+                $this->getName()
             ));
         }
 
@@ -283,11 +293,8 @@ class Option
             $value = $this->value === null ? 1 : $this->value + 1;
         }
 
-        if ($this->getArgument()->hasValidation() && !$this->getArgument()->validates($value)) {
-            throw new Invalid(sprintf(
-                'Option \'%s\' has an invalid value',
-                $this->getLong() ?: $this->getShort()
-            ));
+        if (!$this->getArgument()->validates($value)) {
+            throw new Invalid($this->getValidationMessage());
         }
 
         if ($this->mode === GetOpt::MULTIPLE_ARGUMENT) {

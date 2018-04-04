@@ -10,7 +10,7 @@ namespace GetOpt;
  */
 class Argument
 {
-    use WithMagicGetter;
+    use WithMagicGetter, WithValidator;
 
     const CLASSNAME = __CLASS__;
 
@@ -56,20 +56,6 @@ class Argument
     }
 
     /**
-     * Set a validation function.
-     * The function must take a string and return true if it is valid, false otherwise.
-     *
-     * @param callable $callable
-     * @return $this
-     * @throws \InvalidArgumentException
-     */
-    public function setValidation(callable $callable)
-    {
-        $this->validation = $callable;
-        return $this;
-    }
-
-    /**
      * @param string $name
      * @return $this
      */
@@ -80,24 +66,13 @@ class Argument
     }
 
     /**
-     * Check if an argument validates according to the specification.
-     *
-     * @param string $arg
-     * @return bool
-     */
-    public function validates($arg)
-    {
-        return (bool)call_user_func($this->validation, $arg);
-    }
-
-    /**
      * Check if the argument has a validation function
-     *
+     * @deprecated
      * @return bool
      */
     public function hasValidation()
     {
-        return isset($this->validation);
+        return $this->hasValidator();
     }
 
     /**

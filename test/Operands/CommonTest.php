@@ -5,6 +5,7 @@ namespace GetOpt\Test\Operands;
 use GetOpt\Command;
 use GetOpt\GetOpt;
 use GetOpt\Operand;
+use GetOpt\ArgumentException\Invalid;
 use PHPUnit\Framework\TestCase;
 
 class CommonTest extends TestCase
@@ -46,6 +47,52 @@ class CommonTest extends TestCase
         $getopt->addOperand($operand);
 
         $this->setExpectedException('GetOpt\ArgumentException\Invalid');
+        $getopt->process('"any value"');
+    }
+
+    /** @test */
+    public function operandDoesNotValidateWithoutCustomMessage()
+    {
+        $operand = Operand::create('op1')
+            ->setValidation(function ($value) {
+                return false;
+            });
+
+        $getopt = new GetOpt();
+        $getopt->addOperand($operand);
+
+        $this->setExpectedException('GetOpt\ArgumentException\Invalid', "Operand 'op1' has an invalid value");
+        $getopt->process('"any value"');
+    }
+
+    /** @test */
+    public function operandDoesNotValidateWithCustomMessage()
+    {
+        $operand = Operand::create('op1')
+            ->setValidation(function ($value, $validator) {
+                return false;
+            }, 'Custom message: %s');
+
+        $getopt = new GetOpt();
+        $getopt->addOperand($operand);
+
+        $this->setExpectedException('GetOpt\ArgumentException\Invalid', "Custom message: op1");
+        $getopt->process('"any value"');
+    }
+
+    /** @test */
+    public function operandDoesNotValidateWithCustomMessageInClosure()
+    {
+        $operand = Operand::create('op1')
+            ->setValidation(function ($value, $validator) {
+                $validator->setMessage('Custom message: %s');
+                return false;
+            });
+
+        $getopt = new GetOpt();
+        $getopt->addOperand($operand);
+
+        $this->setExpectedException('GetOpt\ArgumentException\Invalid', "Custom message: op1");
         $getopt->process('"any value"');
     }
 

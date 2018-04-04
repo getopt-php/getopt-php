@@ -90,8 +90,8 @@ class Operand extends Argument
      */
     public function setValue($value)
     {
-        if ($this->validation && !$this->validates($value)) {
-            throw new Invalid(sprintf('Operand %s has an invalid value', $this->name));
+        if (!$this->validates($value)) {
+            throw new Invalid($this->getValidationMessage());
         }
 
         if ($this->isMultiple()) {
