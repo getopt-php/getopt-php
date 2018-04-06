@@ -60,6 +60,9 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     /** @var array */
     protected $additionalOptions = [];
 
+    /** @var Translator */
+    protected static $translator;
+
     /**
      * Creates a new GetOpt object.
      *
@@ -155,7 +158,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
                     $this->additionalOptions[$name] = $value;
                     return;
                 } else {
-                    throw new Unexpected(sprintf('Option \'%s\' is unknown', $name));
+                    throw new Unexpected(sprintf(self::translate('option-unknown'), $name));
                 }
             }
 
@@ -174,7 +177,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
                 $operand->setValue($value);
             } elseif ($this->get(self::SETTING_STRICT_OPERANDS)) {
                 throw new Unexpected(sprintf(
-                    'No more operands expected - got %s',
+                    self::translate('no-more-operands'),
                     $value
                 ));
             } else {
@@ -191,7 +194,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
         if (($operand = $this->nextOperand()) && $operand->isRequired() &&
             (!$operand->isMultiple() || count($this->getOperand($operand->getName())) === 0)
         ) {
-            throw new Missing(sprintf('Operand %s is required', $operand->getName()));
+            throw new Missing(sprintf(self::translate('operand-missing'), $operand->getName()));
         }
     }
 
@@ -384,7 +387,43 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * Set the help texts to $language
+     * @param string $language
+     * @return bool Whether the language change was successful
+     * @deprecated use GetOpt::setLang($language) instead
+     */
+    public function setHelpLang($language = 'en')
+    {
+        return self::setLang($language);
+    }
+
+    /**
+     * Translate $key
+     *
+     * Returns the key if no translation is found
+     *
+     * @param string $key
+     * @return string
+     */
+    public static function translate($key)
+    {
+        return self::getTranslator()->translate($key);
+    }
+
+    /**
+     * Get the translator instance
+     *
+     * @return Translator
+     */
+    protected static function getTranslator()
+    {
+        if (self::$translator === null) {
+            self::$translator = new Translator;
+        }
+        return self::$translator;
+    }
+
+    /**
+     * Set language to $language
      *
      * The language can either be a known language from resources/localization (feel free to contribute your language)
      * or a path to a file that returns an array like the files in resources/localization.
@@ -392,21 +431,9 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      * @param string $language
      * @return bool Whether the language change was successful
      */
-    public function setHelpLang($language = 'en')
+    public static function setLang($language)
     {
-        $help = $this->getHelp();
-        if (!$help instanceof Help) {
-            return false;
-        }
-
-        $languageFile = file_exists($language) ?
-            $language : __DIR__ . '/../resources/localization/' . $language . '.php';
-        if (!file_exists($languageFile)) {
-            return false;
-        }
-
-        $help->setTexts(include $languageFile);
-        return true;
+        return self::getTranslator()->setLanguage($language);
     }
 
     /**
