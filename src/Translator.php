@@ -48,6 +48,7 @@ class Translator
         }
 
         if (!isset($this->translations[$key])) {
+            // the key if $this is already the fallback translator
             return $this !== self::$fallbackTranslator ? self::$fallbackTranslator->translate($key) : $key;
         }
 
