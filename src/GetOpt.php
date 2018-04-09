@@ -399,7 +399,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     /**
      * Translate $key
      *
-     * Returns the key if no translation is found
+     * Returns english fallback or the key if no translation is found
      *
      * @param string $key
      * @return string

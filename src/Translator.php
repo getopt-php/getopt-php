@@ -4,21 +4,39 @@ namespace GetOpt;
 
 class Translator
 {
+    const PATH_TEMPLATE = '%s/../resources/localization/%s.php';
+
     /** @var string */
     protected $languageFile;
 
     /** @var array */
     protected $translations;
 
+    /** @var Translator */
+    protected static $fallbackTranslator;
+
+    /**
+     * Translator constructor.
+     *
+     * @param string  $language
+     * @internal bool $asFallback
+     */
     public function __construct($language = 'en')
     {
-        $this->setLanguage('en');
+        if (!$this->setLanguage($language)) {
+            throw new \InvalidArgumentException(sprintf('$language %s not available', $language));
+        }
+
+        // create a fallback translator if not exists
+        if (!self::$fallbackTranslator && (func_num_args() < 2 || func_get_arg(1) !== true)) {
+            self::$fallbackTranslator = new self('en', true);
+        }
     }
 
     /**
      * Translate $key
      *
-     * Returns the key if no translation is found
+     * Returns english fallback or the key if no translation is found
      *
      * @param string $key
      * @return string
@@ -29,7 +47,11 @@ class Translator
             $this->loadTranslations();
         }
 
-        return !isset($this->translations[$key]) ? $key : $this->translations[$key];
+        if (!isset($this->translations[$key])) {
+            return $this !== self::$fallbackTranslator ? self::$fallbackTranslator->translate($key) : $key;
+        }
+
+        return  $this->translations[$key];
     }
 
     /**
@@ -44,7 +66,7 @@ class Translator
     public function setLanguage($language)
     {
         $languageFile = file_exists($language) ?
-            $language : __DIR__ . '/../resources/localization/' . $language . '.php';
+            $language : sprintf(static::PATH_TEMPLATE, __DIR__, $language);
         if (!file_exists($languageFile)) {
             return false;
         }
