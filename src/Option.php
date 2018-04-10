@@ -274,7 +274,7 @@ class Option
     {
         if ($value === null && in_array($this->mode, [ GetOpt::REQUIRED_ARGUMENT, GetOpt::MULTIPLE_ARGUMENT ])) {
             throw new Missing(sprintf(
-                'Option \'%s\' must have a value',
+                GetOpt::translate('option-argument-missing'),
                 $this->getLong() ?: $this->getShort()
             ));
         }
@@ -285,7 +285,7 @@ class Option
 
         if ($this->getArgument()->hasValidation() && !$this->getArgument()->validates($value)) {
             throw new Invalid(sprintf(
-                'Option \'%s\' has an invalid value',
+                GetOpt::translate('option-value-invalid'),
                 $this->getLong() ?: $this->getShort()
             ));
         }

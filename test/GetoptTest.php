@@ -10,6 +10,12 @@ use PHPUnit\Framework\TestCase;
 
 class GetoptTest extends TestCase
 {
+    protected function tearDown()
+    {
+        GetOpt::setLang('en');
+        parent::tearDown();
+    }
+
     /** @test */
     public function addOptions()
     {
@@ -315,17 +321,6 @@ class GetoptTest extends TestCase
         $getopt = new GetOpt();
 
         $result = $getopt->setHelpLang('any/path/to/file.php');
-
-        self::assertFalse($result);
-    }
-
-    /** @test */
-    public function returnsFalseForCustomHelpImplementations()
-    {
-        $getopt = new GetOpt();
-        $getopt->setHelp(new HelpExample());
-
-        $result = $getopt->setHelpLang('de');
 
         self::assertFalse($result);
     }

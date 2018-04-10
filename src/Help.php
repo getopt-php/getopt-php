@@ -35,13 +35,7 @@ class Help implements HelpInterface
         'placeholder' => '<>',
         'optional' => '[]',
         'multiple' => '...',
-        'usage-title' => 'Usage: ',
-        'usage-command' => 'command',
-        'usage-options' => 'options',
-        'usage-operands' => 'operands',
-        'options-title' => "Options:\n",
         'options-listing' => ', ',
-        'commands-title' => "Commands:\n"
     ];
 
     /** @var GetOpt */
@@ -105,6 +99,17 @@ class Help implements HelpInterface
     }
 
     /**
+     * Get the text for $key
+     *
+     * @param $key
+     * @return string
+     */
+    protected function getText($key)
+    {
+        return isset($this->texts[$key]) ? $this->texts[$key] : GetOpt::translate($key);
+    }
+
+    /**
      * Get the help text for $getopt
      *
      * @param GetOpt $getopt
@@ -148,17 +153,6 @@ class Help implements HelpInterface
         }
 
         return $helpText;
-    }
-
-    /**
-     * Get text for $key or $key if text is not defined
-     *
-     * @param string $key
-     * @return string
-     */
-    protected function getText($key)
-    {
-        return !isset($this->texts[$key]) ? $key : $this->texts[$key];
     }
 
     /**
@@ -242,7 +236,7 @@ class Help implements HelpInterface
         if ($command = $this->getOpt->getCommand()) {
             return $command->getName() . ' ';
         } elseif ($this->getOpt->hasCommands()) {
-            return $this->surround($this->texts['usage-command'], $this->texts['placeholder']) . ' ';
+            return $this->surround($this->getText('usage-command'), $this->texts['placeholder']) . ' ';
         }
 
         return '';
@@ -251,7 +245,7 @@ class Help implements HelpInterface
     protected function renderUsageOptions()
     {
         if ($this->getOpt->hasOptions() || !$this->getOpt->get(GetOpt::SETTING_STRICT_OPTIONS)) {
-            return $this->surround($this->texts['usage-options'], $this->texts['optional']) . ' ';
+            return $this->surround($this->getText('usage-options'), $this->texts['optional']) . ' ';
         }
     }
     
@@ -278,7 +272,7 @@ class Help implements HelpInterface
         }
 
         if (!$lastOperandMultiple && !$this->getOpt->get(GetOpt::SETTING_STRICT_OPERANDS)) {
-            $usage .= $this->surround($this->texts['usage-operands'], $this->texts['optional']);
+            $usage .= $this->surround($this->getText('usage-operands'), $this->texts['optional']);
         }
         
         return $usage;

@@ -93,4 +93,23 @@ class HelpTest extends TestCase
             $getopt->getHelpText()
         );
     }
+
+    /** @test */
+    public function textsGetUsed()
+    {
+        $getopt = new GetOpt([Option::create('a', 'alpha')]);
+
+        $getopt->getHelp()->setTexts([
+            'usage-title' => '',
+            'options-title' => 'Parameters:' . PHP_EOL
+        ]);
+
+        $script = $_SERVER['PHP_SELF'];
+        self::assertSame(
+            $script . ' [options] [operands]' . PHP_EOL . PHP_EOL .
+            'Parameters:' . PHP_EOL .
+            '  -a, --alpha  ' . PHP_EOL . PHP_EOL,
+            $getopt->getHelpText()
+        );
+    }
 }
