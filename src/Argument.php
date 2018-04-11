@@ -2,6 +2,8 @@
 
 namespace GetOpt;
 
+use GetOpt\ArgumentException\Invalid;
+
 /**
  * Class Argument
  *
@@ -16,10 +18,18 @@ class Argument
 
     /** @var mixed */
     protected $default;
+
     /** @var callable */
     protected $validation;
+
     /** @var string */
     protected $name;
+
+    /** @var bool */
+    protected $multiple;
+
+    /** @var mixed */
+    protected $value;
 
     /**
      * Creates a new argument.
@@ -77,6 +87,63 @@ class Argument
     {
         $this->name = $name;
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMultiple()
+    {
+        return $this->multiple;
+    }
+
+    /**
+     * @param bool $multiple
+     * @return $this
+     */
+    public function multiple($multiple = true)
+    {
+        $this->multiple = $multiple;
+        return $this;
+    }
+
+    /**
+     *  Internal method to set the current value
+     *
+     * @param $value
+     * @return $this
+     */
+    public function setValue($value)
+    {
+        if ($this->validation && !$this->validates($value)) {
+            throw new Invalid(sprintf('Operand %s has an invalid value', $this->name));
+        }
+
+        if ($this->isMultiple()) {
+            $this->value = $this->value === null ? [ $value ] : array_merge($this->value, [ $value ]);
+        } else {
+            $this->value = $value;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get the current value
+     *
+     * @return mixed
+     */
+    public function getValue()
+    {
+        if ($this->value !== null) {
+            return $this->value;
+        }
+
+        if ($this->isMultiple()) {
+            return $this->default !== null ? [ $this->default ] : [];
+        }
+
+        return $this->default;
     }
 
     /**

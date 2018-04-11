@@ -41,6 +41,7 @@ class Option
         $this->setLong($long);
         $this->setMode($mode);
         $this->argument = new Argument();
+        $this->argument->multiple($this->mode === GetOpt::MULTIPLE_ARGUMENT);
     }
 
     /**
@@ -135,6 +136,7 @@ class Option
             throw new \InvalidArgumentException("Option should not have any argument");
         }
         $this->argument = $arg;
+        $this->argument->multiple($this->mode === GetOpt::MULTIPLE_ARGUMENT);
         return $this;
     }
 
@@ -162,6 +164,16 @@ class Option
     public function getShort()
     {
         return $this->short;
+    }
+
+    /**
+     * Returns long name or short name if long name is not set
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->getLong() ?: $this->getShort();
     }
 
     /**
@@ -275,26 +287,15 @@ class Option
         if ($value === null && in_array($this->mode, [ GetOpt::REQUIRED_ARGUMENT, GetOpt::MULTIPLE_ARGUMENT ])) {
             throw new Missing(sprintf(
                 GetOpt::translate('option-argument-missing'),
-                $this->getLong() ?: $this->getShort()
+                $this->getName()
             ));
         }
 
         if ($value === null || $this->getMode() === GetOpt::NO_ARGUMENT) {
-            $value = $this->value === null ? 1 : $this->value + 1;
+            $value = $this->argument->getValue() + 1;
         }
 
-        if ($this->getArgument()->hasValidation() && !$this->getArgument()->validates($value)) {
-            throw new Invalid(sprintf(
-                GetOpt::translate('option-value-invalid'),
-                $this->getLong() ?: $this->getShort()
-            ));
-        }
-
-        if ($this->mode === GetOpt::MULTIPLE_ARGUMENT) {
-            $this->value = $this->value === null ? [ $value ] : array_merge($this->value, [ $value ]);
-        } else {
-            $this->value = $value;
-        }
+        $this->argument->setValue($value);
 
         return $this;
     }
@@ -306,21 +307,7 @@ class Option
      */
     public function getValue()
     {
-        switch ($this->mode) {
-            case GetOpt::OPTIONAL_ARGUMENT:
-            case GetOpt::REQUIRED_ARGUMENT:
-                return $this->value === null ? $this->argument->getDefaultValue() : $this->value;
-
-            case GetOpt::MULTIPLE_ARGUMENT:
-                if ($this->value === null) {
-                    return $this->argument->getDefaultValue() ? [ $this->argument->getDefaultValue() ] : [];
-                }
-                return $this->value;
-
-            case GetOpt::NO_ARGUMENT:
-            default:
-                return $this->value;
-        }
+        return $this->argument->getValue();
     }
 
     /**
