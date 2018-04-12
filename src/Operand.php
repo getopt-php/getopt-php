@@ -73,7 +73,8 @@ class Operand extends Argument
      */
     public function setValue($value)
     {
-        return parent::setValue($value, $this->isMultiple());
+        parent::setValue($value);
+        return $this;
     }
 
     /**
@@ -83,7 +84,7 @@ class Operand extends Argument
      */
     public function getValue()
     {
-        return parent::getValue($this->isMultiple());
+        return parent::getValue();
     }
 
     /**
