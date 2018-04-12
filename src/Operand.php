@@ -12,6 +12,8 @@ use GetOpt\ArgumentException\Invalid;
  */
 class Operand extends Argument
 {
+    const TRANSLATION_KEY = 'operand';
+
     const OPTIONAL = 0;
     const REQUIRED = 1;
     const MULTIPLE = 2;

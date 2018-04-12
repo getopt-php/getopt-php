@@ -10,11 +10,12 @@ use GetOpt\ArgumentException\Invalid;
  * @package GetOpt
  * @author  Ulrich Schmidt-Goertz
  */
-class Argument
+class Argument implements Describable
 {
     use WithMagicGetter;
 
-    const CLASSNAME = __CLASS__;
+    const CLASSNAME       = __CLASS__;
+    const TRANSLATION_KEY = 'argument';
 
     /** @var mixed */
     protected $default;
@@ -30,6 +31,12 @@ class Argument
 
     /** @var mixed */
     protected $value;
+
+    /** @var Option */
+    protected $option;
+
+    /** @var string */
+    protected $validationMessage;
 
     /**
      * Creates a new argument.
@@ -70,12 +77,13 @@ class Argument
      * The function must take a string and return true if it is valid, false otherwise.
      *
      * @param callable $callable
+     * @param string   $message
      * @return $this
-     * @throws \InvalidArgumentException
      */
-    public function setValidation(callable $callable)
+    public function setValidation(callable $callable, $message = null)
     {
-        $this->validation = $callable;
+        $this->validation        = $callable;
+        $this->validationMessage = $message;
         return $this;
     }
 
@@ -87,6 +95,14 @@ class Argument
     {
         $this->name = $name;
         return $this;
+    }
+
+    protected function getValidationMessage()
+    {
+        return ucfirst(sprintf(
+            $this->validationMessage ?: '%s has an invalid value',
+            $this->describe()
+        ));
     }
 
     /**
@@ -108,6 +124,18 @@ class Argument
     }
 
     /**
+     * Set the option where this argument belongs to
+     *
+     * @param Option $option
+     * @return $this
+     */
+    public function setOption(Option $option)
+    {
+        $this->option = $option;
+        return $this;
+    }
+
+    /**
      *  Internal method to set the current value
      *
      * @param $value
@@ -116,7 +144,7 @@ class Argument
     public function setValue($value)
     {
         if ($this->validation && !$this->validates($value)) {
-            throw new Invalid(sprintf('Operand %s has an invalid value', $this->name));
+            throw new Invalid($this->getValidationMessage());
         }
 
         if ($this->isMultiple()) {
@@ -195,5 +223,16 @@ class Argument
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Returns a human readable string representation of the object
+     *
+     * @return string
+     */
+    public function describe()
+    {
+        return $this->option ? $this->option->describe() :
+            sprintf('%s \'%s\'', GetOpt::translate(static::TRANSLATION_KEY), $this->getName());
     }
 }

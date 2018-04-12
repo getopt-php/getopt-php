@@ -58,11 +58,9 @@ class GetoptTest extends TestCase
             [ 'l', 'long' ]
         ]);
 
-        $getopt->process('-l something');
-        $this->assertEquals('something', $getopt->getOption('l'));
+        $this->setExpectedException('GetOpt\ArgumentException\Missing');
 
-        $getopt->process('--long someOtherThing');
-        $this->assertEquals('someOtherThing', $getopt->getOption('long'));
+        $getopt->process('--long');
     }
 
     /** @test */

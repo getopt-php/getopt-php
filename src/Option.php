@@ -11,7 +11,7 @@ use GetOpt\ArgumentException\Missing;
  * @package GetOpt
  * @author  Ulrich Schmidt-Goertz
  */
-class Option
+class Option implements Describable
 {
     use WithMagicGetter;
 
@@ -42,6 +42,7 @@ class Option
         $this->setMode($mode);
         $this->argument = new Argument();
         $this->argument->multiple($this->mode === GetOpt::MULTIPLE_ARGUMENT);
+        $this->argument->setOption($this);
     }
 
     /**
@@ -104,11 +105,12 @@ class Option
      * Defines a validation function for the option.
      *
      * @param callable $function
+     * @param string   $message
      * @return Option this object (for chaining calls)
      */
-    public function setValidation($function)
+    public function setValidation($function, $message = null)
     {
-        $this->argument->setValidation($function);
+        $this->argument->setValidation($function, $message);
         return $this;
     }
 
@@ -135,8 +137,9 @@ class Option
         if ($this->mode == GetOpt::NO_ARGUMENT) {
             throw new \InvalidArgumentException("Option should not have any argument");
         }
-        $this->argument = $arg;
+        $this->argument = clone $arg; // he can reuse his arg but we need a unique arg
         $this->argument->multiple($this->mode === GetOpt::MULTIPLE_ARGUMENT);
+        $this->argument->setOption($this);
         return $this;
     }
 
@@ -284,15 +287,15 @@ class Option
      */
     public function setValue($value = null)
     {
-        if ($value === null && in_array($this->mode, [ GetOpt::REQUIRED_ARGUMENT, GetOpt::MULTIPLE_ARGUMENT ])) {
-            throw new Missing(sprintf(
-                GetOpt::translate('option-argument-missing'),
-                $this->getName()
-            ));
-        }
+        if ($value === null) {
+            if (in_array($this->mode, [ GetOpt::REQUIRED_ARGUMENT, GetOpt::MULTIPLE_ARGUMENT ])) {
+                throw new Missing(sprintf(
+                    GetOpt::translate('option-argument-missing'),
+                    $this->getName()
+                ));
+            }
 
-        if ($value === null || $this->getMode() === GetOpt::NO_ARGUMENT) {
-            $value = $this->argument->getValue() + 1;
+            $value = $this->argument->getValue() +1;
         }
 
         $this->argument->setValue($value);
@@ -329,5 +332,15 @@ class Option
     {
         $value = $this->getValue();
         return !is_array($value) ? (string)$value : implode(',', $value);
+    }
+
+    /**
+     * Returns a human readable string representation of the object
+     *
+     * @return string
+     */
+    public function describe()
+    {
+        return sprintf('%s \'%s\'', GetOpt::translate('option'), $this->getName());
     }
 }
