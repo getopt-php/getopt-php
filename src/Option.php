@@ -104,8 +104,8 @@ class Option implements Describable
     /**
      * Defines a validation function for the option.
      *
-     * @param callable $function
-     * @param string   $message
+     * @param callable        $function
+     * @param string|callable $message
      * @return Option this object (for chaining calls)
      */
     public function setValidation($function, $message = null)

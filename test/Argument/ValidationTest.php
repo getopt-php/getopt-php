@@ -3,6 +3,7 @@
 namespace GetOpt\Test\Argument;
 
 use GetOpt\Argument;
+use GetOpt\Describable;
 use GetOpt\GetOpt;
 use GetOpt\Operand;
 use GetOpt\Option;
@@ -61,11 +62,11 @@ class ValidationTest extends TestCase
     public function usesCustomMessage()
     {
         $option = Option::create('a', 'alpha', GetOpt::REQUIRED_ARGUMENT)
-            ->setValidation('is_numeric', 'Alpha has to be numeric');
+            ->setValidation('is_numeric', 'alpha has to be numeric');
 
         $this->setExpectedException(
             'GetOpt\ArgumentException\Invalid',
-            sprintf('Alpha has to be numeric')
+            'Alpha has to be numeric'
         );
 
         $option->setValue('foo');
@@ -83,6 +84,68 @@ class ValidationTest extends TestCase
             sprintf('Die value von Operand \'%s\' muss numerisch sein', 'alpha')
         );
 
+        $operand->setValue('foo');
+    }
+
+    /** @test */
+    public function providesValueAsSecondReplacement()
+    {
+        $option = Option::create('a', 'alpha', GetOpt::REQUIRED_ARGUMENT)
+            ->setValidation('is_numeric', '%s %s');
+
+        $this->setExpectedException(
+            'GetOpt\ArgumentException\Invalid',
+            'Option \'alpha\' foo'
+        );
+
+        $option->setValue('foo');
+    }
+
+    /** @test */
+    public function usesCallbackToGetMessage()
+    {
+        $option = Option::create('a', 'alpha', GetOpt::REQUIRED_ARGUMENT)
+            ->setValidation('is_numeric', function () {
+                return 'alpha has to be numeric';
+            });
+
+        $this->setExpectedException(
+            'GetOpt\ArgumentException\Invalid',
+            'alpha has to be numeric'
+        );
+
+        $option->setValue('foo');
+    }
+
+    /** @test */
+    public function providesOptionAndValue()
+    {
+        $option = Option::create('a', 'alpha', GetOpt::REQUIRED_ARGUMENT);
+        $option->setValidation('is_numeric', function (Describable $object, $value) use ($option) {
+
+            $this->assertSame('foo', $value);
+            $this->assertSame($option, $object);
+
+            return 'anything';
+        });
+
+        $this->setExpectedException('GetOpt\ArgumentException\Invalid');
+        $option->setValue('foo');
+    }
+
+    /** @test */
+    public function providesOperandAndValue()
+    {
+        $operand = Operand::create('alpha');
+        $operand->setValidation('is_numeric', function (Describable $object, $value) use ($operand) {
+
+            $this->assertSame('foo', $value);
+            $this->assertSame($operand, $object);
+
+            return 'anything';
+        });
+
+        $this->setExpectedException('GetOpt\ArgumentException\Invalid');
         $operand->setValue('foo');
     }
 }

@@ -35,7 +35,7 @@ class Argument implements Describable
     /** @var Option */
     protected $option;
 
-    /** @var string */
+    /** @var string|callable */
     protected $validationMessage;
 
     /**
@@ -76,8 +76,8 @@ class Argument implements Describable
      * Set a validation function.
      * The function must take a string and return true if it is valid, false otherwise.
      *
-     * @param callable $callable
-     * @param string   $message
+     * @param callable        $callable
+     * @param string|callable $message
      * @return $this
      */
     public function setValidation(callable $callable, $message = null)
@@ -97,11 +97,16 @@ class Argument implements Describable
         return $this;
     }
 
-    protected function getValidationMessage()
+    protected function getValidationMessage($value)
     {
+        if (is_callable($this->validationMessage)) {
+            return call_user_func($this->validationMessage, $this->option ?: $this, $value);
+        }
+
         return ucfirst(sprintf(
             $this->validationMessage ?: '%s has an invalid value',
-            $this->describe()
+            $this->describe(),
+            $value
         ));
     }
 
@@ -144,7 +149,7 @@ class Argument implements Describable
     public function setValue($value)
     {
         if ($this->validation && !$this->validates($value)) {
-            throw new Invalid($this->getValidationMessage());
+            throw new Invalid($this->getValidationMessage($value));
         }
 
         if ($this->isMultiple()) {
