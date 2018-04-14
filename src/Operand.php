@@ -12,15 +12,14 @@ use GetOpt\ArgumentException\Invalid;
  */
 class Operand extends Argument
 {
+    const TRANSLATION_KEY = 'operand';
+
     const OPTIONAL = 0;
     const REQUIRED = 1;
     const MULTIPLE = 2;
 
-    /** @var int */
-    protected $mode;
-
-    /** @var mixed */
-    protected $value;
+    /** @var bool */
+    protected $required;
 
     /**
      * Operand constructor.
@@ -30,7 +29,9 @@ class Operand extends Argument
      */
     public function __construct($name, $mode = self::OPTIONAL)
     {
-        $this->mode = $mode;
+        $this->required = (bool)($mode & self::REQUIRED);
+        $this->multiple = (bool)($mode & self::MULTIPLE);
+
         parent::__construct(null, null, $name);
     }
 
@@ -51,15 +52,7 @@ class Operand extends Argument
      */
     public function isRequired()
     {
-        return (bool)($this->mode & self::REQUIRED);
-    }
-
-    /**
-     * @return bool
-     */
-    public function isMultiple()
-    {
-        return (bool)($this->mode & self::MULTIPLE);
+        return $this->required;
     }
 
     /**
@@ -68,17 +61,7 @@ class Operand extends Argument
      */
     public function required($required = true)
     {
-        $required ? $this->mode |= Operand::REQUIRED : $this->mode &= ~Operand::REQUIRED;
-        return $this;
-    }
-
-    /**
-     * @param bool $multiple
-     * @return $this
-     */
-    public function multiple($multiple = true)
-    {
-        $multiple ? $this->mode |= Operand::MULTIPLE : $this->mode &= ~Operand::MULTIPLE;
+        $this->required = $required;
         return $this;
     }
 
@@ -90,16 +73,7 @@ class Operand extends Argument
      */
     public function setValue($value)
     {
-        if ($this->validation && !$this->validates($value)) {
-            throw new Invalid(sprintf('Operand %s has an invalid value', $this->name));
-        }
-
-        if ($this->isMultiple()) {
-            $this->value = $this->value === null ? [ $value ] : array_merge($this->value, [ $value ]);
-        } else {
-            $this->value = $value;
-        }
-
+        parent::setValue($value);
         return $this;
     }
 
@@ -110,15 +84,7 @@ class Operand extends Argument
      */
     public function getValue()
     {
-        if ($this->value !== null) {
-            return $this->value;
-        }
-
-        if ($this->isMultiple()) {
-            return $this->default !== null ? [ $this->default ] : null;
-        }
-
-        return $this->default;
+        return parent::getValue();
     }
 
     /**

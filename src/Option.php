@@ -11,7 +11,7 @@ use GetOpt\ArgumentException\Missing;
  * @package GetOpt
  * @author  Ulrich Schmidt-Goertz
  */
-class Option
+class Option implements Describable
 {
     use WithMagicGetter;
 
@@ -41,6 +41,8 @@ class Option
         $this->setLong($long);
         $this->setMode($mode);
         $this->argument = new Argument();
+        $this->argument->multiple($this->mode === GetOpt::MULTIPLE_ARGUMENT);
+        $this->argument->setOption($this);
     }
 
     /**
@@ -102,12 +104,13 @@ class Option
     /**
      * Defines a validation function for the option.
      *
-     * @param callable $function
+     * @param callable        $function
+     * @param string|callable $message
      * @return Option this object (for chaining calls)
      */
-    public function setValidation($function)
+    public function setValidation($function, $message = null)
     {
-        $this->argument->setValidation($function);
+        $this->argument->setValidation($function, $message);
         return $this;
     }
 
@@ -134,7 +137,9 @@ class Option
         if ($this->mode == GetOpt::NO_ARGUMENT) {
             throw new \InvalidArgumentException("Option should not have any argument");
         }
-        $this->argument = $arg;
+        $this->argument = clone $arg; // he can reuse his arg but we need a unique arg
+        $this->argument->multiple($this->mode === GetOpt::MULTIPLE_ARGUMENT);
+        $this->argument->setOption($this);
         return $this;
     }
 
@@ -162,6 +167,16 @@ class Option
     public function getShort()
     {
         return $this->short;
+    }
+
+    /**
+     * Returns long name or short name if long name is not set
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->getLong() ?: $this->getShort();
     }
 
     /**
@@ -272,29 +287,18 @@ class Option
      */
     public function setValue($value = null)
     {
-        if ($value === null && in_array($this->mode, [ GetOpt::REQUIRED_ARGUMENT, GetOpt::MULTIPLE_ARGUMENT ])) {
-            throw new Missing(sprintf(
-                GetOpt::translate('option-argument-missing'),
-                $this->getLong() ?: $this->getShort()
-            ));
+        if ($value === null) {
+            if (in_array($this->mode, [ GetOpt::REQUIRED_ARGUMENT, GetOpt::MULTIPLE_ARGUMENT ])) {
+                throw new Missing(sprintf(
+                    GetOpt::translate('option-argument-missing'),
+                    $this->getName()
+                ));
+            }
+
+            $value = $this->argument->getValue() +1;
         }
 
-        if ($value === null || $this->getMode() === GetOpt::NO_ARGUMENT) {
-            $value = $this->value === null ? 1 : $this->value + 1;
-        }
-
-        if ($this->getArgument()->hasValidation() && !$this->getArgument()->validates($value)) {
-            throw new Invalid(sprintf(
-                GetOpt::translate('option-value-invalid'),
-                $this->getLong() ?: $this->getShort()
-            ));
-        }
-
-        if ($this->mode === GetOpt::MULTIPLE_ARGUMENT) {
-            $this->value = $this->value === null ? [ $value ] : array_merge($this->value, [ $value ]);
-        } else {
-            $this->value = $value;
-        }
+        $this->argument->setValue($value);
 
         return $this;
     }
@@ -306,21 +310,7 @@ class Option
      */
     public function getValue()
     {
-        switch ($this->mode) {
-            case GetOpt::OPTIONAL_ARGUMENT:
-            case GetOpt::REQUIRED_ARGUMENT:
-                return $this->value === null ? $this->argument->getDefaultValue() : $this->value;
-
-            case GetOpt::MULTIPLE_ARGUMENT:
-                if ($this->value === null) {
-                    return $this->argument->getDefaultValue() ? [ $this->argument->getDefaultValue() ] : [];
-                }
-                return $this->value;
-
-            case GetOpt::NO_ARGUMENT:
-            default:
-                return $this->value;
-        }
+        return $this->argument->getValue();
     }
 
     /**
@@ -342,5 +332,15 @@ class Option
     {
         $value = $this->getValue();
         return !is_array($value) ? (string)$value : implode(',', $value);
+    }
+
+    /**
+     * Returns a human readable string representation of the object
+     *
+     * @return string
+     */
+    public function describe()
+    {
+        return sprintf('%s \'%s\'', GetOpt::translate('option'), $this->getName());
     }
 }
