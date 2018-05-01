@@ -195,4 +195,19 @@ class CommonTest extends TestCase
 
         self::assertFalse($operand->isMultiple());
     }
+
+    /** @test */
+    public function requiredMultipleThrowsMissing()
+    {
+        $operand = new Operand('port');
+        $operand->multiple(true);
+        $operand->required(true);
+
+        $getOpt = new GetOpt();
+        $getOpt->addOperand($operand);
+
+        $this->setExpectedException('GetOpt\ArgumentException\Missing', 'Operand port is required');
+
+        $getOpt->process('');
+    }
 }
