@@ -2,6 +2,7 @@
 
 namespace GetOpt\Test\Operands;
 
+use GetOpt\ArgumentException\Missing;
 use GetOpt\Command;
 use GetOpt\GetOpt;
 use GetOpt\Operand;
@@ -194,5 +195,20 @@ class CommonTest extends TestCase
         $operand->multiple(false);
 
         self::assertFalse($operand->isMultiple());
+    }
+
+    /** @test */
+    public function requiredMultipleThrowsMissing()
+    {
+        $operand = new Operand('port');
+        $operand->multiple(true);
+        $operand->required(true);
+
+        $getOpt = new GetOpt();
+        $getOpt->addOperand($operand);
+
+        $this->setExpectedException('GetOpt\ArgumentException\Missing', 'Operand port is required');
+
+        $getOpt->process('');
     }
 }
