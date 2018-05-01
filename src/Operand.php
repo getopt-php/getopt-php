@@ -115,7 +115,7 @@ class Operand extends Argument
         }
 
         if ($this->isMultiple()) {
-            return $this->default !== null ? [ $this->default ] : null;
+            return $this->default !== null ? [ $this->default ] : [];
         }
 
         return $this->default;
