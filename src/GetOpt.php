@@ -192,7 +192,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
         $arguments->process($this, $setOption, $setCommand, $addOperand);
 
         if (($operand = $this->nextOperand()) && $operand->isRequired() &&
-            (!$operand->isMultiple() || count($this->getOperand($operand->getName())) === 0)
+            (!$operand->isMultiple() || count($operand->getValue()) === 0)
         ) {
             throw new Missing(sprintf(self::translate('operand-missing'), $operand->getName()));
         }
