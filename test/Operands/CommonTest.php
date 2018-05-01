@@ -2,7 +2,6 @@
 
 namespace GetOpt\Test\Operands;
 
-use GetOpt\ArgumentException\Missing;
 use GetOpt\Command;
 use GetOpt\GetOpt;
 use GetOpt\Operand;
