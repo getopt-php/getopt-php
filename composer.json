@@ -32,6 +32,8 @@
         }
     },
     "scripts": {
-        "code-style": "phpcs --standard=PSR2 src && phpcs --standard=PSR2 test"
+        "code-style": "vendor/bin/phpcs --standard=PSR2 src && vendor/bin/phpcs --standard=PSR2 test",
+        "test": "vendor/bin/phpunit -c phpunit.xml",
+        "coverage": "vendor/bin/phpunit -c phpunit.xml --coverage-clover=build/coverage.xml --coverage-html=build/coverage --coverage-text"
     }
 }
