@@ -10,11 +10,12 @@ namespace GetOpt;
  */
 class Help implements HelpInterface
 {
-    const TEMPLATE_USAGE       = 'usageTemplate';
-    const TEMPLATE_OPTIONS     = 'optionsTemplate';
-    const TEMPLATE_COMMANDS    = 'commandsTemplate';
-    const DESCRIPTION          = 'description';
-    const MAX_WIDTH            = 'maxWidth';
+    const TEMPLATE_USAGE    = 'usageTemplate';
+    const TEMPLATE_OPTIONS  = 'optionsTemplate';
+    const TEMPLATE_COMMANDS = 'commandsTemplate';
+    const DESCRIPTION       = 'description';
+    const MAX_WIDTH         = 'maxWidth';
+    const HIDE_OPERANDS     = 'hideOperands';
 
     /** @var string */
     protected $usageTemplate;
@@ -132,6 +133,10 @@ class Help implements HelpInterface
             $helpText = $this->renderUsage();
         }
 
+        if ($getopt->hasOperands() && empty($this->settings[self::HIDE_OPERANDS])) {
+            $helpText .= $this->renderOperands();
+        }
+
         // when we have options we add them too
         if ($getopt->hasOptions()) {
             if ($this->optionsTemplate) {
@@ -177,10 +182,37 @@ class Help implements HelpInterface
                 $this->renderDescription();
     }
 
+    protected function renderOperands()
+    {
+        $data = [];
+        $definitionWidth = 0;
+        $hasDescriptions = false;
+        foreach ($this->getOpt->getOperandObjects() as $operand) {
+            $definition = $this->surround($operand->getName(), $this->texts['placeholder']);
+            if (!$operand->isRequired()) {
+                $definition = $this->surround($definition, $this->texts['optional']);
+            }
+
+            if (strlen($definition) > $definitionWidth) {
+                $definitionWidth = strlen($definition);
+            }
+
+            if ($operand->getDescription()) {
+                $hasDescriptions = true;
+            }
+
+            $data[] = [$definition, $operand->getDescription()];
+        }
+
+        if (!$hasDescriptions) {
+            return '';
+        }
+
+        return $this->getText('operands-title') . $this->renderColumns($definitionWidth, $data) . PHP_EOL;
+    }
+
     protected function renderOptions()
     {
-        $text = $this->getText('options-title');
-
         $data            = [];
         $definitionWidth = 0;
         foreach ($this->getOpt->getOptionObjects() as $option) {
@@ -202,19 +234,14 @@ class Help implements HelpInterface
                 $definitionWidth = strlen($definition);
             }
 
-            $data[] = [
-                $definition,
-                $option->getDescription()
-            ];
+            $data[] = [$definition, $option->getDescription()];
         }
 
-        return $text . $this->renderColumns($definitionWidth, $data) . PHP_EOL;
+        return $this->getText('options-title') . $this->renderColumns($definitionWidth, $data) . PHP_EOL;
     }
 
     protected function renderCommands()
     {
-        $text = $this->getText('commands-title');
-
         $data      = [];
         $nameWidth = 0;
         foreach ($this->getOpt->getCommands() as $command) {
@@ -228,7 +255,7 @@ class Help implements HelpInterface
             ];
         }
 
-        return $text . $this->renderColumns($nameWidth, $data) . PHP_EOL;
+        return $this->getText('commands-title') . $this->renderColumns($nameWidth, $data) . PHP_EOL;
     }
 
     protected function renderUsageCommand()
@@ -263,7 +290,7 @@ class Help implements HelpInterface
                 $usage .= $name . ' ';
                 if ($operand->isMultiple()) {
                     $usage .= $this->surround(
-                        $this->surround($operand->getName(), $this->texts['placeholder']) . '...',
+                        $this->surround($operand->getName(), $this->texts['placeholder']) . $this->texts['multiple'],
                         $this->texts['optional']
                     );
                     $lastOperandMultiple = true;
