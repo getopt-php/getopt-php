@@ -17,7 +17,7 @@ cache:
 before_script:
   - composer install --no-interaction
   - sh -c 'if [ "$TRAVIS_PHP_VERSION" = "7.0" ]; then composer require satooshi/php-coveralls:~0.6@stable; fi;'
-  - mkdir -p build
+  - mkdir -p build/logs
 
 script:
   - composer code-style
