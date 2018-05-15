@@ -319,7 +319,16 @@ class Help implements HelpInterface
 
             while (mb_strlen($row) > $screenWidth) {
                 $p = strrpos(substr($row, 0, $screenWidth), ' ');
-                $text .= substr($row, 0, $p) . PHP_EOL;
+                if ($p < $columnWidth+4) {
+                    // no space - check for dash
+                    $p = strrpos(substr($row, 0, $screenWidth), '-');
+                    if ($p < $columnWidth+4) {
+                        // break at screen width
+                        $p = $screenWidth-1;
+                    }
+                }
+                $c = substr($row, $p, 1);
+                $text .= substr($row, 0, $p) . ($c !== ' ' ? $c : '') . PHP_EOL;
                 $row = sprintf('  %s  %s', str_repeat(' ', $columnWidth), substr($row, $p+1));
             }
 
