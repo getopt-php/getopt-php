@@ -3,6 +3,7 @@
 namespace GetOpt\Test\Options;
 
 use GetOpt\GetOpt;
+use GetOpt\Help;
 use GetOpt\Option;
 use PHPUnit\Framework\TestCase;
 
@@ -74,6 +75,32 @@ class HelpTest extends TestCase
             '  --beta [<arg>]  Long option only with an optional argument' . PHP_EOL .
             '  -c <arg>        Short option only with a mandatory argument' . PHP_EOL . PHP_EOL,
             $getopt->getHelpText()
+        );
+    }
+
+    /** @test */
+    public function longWordsInDescription()
+    {
+        defined('COLUMNS') || define('COLUMNS', 90);
+
+        $getopt = new GetOpt([
+            ['a', 'alpha', GetOpt::OPTIONAL_ARGUMENT, 'This-is-a-long-word-with-dashes-what-should-not-cause-an-issue'],
+            ['b', 'beta', GetOpt::OPTIONAL_ARGUMENT, 'ThisWillCauseAnIssueBecauseWeDontKnowWhereToBreakInThisLongWord'],
+        ]);
+
+        $script = $_SERVER['PHP_SELF'];
+        self::assertSame(
+            'Usage: ' . $script . ' [options] [operands]' . PHP_EOL . PHP_EOL .
+            'Options:' . PHP_EOL .
+            '  -a, --alpha [<arg>]  This-is-a-long-' . PHP_EOL .
+            '                       word-with-dashes-' . PHP_EOL .
+            '                       what-should-not-' . PHP_EOL .
+            '                       cause-an-issue' . PHP_EOL .
+            '  -b, --beta [<arg>]   ThisWillCauseAnIs' . PHP_EOL .
+            '                       sueBecauseWeDontK' . PHP_EOL .
+            '                       nowWhereToBreakIn' . PHP_EOL .
+            '                       ThisLongWord' . PHP_EOL . PHP_EOL,
+            $getopt->getHelpText([Help::MAX_WIDTH => 40])
         );
     }
 
