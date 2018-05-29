@@ -21,6 +21,9 @@ class Operand extends Argument
     /** @var bool */
     protected $required;
 
+    /** @var string */
+    protected $description;
+
     /**
      * Operand constructor.
      *
@@ -85,6 +88,24 @@ class Operand extends Argument
     public function getValue()
     {
         return parent::getValue();
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     * @return $this
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+        return $this;
     }
 
     /**
