@@ -66,21 +66,8 @@ you are planning such things you should consider using `->getOperand('operand1')
 
 ### Validation
 
-Again: it is the same functionality as for validating options. It follows a small example. See 
-[Options Validation](options.html#validation) for more details.
-
-```php
-<?php
-$getopt = new \GetOpt\GetOpt();
-$getopt->addOperands([
-    \GetOpt\Operand::create('file', \GetOpt\Operand::REQUIRED)
-        ->setValidation('is_readable'),
-    \GetOpt\Operand::create('destination', \GetOpt\Operand::MULTIPLE)
-        ->setValidation(function ($value) {
-            return file_exists($value) && is_dir($value) && is_writeable($value); 
-        }),
-]);
-```
+You can validate the argument of an operand using the `->setValidation($callable)`. To learn more about validation
+please refer to the section [Validation](validation.md) of this handbook.
 
 ## Working With Operands
 

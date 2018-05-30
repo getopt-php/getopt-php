@@ -12,5 +12,5 @@ return [
     'no-more-operands' => 'No more operands expected - got %s',
     'operand-missing' => 'Operand %s is required',
     'option-argument-missing' => 'Option \'%s\' must have a value',
-    'option-value-invalid' => 'Option \'%s\' has an invalid value',
+    'value-invalid' => '%s has an invalid value',
 ];

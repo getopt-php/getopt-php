@@ -104,7 +104,7 @@ class Argument implements Describable
         }
 
         return ucfirst(sprintf(
-            $this->validationMessage ?: '%s has an invalid value',
+            $this->validationMessage ?: GetOpt::translate('value-invalid'),
             $this->describe(),
             $value
         ));

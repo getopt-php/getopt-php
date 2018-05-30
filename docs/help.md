@@ -19,37 +19,12 @@ The method `HelpInterface::render(GetOpt, array)` receives the `GetOpt` object f
 
 ### Localization
 
-By default, `GetOpt` displays standard help text in English. This can be customized in several ways.
-
-#### Switching to an existing language
-
-`GetOpt` comes bundled with help texts translated in 
-[several languages](https://github.com/getopt-php/getopt-php/tree/master/resources/localization).
-These are located under `vendor/ulrichsg/getopt-php/resources/localization/<lang>.php`.
-
-You can switch to one of these languages by calling `GetOpt\GetOpt::setHelpLang($language)`  
-
-```php
-<?php
-$getopt = new \GetOpt\GetOpt();
-$getopt->setHelpLang('de');                         
-```
-
-Translations for additional languages are welcome; if you would like to contribute, please 
-[submit a pull request](https://github.com/getopt-php/getopt-php/compare).
-
-#### Switching to a custom language
-
-It is also possible to use a custom language file by specifying its path; the script must return an array in the
-same format as the bundled language files. 
-
-```php
-<?php
-$getopt = new \GetOpt\GetOpt();
-$getopt->setHelpLang(__DIR__ . '/path/to/cn.php');
-```
+By default, `GetOpt` displays standard help text in English. Have a look at [Localization](localization.md) for more
+information about localization.
 
 #### Override the localization
+
+> **Dreprecated** note that this method is deprecated for messages. Please use localization files instead.
 
 The `GetOpt\Help` class can be used to define the standard help text, with the `setTexts(array $texts)` method. 
 The provided array overwrites the existing localization:
