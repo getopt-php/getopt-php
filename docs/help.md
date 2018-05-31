@@ -19,37 +19,12 @@ The method `HelpInterface::render(GetOpt, array)` receives the `GetOpt` object f
 
 ### Localization
 
-By default, `GetOpt` displays standard help text in English. This can be customized in several ways.
-
-#### Switching to an existing language
-
-`GetOpt` comes bundled with help texts translated in 
-[several languages](https://github.com/getopt-php/getopt-php/tree/master/resources/localization).
-These are located under `vendor/ulrichsg/getopt-php/resources/localization/<lang>.php`.
-
-You can switch to one of these languages by calling `GetOpt\GetOpt::setHelpLang($language)`  
-
-```php
-<?php
-$getopt = new \GetOpt\GetOpt();
-$getopt->setHelpLang('de');                         
-```
-
-Translations for additional languages are welcome; if you would like to contribute, please 
-[submit a pull request](https://github.com/getopt-php/getopt-php/compare).
-
-#### Switching to a custom language
-
-It is also possible to use a custom language file by specifying its path; the script must return an array in the
-same format as the bundled language files. 
-
-```php
-<?php
-$getopt = new \GetOpt\GetOpt();
-$getopt->setHelpLang(__DIR__ . '/path/to/cn.php');
-```
+By default, `GetOpt` displays standard help text in English. Have a look at [Localization](localization.md) for more
+information about localization.
 
 #### Override the localization
+
+> **Deprecated** note that this method is deprecated for messages. Please use localization files instead.
 
 The `GetOpt\Help` class can be used to define the standard help text, with the `setTexts(array $texts)` method. 
 The provided array overwrites the existing localization:
@@ -108,6 +83,19 @@ $getopt->getHelp()
     ->setCommandsTemplate('path/to/my/commandsTemplate.php');
 ```
 
+### Tables
+
+Options, operands and commands are shown in a table with two columns. The columns are divided with two spaces and the
+description (second column) will automatically break after the last space that fits into the terminal. The number of
+columns that fit into the terminal is determined in the following sequence:
+
+1. a constant `COLUMNS`,
+2. an environment variable `COLUMNS`,
+3. the result from `tput cols` command
+4. value `90`
+
+This is limited by the setting `GetOpt\Help::MAX_WIDTH` (default: `120`).
+
 ### The Parts of Help
 
 In the following sections, you will find a complete description of the three parts the Help is split into, and what
@@ -124,21 +112,25 @@ command has to be given, where the options should be entered and the name and or
    `Usage: path/to/app make:config [options] <file>`
  - No commands, options and operands defined and strict operands:  
    `Usage: path/to/app`
+   
+#### Operands
+
+When one of the operands has a description the table of operands will be shown. The table can be suppressed by passing
+the option `HIDE_OPERANDS` with a falsy value (e. g. `false`).
+
+The table shows the operands name in the left column and the description on the right column what might look like this:
+
+```
+Operands:
+  <source>    The source that should be copied.
+  [<target>]  The target where source should be copied to. If target is ommitted the file 
+              will be copied to the current working directory.
+```
 
 #### Options
 
 Options are shown in a table with the options (including argument) in the left column, and
 the description of each option in the right column.
-
-Long descriptions automatically break after the last space that fits into the
-terminal's width. The number of columns is determined in the following sequence:
-
-1. a constant `COLUMNS`,
-2. an environment variable `COLUMNS`,
-3. the result from `tput cols` command
-4. value `90`
-
-This is limited by the setting `GetOpt\Help::MAX_WIDTH` (default: `120`).
 
 In the end it might look something like this:
 

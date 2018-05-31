@@ -275,54 +275,8 @@ var_dump($getopt->getOption('domain')); // ['example.com', 'example.org']
 
 ### Validation
 
-This library does not come with a bunch of validators that you can use and extend. Instead you provide a callable or
-closure that has to return a truthy value if the value is valid (further called the validator).
-
-The validator gets the value as first and only parameter. For a lot of php standard functions this is enough (eg. 
-`is_numeric`). The value will always be a string or null. Here comes an example that shows how to check that it has
-a valid json value:
-
-```php
-<?php
-$getopt = new \GetOpt\GetOpt([
-    \GetOpt\Option::create(null, 'data', \GetOpt\GetOpt::REQUIRED_ARGUMENT)
-        ->setValidation(function ($value) {
-            return $value === 'null' || json_decode($value) !== null;
-        })
-]);
-```
-
-```console
-$ php program.php --data null
-$ php program.php --data []
-$ php program.php --data '{"a":"alpha"}'
-$ php program.php --data invalid
-```
-
-#### Advanced Validation
-
-The validator is also executed if the option mode is `NO_ARGUMENT`. This way we can also check other circumstances
-inside our application as well as the current status of options.
-
-A use case for this could be to define exclusive options (which is also the reason because it was asked in a feature
-request). Let's say our program has the options `alpha` and `omega` but when you define `alpha` the `omega` option is
-forbidden and vise versa:
-
-```php
-<?php
-$getopt = new \GetOpt\GetOpt();
-
-$getopt->addOptions([
-    \GetOpt\Option::create(null, 'alpha', \GetOpt\GetOpt::REQUIRED_ARGUMENT)
-        ->setValidation(function () use ($getopt) {
-            return !$getopt->getOption('omega');
-        }),
-    \GetOpt\Option::create(null, 'omega', \GetOpt\GetOpt::REQUIRED_ARGUMENT)
-        ->setValidation(function () use ($getopt) {
-            return !$getopt->getOption('alpha');
-        }),
-]);
-```
+You can validate the argument of an option using the `->setValidation($callable)`. To learn more about validation
+please refer to the section [Validation](validation.md) of this handbook.
 
 ## Allow Custom Options
 

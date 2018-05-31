@@ -12,7 +12,7 @@ return [
     'no-more-operands' => 'Argument inattendu - %s',
     'operand-missing' => 'L\'argument %s est obligatoire',
     'option-argument-missing' => 'L\'option \'%s\' doit avoir une valeur',
-    'option-value-invalid' => 'La valeur de l\'option \'%s\' est invalide',
+    'value-invalid' => 'La valeur de %s est invalide',
     'option' => 'option', // optimization: otherwise we would have to load the fallback
     'argument' => 'argument',
     'operand' => 'argument',

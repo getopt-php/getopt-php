@@ -12,7 +12,7 @@ return [
     'no-more-operands' => 'Unerwarteter Operand %s',
     'operand-missing' => 'Operand %s muss angegeben werden',
     'option-argument-missing' => 'Option \'%s\' erwartet einen Wert',
-    'option-value-invalid' => 'Der Wert für Option \'%s\' ist ungültig',
+    'value-invalid' => 'Der Wert für %s ist ungültig',
     'option' => 'Option',
     'operand' => 'Operand',
     'argument' => 'Argument',
