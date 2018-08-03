@@ -39,7 +39,7 @@ class StrictTest extends TestCase
         $script = $_SERVER['PHP_SELF'];
 
         self::assertSame(
-            'Usage: ' . $script . ' <file> ' . PHP_EOL . PHP_EOL,
+            'Usage: ' . $script . ' <file>' . PHP_EOL . PHP_EOL,
             $getopt->getHelpText()
         );
     }

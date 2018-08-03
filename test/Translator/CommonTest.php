@@ -32,6 +32,6 @@ class CommonTest extends TestCase
 
         $result = $translator->translate('commands-title');
 
-        self::assertSame("Commands:\n", $result);
+        self::assertSame("Commands:" . PHP_EOL, $result);
     }
 }

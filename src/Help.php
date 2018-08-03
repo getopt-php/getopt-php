@@ -175,7 +175,7 @@ class Help implements HelpInterface
     protected function renderUsage()
     {
         return $this->getText('usage-title') .
-               $this->getOpt->get(GetOpt::SETTING_SCRIPT_NAME) . ' ' .
+               $this->getOpt->get(GetOpt::SETTING_SCRIPT_NAME) .
                 $this->renderUsageCommand() .
                 $this->renderUsageOptions() .
                 $this->renderUsageOperands() . PHP_EOL . PHP_EOL .
@@ -189,8 +189,8 @@ class Help implements HelpInterface
         $hasDescriptions = false;
         foreach ($this->getOpt->getOperandObjects() as $operand) {
             $definition = $this->surround($operand->getName(), $this->texts['placeholder']);
-            if (!$operand->isRequired()) {
-                $definition = $this->surround($definition, $this->texts['optional']);
+            if ($operand->isMultiple()) {
+                $definition .= $this->texts['multiple'];
             }
 
             if (strlen($definition) > $definitionWidth) {
@@ -261,47 +261,44 @@ class Help implements HelpInterface
     protected function renderUsageCommand()
     {
         if ($command = $this->getOpt->getCommand()) {
-            return $command->getName() . ' ';
+            return ' ' . $command->getName();
         } elseif ($this->getOpt->hasCommands()) {
-            return $this->surround($this->getText('usage-command'), $this->texts['placeholder']) . ' ';
+            return ' ' . $this->surround($this->getText('usage-command'), $this->texts['placeholder']);
         }
 
         return '';
     }
-    
+
     protected function renderUsageOptions()
     {
         if ($this->getOpt->hasOptions() || !$this->getOpt->get(GetOpt::SETTING_STRICT_OPTIONS)) {
-            return $this->surround($this->getText('usage-options'), $this->texts['optional']) . ' ';
+            return ' ' . $this->surround($this->getText('usage-options'), $this->texts['optional']);
         }
     }
-    
+
     protected function renderUsageOperands()
     {
         $usage = '';
-        
+
         $lastOperandMultiple = false;
         if ($this->getOpt->hasOperands()) {
             foreach ($this->getOpt->getOperandObjects() as $operand) {
                 $name = $this->surround($operand->getName(), $this->texts['placeholder']);
+                if ($operand->isMultiple()) {
+                    $name .= $this->texts['multiple'];
+                    $lastOperandMultiple = true;
+                }
                 if (!$operand->isRequired()) {
                     $name = $this->surround($name, $this->texts['optional']);
                 }
-                $usage .= $name . ' ';
-                if ($operand->isMultiple()) {
-                    $usage .= $this->surround(
-                        $this->surround($operand->getName(), $this->texts['placeholder']) . $this->texts['multiple'],
-                        $this->texts['optional']
-                    );
-                    $lastOperandMultiple = true;
-                }
+                $usage .= ' ' . $name;
             }
         }
 
         if (!$lastOperandMultiple && !$this->getOpt->get(GetOpt::SETTING_STRICT_OPERANDS)) {
-            $usage .= $this->surround($this->getText('usage-operands'), $this->texts['optional']);
+            $usage .= ' ' . $this->surround($this->getText('usage-operands'), $this->texts['optional']);
         }
-        
+
         return $usage;
     }
 

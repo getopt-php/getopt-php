@@ -54,14 +54,14 @@ class HelpTest extends TestCase
     /** @test */
     public function helpTextForMultiple()
     {
-        $operand = new Operand('op1', Operand::MULTIPLE);
+        $operand = new Operand('op1', Operand::OPTIONAL | Operand::MULTIPLE);
         $script = $_SERVER['PHP_SELF'];
 
         $getopt = new GetOpt();
         $getopt->addOperand($operand);
 
         self::assertSame(
-            'Usage: ' . $script . ' [<op1>] [<op1>...]' . PHP_EOL . PHP_EOL,
+            'Usage: ' . $script . ' [<op1>...]' . PHP_EOL . PHP_EOL,
             $getopt->getHelpText()
         );
     }
@@ -76,7 +76,7 @@ class HelpTest extends TestCase
         $getopt->addOperand($operand);
 
         self::assertSame(
-            'Usage: ' . $script . ' <op1> [<op1>...]' . PHP_EOL . PHP_EOL,
+            'Usage: ' . $script . ' <op1>...' . PHP_EOL . PHP_EOL,
             $getopt->getHelpText()
         );
     }
@@ -96,10 +96,10 @@ class HelpTest extends TestCase
         );
 
         self::assertSame(
-            'Usage: ' . $script . ' <file> [<destination>] ' . PHP_EOL . PHP_EOL .
+            'Usage: ' . $script . ' <file> [<destination>]' . PHP_EOL . PHP_EOL .
             'Operands:' . PHP_EOL .
-            '  <file>           The file to copy' . PHP_EOL .
-            '  [<destination>]  The destination folder (current folder by default)' . PHP_EOL . PHP_EOL,
+            '  <file>         The file to copy' . PHP_EOL .
+            '  <destination>  The destination folder (current folder by default)' . PHP_EOL . PHP_EOL,
             $getOpt->getHelpText()
         );
     }
@@ -119,7 +119,7 @@ class HelpTest extends TestCase
         );
 
         self::assertSame(
-            'Usage: ' . $script . ' <file> [<destination>] ' . PHP_EOL . PHP_EOL,
+            'Usage: ' . $script . ' <file> [<destination>]' . PHP_EOL . PHP_EOL,
             $getOpt->getHelpText([Help::HIDE_OPERANDS => true])
         );
     }
