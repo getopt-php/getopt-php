@@ -87,7 +87,8 @@ class Operand extends Argument
      */
     public function getValue()
     {
-        return parent::getValue();
+        $value = parent::getValue();
+        return $value === null || $value === [] ? $this->getDefaultValue() : $value;
     }
 
     /**

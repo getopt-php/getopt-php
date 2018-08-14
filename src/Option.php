@@ -310,7 +310,8 @@ class Option implements Describable
      */
     public function getValue()
     {
-        return $this->argument->getValue();
+        $value = $this->argument->getValue();
+        return $value === null || $value === [] ? $this->argument->getDefaultValue() : $value;
     }
 
     /**
