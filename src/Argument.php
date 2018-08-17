@@ -168,15 +168,11 @@ class Argument implements Describable
      */
     public function getValue()
     {
-        if ($this->value !== null) {
-            return $this->value;
+        if ($this->value === null && $this->isMultiple()) {
+            return [];
         }
 
-        if ($this->isMultiple()) {
-            return $this->default !== null ? [ $this->default ] : [];
-        }
-
-        return $this->default;
+        return $this->value;
     }
 
     /**
@@ -217,6 +213,10 @@ class Argument implements Describable
      */
     public function getDefaultValue()
     {
+        if ($this->isMultiple()) {
+            return $this->default ? [$this->default] : [];
+        }
+
         return $this->default;
     }
 

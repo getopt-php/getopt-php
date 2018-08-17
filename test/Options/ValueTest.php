@@ -73,4 +73,15 @@ class ValueTest extends TestCase
 
         $this->assertSame('valueA,valueB', (string)$option);
     }
+
+    /** @test */
+    public function defaultValueNotUsedForCounting()
+    {
+        $option = new Option('a', null, GetOpt::OPTIONAL_ARGUMENT);
+        $option->setDefaultValue(42);
+
+        $option->setValue(null);
+
+        $this->assertSame(1, $option->getValue());
+    }
 }
