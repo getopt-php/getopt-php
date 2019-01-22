@@ -290,14 +290,15 @@ class ArgumentsTest extends TestCase
     }
 
     /** @test */
-    public function parseNoValueStartingWithHyphenRequired()
+    public function parseValueStartingWithHypenRequired()
     {
-        $this->setExpectedException('GetOpt\ArgumentException\Missing');
         $this->getopt->addOptions([
             new Option('a', null, GetOpt::REQUIRED_ARGUMENT),
             new Option('b', null)
         ]);
         $this->getopt->process('-a -b');
+
+        self::assertEquals('-b', $this->getopt->getOption('a'));
     }
 
     /** @test */

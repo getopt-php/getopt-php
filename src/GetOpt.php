@@ -162,7 +162,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
                 }
             }
 
-            $option->setValue($option->getMode() !== GetOpt::NO_ARGUMENT ? $getValue() : null);
+            $option->setValue($option->getMode() !== GetOpt::NO_ARGUMENT ? $getValue($option) : null);
         };
 
         $setCommand = function (Command $command) {
