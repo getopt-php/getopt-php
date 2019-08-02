@@ -197,7 +197,7 @@ class Option implements Describable
      */
     public function setLong($long)
     {
-        if (!(is_null($long) || preg_match("/^[a-zA-Z0-9][a-zA-Z0-9_-]{1,}$/", $long))) {
+        if (!(is_null($long) || preg_match("/^[a-zA-Z0-9][a-zA-Z0-9_-]*$/", $long))) {
             throw new \InvalidArgumentException(sprintf(
                 'Long option must be null or an alphanumeric string, found \'%s\'',
                 $long
