@@ -10,7 +10,7 @@ The recommended way of installing GetOpt.php is to use Composer.
 ## Use composer
 
 ```console
-$ /path/to/composer require ulrichsg/getopt-php:"^3.0"
+$ /path/to/composer require ulrichsg/getopt-php
 ```
 
 Replace `^3.0` by the release number you want to use (a list of releases is available on
@@ -23,7 +23,7 @@ Add it to your composer.json file like this:
 ```json
 {
     "require": {
-        "ulrichsg/getopt-php": "^3.0"
+        "ulrichsg/getopt-php": "^3.2"
     }
 }
 ```
