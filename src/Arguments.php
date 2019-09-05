@@ -201,7 +201,7 @@ class Arguments
 
         $state = 'n'; // states: n (normal), d (double quoted), s (single quoted)
         for ($i = 0; $i < strlen($argsString); $i++) {
-            $char = $argsString{$i};
+            $char = $argsString[$i];
             switch ($state) {
                 case 'n':
                     if ($char === '\'') {
@@ -221,7 +221,7 @@ class Arguments
                         $state = 'n';
                     } elseif ($char === '\\') {
                         $i++;
-                        $argv[$argc] .= $argsString{$i};
+                        $argv[$argc] .= $argsString[$i];
                     } else {
                         $argv[$argc] .= $char;
                     }
@@ -232,7 +232,7 @@ class Arguments
                         $state = 'n';
                     } elseif ($char === '\\') {
                         $i++;
-                        $argv[$argc] .= $argsString{$i};
+                        $argv[$argc] .= $argsString[$i];
                     } else {
                         $argv[$argc] .= $char;
                     }
