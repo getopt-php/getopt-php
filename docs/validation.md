@@ -5,10 +5,10 @@ permalink: /validation.html
 ---
 # {{ page.title }}
 
-This library does not come with a bunch of validators that you can use and extend. Instead you provide a callable or
+This library does not come with a bunch of validators that you can use and extend. Instead, you provide a callable or
 closure that has to return a truthy value if the value is valid (further called the validator).
 
-The validator gets the value as first and only parameter. For a lot of php standard functions this is enough (eg. 
+The validator gets the value as first and only parameter. For a lot of php standard functions this is enough (eg.
 `is_numeric`). The value will always be a string or null. Here comes an example that shows how to check that it has
 a valid json value:
 
@@ -33,7 +33,7 @@ $ php program.php --data invalid
 
 Since version 3.2 GetOpt supports custom validation messages. `Option::setValidation()` and `Operand::setValidation` now
 allow to pass a second parameter the validation message. This message gets passed to `sprintf($message, $desc, $value)`
-where `$desc` is the description of the validated object (e. g. `Option 'data'`) and `$value` the original value that
+where `$desc` is the description of the validated object (e.g. `Option 'data'`) and `$value` is the original value that
 was not valid.
 
 The validation message can also be a callable that is then called with `$object` and `$value`. To get the description

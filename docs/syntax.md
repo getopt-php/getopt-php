@@ -8,7 +8,7 @@ permalink: /syntax.html
 ## Short Options
 
 A short option is a letter (A-Z only, no umlauts etc.) or digit prefixed with a single hyphen.
-Letters are case sensitive, i.e., `-v` and `-V` are different options.
+Letters are case-sensitive, i.e., `-v` and `-V` are different options.
 If the option has an argument, it must be separated from the option by a space. The following
 command invokes `program.php` with two short options `a` and `1`, where
 `a` has the argument `foo` and `1` has no argument:
@@ -67,8 +67,8 @@ $ php program.php -f value -o --option
 
 ## Commands
 
-When using commands for routing the command has to be provided as first operand. Also no command specific option can
-be provided in front of the command. The following examples shows the basic syntax and a concrete usage:
+When using commands for routing the command has to be provided as first operand. Also, no command specific option can
+be provided in front of the command. The following examples show the basic syntax and a concrete usage:
 
 ```console
 $ php program.php [common options] <command> [common and specific options] [operands]
