@@ -8,7 +8,7 @@ permalink: /validation.html
 This library does not come with a bunch of validators that you can use and extend. Instead, you provide a callable or
 closure that has to return a truthy value if the value is valid (further called the validator).
 
-The validator gets the value as first and only parameter. For a lot of php standard functions this is enough (eg.
+The validator gets the value as first and only parameter. For a lot of php standard functions this is enough (e.g.
 `is_numeric`). The value will always be a string or null. Here comes an example that shows how to check that it has
 a valid json value:
 
