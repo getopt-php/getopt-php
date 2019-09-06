@@ -10,8 +10,8 @@ options.
 
 ## Specifying Options
 
-Options are defined by an object of the class `GetOpt\Option`. There are two helpers to create these options but we
-recommend to use the usual way to create objects.
+Options are defined by an object of the class `GetOpt\Option`. There are two helpers to create these options, but we
+recommend using the usual way to create objects.
 
 > We are using argument definition in these examples have a look at [specifying arguments](#arguments) to
 > learn more about it.
@@ -151,7 +151,7 @@ $getopt->process('-b --beta -a"this is the value of a"');
 $getopt->process(['-b', '--beta', '-a', 'this is the value of a']);
 ```
 
-After processing you can access the value of a specific option with `GetOpt::getOption(string)` or getting all values
+After processing, you can access the value of a specific option with `GetOpt::getOption(string)` or getting all values
 with `GetOpt::getOptions()`.
 
 ```php

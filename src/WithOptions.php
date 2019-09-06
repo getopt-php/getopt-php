@@ -15,7 +15,7 @@ trait WithOptions
      *
      * $options can be a string as for phps `getopt()` function, an array of Option instances or an array of arrays.
      *
-     * You can also mix Option instances and arrays. Eg.:
+     * You can also mix Option instances and arrays. E.g.:
      * $getopt->addOptions([
      *   ['?', 'help', GetOpt::NO_ARGUMENT, 'Show this help'],
      *   new Option('v', 'verbose'),

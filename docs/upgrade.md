@@ -5,7 +5,7 @@ permalink: /upgrade.html
 ---
 # {{ page.title }}
 
-GetOpt.PHP version 3 introduced several backwards-incompatible changes that
+GetOpt.PHP version 3 introduced several backwards-incompatible changes
 that will require a few minor code adjustments after upgrading the library.
 
 This page describes these breaking changes, and how to fix the code.
