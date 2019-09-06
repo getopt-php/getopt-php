@@ -123,7 +123,7 @@ The table shows the operands name in the left column and the description on the 
 ```
 Operands:
   <source>    The source that should be copied.
-  [<target>]  The target where source should be copied to. If target is ommitted the file 
+  [<target>]  The target where source should be copied to. If target is omitted the file 
               will be copied to the current working directory.
 ```
 
