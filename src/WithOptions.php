@@ -23,7 +23,7 @@ trait WithOptions
      *   Option::create('q', 'quiet')->setDescription('Don\'t write any output')
      * ]);
      *
-     * @see OptionParser::parseArray() fo see how to use arrays
+     * @see OptionParser::parseArray() for how to use arrays
      * @param string|array|Option[] $options
      * @return self
      */

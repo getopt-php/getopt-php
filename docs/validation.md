@@ -79,7 +79,7 @@ inside our application as well as the current status of options.
 
 A use case for this could be to define exclusive options (which is also the reason because it was asked in a feature
 request). Let's say our program has the options `alpha` and `omega` but when you define `alpha` the `omega` option is
-forbidden and vise versa:
+forbidden and vice versa:
 
 ```php
 <?php

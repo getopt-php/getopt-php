@@ -79,7 +79,7 @@ $ php program.php -c /path/to/config.inc drop-table --cascade users
 
 Parameters, arguments and operands are separated by spaces. You can have spaces in operands and arguments
 by quoting them in single or double quotes. A double quoted argument can also contain single quotes and
-vise versa. They can be concatenated like usually in bash scripts.
+vice versa. They can be concatenated like usually in bash scripts.
 
 ```console
 $ php program.php "this is one operand"

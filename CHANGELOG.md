@@ -28,7 +28,7 @@ Features:
 
 Features:
 * don't show options when there are no options configured
-* allow arguments in quotes (allows single quote in double quote and vise versa)
+* allow arguments in quotes (allows single quote in double quote and vice versa)
 * get script name from argv[0] when parsing arguments from array or string
 * add method to set script name manually
 * support for php 7.1

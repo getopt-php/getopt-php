@@ -63,7 +63,7 @@ To customize the usage message, please refer to the [Help Text]({{ site.baseurl 
 The _padding_ parameter for `GetOpt::getHelpText()` method was removed.
 
 The generated help message is now automatically wrapped based on the console's width.
-Long option decriptions break on space at the end of the line, and
+Long option descriptions break on space at the end of the line, and
 remaining text is moved to the next line and indented as appropriate.
 
 You can therefore remove any manually added line breaks and padding from
