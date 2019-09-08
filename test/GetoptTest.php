@@ -85,16 +85,32 @@ class GetoptTest extends TestCase
         $this->assertEquals('foo', $getopt->getOperand(0));
     }
 
-    /** @test */
-    public function addOptionsFailsOnConflict()
+
+    /** @return array */
+    public function provideConflictOptions()
+    {
+        return [
+            [[
+                new Option('v', 'version'),
+                new Option('v', 'verbose'),
+            ]],
+            [[
+                new Option('v', 'version'),
+                new Option(null, 'v'),
+            ]],
+        ];
+    }
+
+    /**
+     * @dataProvider provideConflictOptions
+     * @test
+     * @param array $options
+     */
+    public function addOptionsFailsOnConflict($options)
     {
         $this->setExpectedException('\InvalidArgumentException');
-        $getopt = new GetOpt([
-            [ 'v', 'version' ]
-        ]);
-        $getopt->addOptions([
-            [ 'v', 'verbose' ]
-        ]);
+        $getopt = new GetOpt();
+        $getopt->addOptions($options);
     }
 
     /** @test */

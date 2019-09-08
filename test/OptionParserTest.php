@@ -122,6 +122,6 @@ class OptionParserTest extends TestCase
     public function parseArrayInvalid()
     {
         $this->setExpectedException('InvalidArgumentException');
-        $this->parser->parseArray([ 'a', 'b' ]);
+        $this->parser->parseArray([ 'a', '_' ]);
     }
 }

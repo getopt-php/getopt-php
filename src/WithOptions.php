@@ -99,7 +99,7 @@ trait WithOptions
     {
         $short = $option->getShort();
         $long = $option->getLong();
-        return $short && isset($this->optionMapping[$short]) || $long && isset($this->optionMapping[$long]);
+        return ($short && isset($this->optionMapping[$short])) || ($long && isset($this->optionMapping[$long]));
     }
 
     /**

@@ -28,7 +28,7 @@ class Option implements Describable
      * Creates a new option.
      *
      * @param string   $short The option's short name (one of [a-zA-Z0-9?!§$%#]) or null for long-only options
-     * @param string   $long  The option's long name (a string of 2+ letter/digit/_/- characters, starting with a letter
+     * @param string   $long  The option's long name (a string of 1+ letter/digit/_/- characters, starting with a letter
      *                        or digit) or null for short-only options
      * @param string   $mode  Whether the option can/must have an argument (optional, defaults to no argument)
      */
@@ -36,6 +36,9 @@ class Option implements Describable
     {
         if (!$short && !$long) {
             throw new \InvalidArgumentException("The short and long name may not both be empty");
+        }
+        if ($short == $long) {
+            throw new \InvalidArgumentException("The short and long names have to be unique");
         }
         $this->setShort($short);
         $this->setLong($long);
@@ -197,7 +200,7 @@ class Option implements Describable
      */
     public function setLong($long)
     {
-        if (!(is_null($long) || preg_match("/^[a-zA-Z0-9][a-zA-Z0-9_-]{1,}$/", $long))) {
+        if (!(is_null($long) || preg_match("/^[a-zA-Z0-9][a-zA-Z0-9_-]*$/", $long))) {
             throw new \InvalidArgumentException(sprintf(
                 'Long option must be null or an alphanumeric string, found \'%s\'',
                 $long

@@ -36,7 +36,7 @@ $ php program.php -v 3  # v must have a mandatory or optional argument
 
 ## Long Options
 
-A long option is a sequence of two or more characters (letters, digits, underscore, hyphen)
+A long option is a sequence of one or more characters (letters, digits, underscore, hyphen)
 prefixed with two hyphens. The first character must be a letter or digit. Arguments can be
 separated from the option by either a space or an equals sign:
 

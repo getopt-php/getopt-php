@@ -42,10 +42,10 @@ class CommonTest extends TestCase
     {
         return [
             [ null, null, GetOpt::NO_ARGUMENT ],      // long and short are both empty
+            [ 'a', 'a', GetOpt::NO_ARGUMENT ],        // long and short are same
             [ '&', null, GetOpt::NO_ARGUMENT ],       // short name must be one of [a-zA-Z0-9?!§$%#]
             [ null, 'öption', GetOpt::NO_ARGUMENT ],  // long name may contain only alphanumeric chars, _ and -
             [ 'a', null, 'no_argument' ],             // invalid mode
-            [ null, 'a', GetOpt::NO_ARGUMENT ]        // long name must be at least 2 characters long
         ];
     }
 
