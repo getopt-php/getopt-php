@@ -60,7 +60,7 @@ class Command
      */
     public function setName($name)
     {
-        if (empty($name) || $name[0] === '-' || strpos($name, ' ') !== false) {
+        if (empty($name) || preg_match('/(^| )-/', $name)) {
             throw new \InvalidArgumentException(sprintf(
                 'Command name has to be an alphanumeric string not starting with dash, found \'%s\'',
                 $name
