@@ -86,6 +86,19 @@ class CommandTest extends TestCase
     }
 
     /** @test */
+    public function operandsHaveToFollowCommands()
+    {
+        $getOpt = new GetOpt([Option::create(null, 'version')]);
+        $command = new Command('bar', 'var_dump');
+        $getOpt->addCommand($command);
+
+        $getOpt->parse('foo --version bar');
+
+        self::assertNull($getOpt->getCommand());
+        self::assertSame(['foo', 'bar'], $getOpt->getOperands());
+    }
+
+    /** @test */
     public function shortDescriptionUsedForDescription()
     {
         $command = new Command('test', 'var_dump');
