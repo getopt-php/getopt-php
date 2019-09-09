@@ -74,6 +74,18 @@ class CommandTest extends TestCase
     }
 
     /** @test */
+    public function commandWithConflictingOptionsFailsToAdd()
+    {
+        $getOpt = new GetOpt([Option::create('v', 'verbose')]);
+        $command = new Command('foo', 'var_dump');
+        $command->addOption(Option::create('v', 'var'));
+
+        self::setExpectedException('InvalidArgumentException', '$command has conflicting options');
+
+        $getOpt->addCommand($command);
+    }
+
+    /** @test */
     public function shortDescriptionUsedForDescription()
     {
         $command = new Command('test', 'var_dump');
