@@ -49,7 +49,7 @@ class Arguments
 
             if ($this->isValue($arg)) {
                 $operands[] = $arg;
-                if ($command = $getopt->getCommand(implode(' ', $operands))) {
+                if (count($getopt->getOperands()) === 0 && $command = $getopt->getCommand(implode(' ', $operands))) {
                     $setCommand($command);
                     $operands = [];
                 }
