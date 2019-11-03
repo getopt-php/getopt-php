@@ -8,7 +8,7 @@ namespace GetOpt;
  * @package GetOpt
  * @author  Thomas Flori <thflori@gmail.com>
  */
-class Command
+class Command implements CommandInterface
 {
     use WithOptions, WithOperands, WithMagicGetter;
 

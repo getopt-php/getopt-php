@@ -47,11 +47,11 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     /** @var int */
     protected $operandsCount = 0;
 
-    /** @var Command[] */
+    /** @var CommandInterface[] */
     protected $commands = [];
 
     /** The command that is executed determined by process
-     * @var Command */
+     * @var CommandInterdface */
     protected $command;
 
     /** @var string[] */
@@ -165,7 +165,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
             $option->setValue($option->getMode() !== GetOpt::NO_ARGUMENT ? $getValue($option) : null);
         };
 
-        $setCommand = function (Command $command) {
+        $setCommand = function (CommandInterface $command) {
             $this->addOptions($command->getOptions());
             $this->addOperands($command->getOperands());
             $this->command = $command;
@@ -262,10 +262,10 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     /**
      * Add a $command
      *
-     * @param Command $command
+     * @param CommandInterface $command
      * @return self
      */
-    public function addCommand(Command $command)
+    public function addCommand(CommandInterface $command)
     {
         foreach ($command->getOptions() as $option) {
             if ($this->conflicts($option)) {
