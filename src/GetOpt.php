@@ -51,7 +51,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     protected $commands = [];
 
     /** The command that is executed determined by process
-     * @var CommandInterdface */
+     * @var CommandInterface */
     protected $command;
 
     /** @var string[] */
@@ -280,7 +280,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      * Get the current or a named command.
      *
      * @param string $name
-     * @return Command
+     * @return CommandInterface
      */
     public function getCommand($name = null)
     {
@@ -292,7 +292,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * @return Command[]
+     * @return CommandInterface[]
      */
     public function getCommands()
     {
@@ -500,6 +500,12 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
 
     // array functions
 
+    /**
+     * @inheritDoc
+     *
+     * @return \Traversable
+     * @throws \Exception
+     */
     public function getIterator()
     {
         $result = [];
@@ -514,6 +520,12 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
         return new \ArrayIterator($result + $this->additionalOptions);
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @param mixed $offset
+     * @return bool
+     */
     public function offsetExists($offset)
     {
         $option = $this->getOptionObject($offset);
@@ -524,6 +536,12 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
         return isset($this->additionalOptions[$offset]);
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @param mixed $offset
+     * @return mixed
+     */
     public function offsetGet($offset)
     {
         $option = $this->getOptionObject($offset);
@@ -534,16 +552,34 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
         return isset($this->additionalOptions[$offset]) ? $this->additionalOptions[$offset] : null;
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @param mixed $offset
+     * @param mixed $value
+     */
     public function offsetSet($offset, $value)
     {
         throw new \LogicException('Read only array access');
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @param mixed $offset
+     * @throws \LogicException
+     */
     public function offsetUnset($offset)
     {
         throw new \LogicException('Read only array access');
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @return int
+     * @throws \Exception
+     */
     public function count()
     {
         return $this->getIterator()->count();
