@@ -99,7 +99,7 @@ class Arguments
      */
     protected function isValue($arg)
     {
-        return (empty($arg) || $arg === '-' || $arg[0] !== '-');
+        return (empty($arg) || $arg === '-' || 0 !== strpos($arg, '-'));
     }
 
     /**
