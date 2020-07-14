@@ -47,8 +47,8 @@ class CommandTest extends TestCase
     {
         return [
             [ '-abc' ],  // starts with dash
+            [ 'some -abc' ],  // second word starts with dash
             [ '' ],      // is empty
-            [ 'df ae' ], // has spaces
         ];
     }
 
@@ -195,5 +195,44 @@ class CommandTest extends TestCase
             '        short description. You should avoid such long texts for a short description.' . PHP_EOL . PHP_EOL,
             $help
         );
+    }
+
+    /** @test */
+    public function commandsWithSpaces()
+    {
+        $getOpt = new GetOpt();
+        $command = Command::create('import reviews', 'var_dump');
+        $getOpt->addCommand($command);
+
+        $getOpt->parse('import reviews');
+
+        self::assertSame($command, $getOpt->getCommand());
+    }
+
+    /** @test */
+    public function singleWordCommandHavePrecedence()
+    {
+        $getOpt = new GetOpt();
+        $import = Command::create('import', 'var_dump');
+        $importReviews = Command::create('import reviews', 'var_dump');
+        $getOpt->addCommands([$import, $importReviews]);
+
+        $getOpt->parse('import reviews');
+
+        self::assertSame($import, $getOpt->getCommand());
+        self::assertSame(['reviews'], $getOpt->getOperands());
+    }
+
+    /** @test */
+    public function commandCannotBeDividedByOptions()
+    {
+        $getOpt = new GetOpt([Option::create(null, 'version')]);
+        $command = Command::create('import reviews', 'var_dump');
+        $getOpt->addCommand($command);
+
+        $getOpt->parse('import --version reviews');
+
+        self::assertSame(null, $getOpt->getCommand());
+        self::assertSame(['import', 'reviews'], $getOpt->getOperands());
     }
 }

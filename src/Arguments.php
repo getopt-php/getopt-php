@@ -38,22 +38,23 @@ class Arguments
      */
     public function process(GetOpt $getopt, callable $setOption, callable $setCommand, callable $addOperand)
     {
+        $operands = [];
         while (($arg = array_shift($this->arguments)) !== null) {
             if ($this->isMeta($arg)) {
                 // everything from here are operands
-                foreach ($this->arguments as $argument) {
-                    $addOperand($argument);
-                }
-                break;
+                $this->flushOperands($operands, $addOperand);
+                $this->flushOperands($this->arguments, $addOperand);
+                return true;
             }
 
             if ($this->isValue($arg)) {
-                $operands = $getopt->getOperands();
-                if (empty($operands) && $command = $getopt->getCommand($arg)) {
+                $operands[] = $arg;
+                if (count($getopt->getOperands()) === 0 && $command = $getopt->getCommand(implode(' ', $operands))) {
                     $setCommand($command);
-                } else {
-                    $addOperand($arg);
+                    $operands = [];
                 }
+            } else {
+                $this->flushOperands($operands, $addOperand);
             }
 
             if ($this->isLongOption($arg)) {
@@ -77,7 +78,25 @@ class Arguments
                 }
             }
         }
+
+        $this->flushOperands($operands, $addOperand);
+
         return true;
+    }
+
+    /**
+     * Add operands and reset the array
+     *
+     * @param array    $operands
+     * @param callable $addOperand
+     */
+    protected function flushOperands(array &$operands, callable $addOperand)
+    {
+        foreach ($operands as $operand) {
+            $addOperand($operand);
+        }
+
+        $operands = [];
     }
 
     /**
