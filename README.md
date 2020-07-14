@@ -8,6 +8,10 @@
 
 GetOpt.PHP is a library for command-line argument processing. It supports PHP version 5.4 and above.
 
+## Releases
+
+For an overview of the releases with a changelog please have look here: https://github.com/getopt-php/getopt-php/releases
+
 ## Features
 
 * Supports both short (e.g. `-v`) and long (e.g. `--version`) options
