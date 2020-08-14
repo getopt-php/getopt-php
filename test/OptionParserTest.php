@@ -21,21 +21,21 @@ class OptionParserTest extends TestCase
     public function parseString()
     {
         $options = $this->parser->parseString('ab:c::3');
-        $this->assertInternalType('array', $options);
-        $this->assertCount(4, $options);
+        self::assertInternalType('array', $options);
+        self::assertCount(4, $options);
         foreach ($options as $option) {
-            $this->assertInstanceOf(Option::CLASSNAME, $option);
-            $this->assertNull($option->getLong());
+            self::assertInstanceOf(Option::CLASSNAME, $option);
+            self::assertNull($option->getLong());
             switch ($option->getShort()) {
                 case 'a':
                 case '3':
-                    $this->assertEquals(GetOpt::NO_ARGUMENT, $option->getMode());
+                    self::assertSame(GetOpt::NO_ARGUMENT, $option->getMode());
                     break;
                 case 'b':
-                    $this->assertEquals(GetOpt::REQUIRED_ARGUMENT, $option->getMode());
+                    self::assertSame(GetOpt::REQUIRED_ARGUMENT, $option->getMode());
                     break;
                 case 'c':
-                    $this->assertEquals(GetOpt::OPTIONAL_ARGUMENT, $option->getMode());
+                    self::assertSame(GetOpt::OPTIONAL_ARGUMENT, $option->getMode());
                     break;
                 default:
                     $this->fail('Unexpected option: '.$option->getShort());
@@ -87,24 +87,24 @@ class OptionParserTest extends TestCase
     {
         $option = $this->parser->parseArray($array);
 
-        $this->assertInstanceOf(Option::CLASSNAME, $option);
+        self::assertInstanceOf(Option::CLASSNAME, $option);
         switch ($option->getShort()) {
             case 'a':
-                $this->assertEquals('alpha', $option->getLong());
-                $this->assertEquals(GetOpt::OPTIONAL_ARGUMENT, $option->getMode());
-                $this->assertEquals('Description', $option->getDescription());
-                $this->assertEquals(42, $option->getArgument()->getDefaultValue());
+                self::assertSame('alpha', $option->getLong());
+                self::assertSame(GetOpt::OPTIONAL_ARGUMENT, $option->getMode());
+                self::assertSame('Description', $option->getDescription());
+                self::assertSame(42, $option->getArgument()->getDefaultValue());
                 break;
             case 'b':
-                $this->assertEquals('beta', $option->getLong());
-                $this->assertEquals(GetOpt::REQUIRED_ARGUMENT, $option->getMode());
-                $this->assertEquals('', $option->getDescription());
+                self::assertSame('beta', $option->getLong());
+                self::assertSame(GetOpt::REQUIRED_ARGUMENT, $option->getMode());
+                self::assertSame('', $option->getDescription());
                 break;
             case 'c':
-                $this->assertNull($option->getLong());
-                $this->assertEquals(GetOpt::REQUIRED_ARGUMENT, $option->getMode());
-                $this->assertEquals('', $option->getDescription());
-                $this->assertFalse($option->getArgument()->hasDefaultValue());
+                self::assertNull($option->getLong());
+                self::assertSame(GetOpt::REQUIRED_ARGUMENT, $option->getMode());
+                self::assertSame('', $option->getDescription());
+                self::assertFalse($option->getArgument()->hasDefaultValue());
                 break;
             default:
                 $this->fail('Unexpected option: '.$option->getShort());

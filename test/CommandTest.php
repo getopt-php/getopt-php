@@ -232,7 +232,7 @@ class CommandTest extends TestCase
 
         $getOpt->parse('import --version reviews');
 
-        self::assertSame(null, $getOpt->getCommand());
+        self::assertNull($getOpt->getCommand());
         self::assertSame(['import', 'reviews'], $getOpt->getOperands());
     }
 }

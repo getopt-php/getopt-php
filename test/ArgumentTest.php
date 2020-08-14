@@ -12,8 +12,8 @@ class ArgumentTest extends TestCase
     {
         $argument1 = new Argument();
         $argument2 = new Argument(10);
-        $this->assertFalse($argument1->hasDefaultValue());
-        $this->assertEquals(10, $argument2->getDefaultValue());
+        self::assertFalse($argument1->hasDefaultValue());
+        self::assertSame(10, $argument2->getDefaultValue());
     }
 
     /** @test */
@@ -31,12 +31,12 @@ class ArgumentTest extends TestCase
         $argument = new Argument();
         $argument->setValidation(
             function ($arg) use ($test, $argument) {
-                $test->assertEquals('test', $arg);
+                $test->assertSame('test', $arg);
                 return true;
             }
         );
-        $this->assertTrue($argument->hasValidation());
-        $this->assertTrue($argument->validates('test'));
+        self::assertTrue($argument->hasValidation());
+        self::assertTrue($argument->validates('test'));
     }
 
     /** @test */

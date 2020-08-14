@@ -27,7 +27,7 @@ class ArgumentsTest extends TestCase
         self::assertCount(0, $this->getopt->getOptions());
         $operands = $this->getopt->getOperands();
         self::assertCount(1, $operands);
-        self::assertEquals('something', $operands[0]);
+        self::assertSame('something', $operands[0]);
     }
 
     /** @test */
@@ -68,8 +68,8 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-ab');
 
         $options = $this->getopt->getOptions();
-        self::assertEquals(1, $options['a']);
-        self::assertEquals(1, $options['b']);
+        self::assertSame(1, $options['a']);
+        self::assertSame(1, $options['b']);
     }
 
     /** @test */
@@ -83,8 +83,8 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-a -b -a -a');
 
         $options = $this->getopt->getOptions();
-        self::assertEquals(3, $options['a']);
-        self::assertEquals(1, $options['b']);
+        self::assertSame(3, $options['a']);
+        self::assertSame(1, $options['b']);
     }
 
     /** @test */
@@ -98,8 +98,8 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-abaa');
 
         $options = $this->getopt->getOptions();
-        self::assertEquals(3, $options['a']);
-        self::assertEquals(1, $options['b']);
+        self::assertSame(3, $options['a']);
+        self::assertSame(1, $options['b']);
     }
 
     /** @test */
@@ -112,7 +112,7 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-a value');
 
         $options = $this->getopt->getOptions();
-        self::assertEquals('value', $options['a']);
+        self::assertSame('value', $options['a']);
     }
 
     /** @test */
@@ -125,7 +125,7 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-a 0');
 
         $options = $this->getopt->getOptions();
-        self::assertEquals('0', $options['a']);
+        self::assertSame('0', $options['a']);
     }
 
     /** @test */
@@ -139,8 +139,8 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-a 2 -2');
 
         $options = $this->getopt->getOptions();
-        self::assertEquals('2', $options['a']);
-        self::assertEquals(1, $options['2']);
+        self::assertSame('2', $options['a']);
+        self::assertSame(1, $options['2']);
     }
 
     /** @test */
@@ -164,8 +164,8 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-ab value');
 
         $options = $this->getopt->getOptions();
-        self::assertEquals(1, $options['a']);
-        self::assertEquals('value', $options['b']);
+        self::assertSame(1, $options['a']);
+        self::assertSame('value', $options['b']);
     }
 
     /** @test */
@@ -177,10 +177,10 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-a b');
 
         $options = $this->getopt->getOptions();
-        self::assertEquals(1, $options['a']);
+        self::assertSame(1, $options['a']);
         $operands = $this->getopt->getOperands();
         self::assertCount(1, $operands);
-        self::assertEquals('b', $operands[0]);
+        self::assertSame('b', $operands[0]);
     }
 
     /** @test */
@@ -191,7 +191,7 @@ class ArgumentsTest extends TestCase
         ]);
         $this->getopt->process('-ppassword');
         $options = $this->getopt->getOptions();
-        self::assertEquals('password', $options['p']);
+        self::assertSame('password', $options['p']);
     }
     /** @test */
     public function parseCollapsedRequiredArgumentWithNoSpace()
@@ -202,8 +202,8 @@ class ArgumentsTest extends TestCase
         ]);
         $this->getopt->process('-vvvppassword');
         $options = $this->getopt->getOptions();
-        self::assertEquals('password', $options['p']);
-        self::assertEquals(3, $options['v']);
+        self::assertSame('password', $options['p']);
+        self::assertSame(3, $options['v']);
     }
 
     /** @test */
@@ -218,8 +218,8 @@ class ArgumentsTest extends TestCase
         self::assertCount(0, $this->getopt->getOptions());
         $operands = $this->getopt->getOperands();
         self::assertCount(2, $operands);
-        self::assertEquals('-a', $operands[0]);
-        self::assertEquals('-b', $operands[1]);
+        self::assertSame('-a', $operands[0]);
+        self::assertSame('-b', $operands[1]);
     }
 
     /** @test */
@@ -231,7 +231,7 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('--option');
 
         $options = $this->getopt->getOptions();
-        self::assertEquals(1, $options['option']);
+        self::assertSame(1, $options['option']);
     }
 
     /** @test */
@@ -243,10 +243,10 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('--option something');
 
         $options = $this->getopt->getOptions();
-        self::assertEquals(1, $options['option']);
+        self::assertSame(1, $options['option']);
         $operands = $this->getopt->getOperands();
         self::assertCount(1, $operands);
-        self::assertEquals('something', $operands[0]);
+        self::assertSame('something', $operands[0]);
     }
 
     /** @test */
@@ -258,8 +258,8 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('--option value');
 
         $options = $this->getopt->getOptions();
-        self::assertEquals('value', $options['option']);
-        self::assertEquals('value', $options['o']);
+        self::assertSame('value', $options['option']);
+        self::assertSame('value', $options['o']);
     }
 
     /** @test */
@@ -271,10 +271,10 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('--option=value something');
 
         $options = $this->getopt->getOptions();
-        self::assertEquals('value', $options['option']);
+        self::assertSame('value', $options['option']);
         $operands = $this->getopt->getOperands();
         self::assertCount(1, $operands);
-        self::assertEquals('something', $operands[0]);
+        self::assertSame('something', $operands[0]);
     }
 
     /** @test */
@@ -286,7 +286,7 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('--option=-value');
 
         $options = $this->getopt->getOptions();
-        self::assertEquals('-value', $options['option']);
+        self::assertSame('-value', $options['option']);
     }
 
     /** @test */
@@ -298,7 +298,7 @@ class ArgumentsTest extends TestCase
         ]);
         $this->getopt->process('-a -b');
 
-        self::assertEquals('-b', $this->getopt->getOption('a'));
+        self::assertSame('-b', $this->getopt->getOption('a'));
     }
 
     /** @test */
@@ -311,8 +311,8 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-a -b');
 
         $options = $this->getopt->getOptions();
-        self::assertEquals(1, $options['a']);
-        self::assertEquals(1, $options['b']);
+        self::assertSame(1, $options['a']);
+        self::assertSame(1, $options['b']);
     }
 
     /** @test */
@@ -326,9 +326,9 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-a 12');
 
         $options = $this->getopt->getOptions();
-        self::assertEquals(12, $options['a']);
-        self::assertEquals(20, $options['b']);
-        self::assertEquals(20, $options['beta']);
+        self::assertSame('12', $options['a']);
+        self::assertSame(20, $options['b']);
+        self::assertSame(20, $options['beta']);
     }
 
     /** @test */
@@ -338,7 +338,7 @@ class ArgumentsTest extends TestCase
 
         $this->getopt->process('-a value1 -a value2');
 
-        self::assertEquals(['value1', 'value2'], $this->getopt->getOption('a'));
+        self::assertSame(['value1', 'value2'], $this->getopt->getOption('a'));
     }
 
     /** @test */
@@ -350,12 +350,12 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-a 0 foo -- bar baz');
 
         $options = $this->getopt->getOptions();
-        self::assertEquals('0', $options['a']);
+        self::assertSame('0', $options['a']);
         $operands = $this->getopt->getOperands();
         self::assertCount(3, $operands);
-        self::assertEquals('foo', $operands[0]);
-        self::assertEquals('bar', $operands[1]);
-        self::assertEquals('baz', $operands[2]);
+        self::assertSame('foo', $operands[0]);
+        self::assertSame('bar', $operands[1]);
+        self::assertSame('baz', $operands[2]);
     }
 
     /** @test */
@@ -368,14 +368,14 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-a -');
 
         $options = $this->getopt->getOptions();
-        self::assertEquals('-', $options['a']);
+        self::assertSame('-', $options['a']);
         $operands = $this->getopt->getOperands();
         self::assertCount(0, $operands);
 
         $this->getopt->process('--alpha -');
 
         $options = $this->getopt->getOptions();
-        self::assertEquals('-', $options['a']);
+        self::assertSame('-', $options['a']);
         $operands = $this->getopt->getOperands();
         self::assertCount(0, $operands);
     }
@@ -389,10 +389,10 @@ class ArgumentsTest extends TestCase
         $this->getopt->process('-a 0 -');
 
         $options = $this->getopt->getOptions();
-        self::assertEquals('0', $options['a']);
+        self::assertSame('0', $options['a']);
         $operands = $this->getopt->getOperands();
         self::assertCount(1, $operands);
-        self::assertEquals('-', $operands[0]);
+        self::assertSame('-', $operands[0]);
     }
 
     /** @test */
@@ -405,11 +405,11 @@ class ArgumentsTest extends TestCase
 
         $this->getopt->process('-a 42 operand -b "don\'t panic"');
 
-        self::assertEquals([
-            'a' => 42,
+        self::assertSame([
+            'a' => '42',
             'b' => 'don\'t panic'
         ], $this->getopt->getOptions());
-        self::assertEquals(['operand'], $this->getopt->getOperands());
+        self::assertSame(['operand'], $this->getopt->getOperands());
     }
 
     /** @test */
