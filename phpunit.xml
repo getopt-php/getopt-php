@@ -8,6 +8,7 @@
     convertWarningsToExceptions="true"
     stopOnFailure="false"
     syntaxCheck="true"
+    backupGlobals="true"
 >
     <testsuites>
         <testsuite name="basic">

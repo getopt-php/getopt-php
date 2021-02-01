@@ -10,7 +10,7 @@ class CommonTest extends TestCase
     /** @test */
     public function throwsWhenLanguageNotAvailable()
     {
-        self::setExpectedException('InvalidArgumentException');
+        self::expectException(\InvalidArgumentException::class);
 
         new Translator('unknown');
     }

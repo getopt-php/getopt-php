@@ -19,7 +19,7 @@ class ArgumentTest extends TestCase
     /** @test */
     public function setDefaultValueNotScalar()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        self::expectException(\InvalidArgumentException::class);
         $argument = new Argument();
         $argument->setDefaultValue([]);
     }

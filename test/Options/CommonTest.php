@@ -34,7 +34,7 @@ class CommonTest extends TestCase
      * @test */
     public function constructFails($short, $long, $mode)
     {
-        $this->setExpectedException('InvalidArgumentException');
+        self::expectException(\InvalidArgumentException::class);
         new Option($short, $long, $mode);
     }
 
@@ -60,7 +60,7 @@ class CommonTest extends TestCase
     /** @test */
     public function setArgumentWrongMode()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        self::expectException(\InvalidArgumentException::class);
         $option = new Option('a', null, GetOpt::NO_ARGUMENT);
         $option->setArgument(new Argument());
     }

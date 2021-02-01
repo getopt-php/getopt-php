@@ -2,6 +2,7 @@
 
 namespace GetOpt\Test;
 
+use GetOpt\ArgumentException\Missing;
 use GetOpt\Command;
 use GetOpt\GetOpt;
 use GetOpt\Help;
@@ -58,7 +59,7 @@ class GetoptTest extends TestCase
             [ 'l', 'long' ]
         ]);
 
-        $this->setExpectedException('GetOpt\ArgumentException\Missing');
+        self::expectException(Missing::class);
 
         $getopt->process('--long');
     }
@@ -66,7 +67,7 @@ class GetoptTest extends TestCase
     /** @test */
     public function addOptionsFailsOnInvalidArgument()
     {
-        $this->setExpectedException('\InvalidArgumentException');
+        self::expectException(\InvalidArgumentException::class);
         $getopt = new GetOpt(null);
         $getopt->addOptions(new Option('a', 'alpha'));
     }
@@ -108,7 +109,7 @@ class GetoptTest extends TestCase
      */
     public function addOptionsFailsOnConflict($options)
     {
-        $this->setExpectedException('\InvalidArgumentException');
+        self::expectException(\InvalidArgumentException::class);
         $getopt = new GetOpt();
         $getopt->addOptions($options);
     }
@@ -220,7 +221,7 @@ class GetoptTest extends TestCase
     /** @test */
     public function throwsWithInvalidParameter()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        self::expectException(\InvalidArgumentException::class);
         $getopt = new GetOpt();
 
         $getopt->process(42);
@@ -238,7 +239,7 @@ class GetoptTest extends TestCase
     /** @test */
     public function throwsForUnparsableString()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        self::expectException(\InvalidArgumentException::class);
         $getopt = new GetOpt();
 
         $getopt->addOption('');
@@ -247,7 +248,7 @@ class GetoptTest extends TestCase
     /** @test */
     public function throwsForInvalidParameter()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        self::expectException(\InvalidArgumentException::class);
         $getopt = new GetOpt();
 
         $getopt->addOption(42);
@@ -268,7 +269,7 @@ class GetoptTest extends TestCase
     /** @test */
     public function restirctsArraySet()
     {
-        $this->setExpectedException('LogicException');
+        self::expectException(\LogicException::class);
         $getopt = new GetOpt();
 
         $getopt['a'] = 'test';
@@ -277,7 +278,7 @@ class GetoptTest extends TestCase
     /** @test */
     public function restrictsArrayUnset()
     {
-        $this->setExpectedException('LogicException');
+        self::expectException(\LogicException::class);
         $getopt = new GetOpt();
         $getopt->addOption('a');
         $getopt->process('-a');
@@ -288,7 +289,7 @@ class GetoptTest extends TestCase
     /** @test */
     public function addCommandWithConflictingOptions()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        self::expectException(\InvalidArgumentException::class);
 
         $getopt = new GetOpt([
             new Option('a'),

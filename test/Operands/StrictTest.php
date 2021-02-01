@@ -2,6 +2,7 @@
 
 namespace GetOpt\Test\Operands;
 
+use GetOpt\ArgumentException\Unexpected;
 use GetOpt\GetOpt;
 use GetOpt\Operand;
 use PHPUnit\Framework\TestCase;
@@ -14,7 +15,7 @@ class StrictTest extends TestCase
         $getopt = new GetOpt();
         $getopt->set(GetOpt::SETTING_STRICT_OPERANDS, true);
 
-        $this->setExpectedException('GetOpt\ArgumentException\Unexpected');
+        self::expectException(Unexpected::class);
         $getopt->process('"some operand"');
     }
 

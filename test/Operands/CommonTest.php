@@ -2,6 +2,7 @@
 
 namespace GetOpt\Test\Operands;
 
+use GetOpt\ArgumentException\Invalid;
 use GetOpt\ArgumentException\Missing;
 use GetOpt\Command;
 use GetOpt\GetOpt;
@@ -46,7 +47,7 @@ class CommonTest extends TestCase
         $getopt = new GetOpt();
         $getopt->addOperand($operand);
 
-        $this->setExpectedException('GetOpt\ArgumentException\Invalid');
+        self::expectException(Invalid::class);
         $getopt->process('"any value"');
     }
 
@@ -70,7 +71,7 @@ class CommonTest extends TestCase
         $getopt = new GetOpt();
         $getopt->addOperand($operand);
 
-        $this->setExpectedException('GetOpt\ArgumentException\Missing');
+        self::expectException(Missing::class);
         $getopt->process('');
     }
 
@@ -207,7 +208,8 @@ class CommonTest extends TestCase
         $getOpt = new GetOpt();
         $getOpt->addOperand($operand);
 
-        $this->setExpectedException('GetOpt\ArgumentException\Missing', 'Operand port is required');
+        self::expectException(Missing::class);
+        self::expectExceptionMessage('Operand port is required');
 
         $getOpt->process('');
     }

@@ -2,6 +2,8 @@
 
 namespace GetOpt\Test\Operands;
 
+use GetOpt\ArgumentException\Invalid;
+use GetOpt\ArgumentException\Missing;
 use GetOpt\GetOpt;
 use GetOpt\Operand;
 use PHPUnit\Framework\TestCase;
@@ -44,7 +46,7 @@ class MultipleTest extends TestCase
         $getopt = new GetOpt();
         $getopt->addOperand($operand);
 
-        $this->setExpectedException('GetOpt\ArgumentException\Missing');
+        self::expectException(Missing::class);
         $getopt->process('');
     }
 
@@ -71,7 +73,7 @@ class MultipleTest extends TestCase
         $getopt = new GetOpt();
         $getopt->addOperand($operand1);
 
-        $this->setExpectedException('GetOpt\ArgumentException\Invalid');
+        self::expectException(Invalid::class);
         $getopt->process('42 43');
     }
 
@@ -84,7 +86,7 @@ class MultipleTest extends TestCase
         $getopt = new GetOpt();
         $getopt->addOperand($operand1);
 
-        $this->setExpectedException('InvalidArgumentException');
+        self::expectException(\InvalidArgumentException::class);
         $getopt->addOperand($operand2);
     }
 }

@@ -3,6 +3,7 @@
 namespace GetOpt\Test\Argument;
 
 use GetOpt\Argument;
+use GetOpt\ArgumentException\Invalid;
 use GetOpt\Describable;
 use GetOpt\GetOpt;
 use GetOpt\Operand;
@@ -23,10 +24,8 @@ class ValidationTest extends TestCase
         $option = Option::create('a', 'alpha', GetOpt::REQUIRED_ARGUMENT)
             ->setValidation('is_numeric');
 
-        $this->setExpectedException(
-            'GetOpt\ArgumentException\Invalid',
-            sprintf('Option \'%s\' has an invalid value', 'alpha')
-        );
+        self::expectException(Invalid::class);
+        self::expectExceptionMessage(sprintf('Option \'%s\' has an invalid value', 'alpha'));
 
         $option->setValue('foo');
     }
@@ -37,10 +36,8 @@ class ValidationTest extends TestCase
         $operand = Operand::create('alpha')
             ->setValidation('is_numeric');
 
-        $this->setExpectedException(
-            'GetOpt\ArgumentException\Invalid',
-            sprintf('Operand \'%s\' has an invalid value', 'alpha')
-        );
+        self::expectException(Invalid::class);
+        self::expectExceptionMessage(sprintf('Operand \'%s\' has an invalid value', 'alpha'));
 
         $operand->setValue('foo');
     }
@@ -50,10 +47,8 @@ class ValidationTest extends TestCase
     {
         $argument = new Argument(null, 'is_numeric', 'alpha');
 
-        $this->setExpectedException(
-            'GetOpt\ArgumentException\Invalid',
-            sprintf('Argument \'%s\' has an invalid value', 'alpha')
-        );
+        self::expectException(Invalid::class);
+        self::expectExceptionMessage(sprintf('Argument \'%s\' has an invalid value', 'alpha'));
 
         $argument->setValue('foo');
     }
@@ -64,10 +59,8 @@ class ValidationTest extends TestCase
         $option = Option::create('a', 'alpha', GetOpt::REQUIRED_ARGUMENT)
             ->setValidation('is_numeric', 'alpha has to be numeric');
 
-        $this->setExpectedException(
-            'GetOpt\ArgumentException\Invalid',
-            'Alpha has to be numeric'
-        );
+        self::expectException(Invalid::class);
+        self::expectExceptionMessage('Alpha has to be numeric');
 
         $option->setValue('foo');
     }
@@ -79,10 +72,8 @@ class ValidationTest extends TestCase
         $operand = Operand::create('alpha')
             ->setValidation('is_numeric', 'Die value von %s muss numerisch sein');
 
-        $this->setExpectedException(
-            'GetOpt\ArgumentException\Invalid',
-            sprintf('Die value von Operand \'%s\' muss numerisch sein', 'alpha')
-        );
+        self::expectException(Invalid::class);
+        self::expectExceptionMessage(sprintf('Die value von Operand \'%s\' muss numerisch sein', 'alpha'));
 
         $operand->setValue('foo');
     }
@@ -93,10 +84,8 @@ class ValidationTest extends TestCase
         $option = Option::create('a', 'alpha', GetOpt::REQUIRED_ARGUMENT)
             ->setValidation('is_numeric', '%s %s');
 
-        $this->setExpectedException(
-            'GetOpt\ArgumentException\Invalid',
-            'Option \'alpha\' foo'
-        );
+        self::expectException(Invalid::class);
+        self::expectExceptionMessage('Option \'alpha\' foo');
 
         $option->setValue('foo');
     }
@@ -109,10 +98,8 @@ class ValidationTest extends TestCase
                 return 'alpha has to be numeric';
             });
 
-        $this->setExpectedException(
-            'GetOpt\ArgumentException\Invalid',
-            'alpha has to be numeric'
-        );
+        self::expectException(Invalid::class);
+        self::expectExceptionMessage('alpha has to be numeric');
 
         $option->setValue('foo');
     }
@@ -129,7 +116,7 @@ class ValidationTest extends TestCase
             return 'anything';
         });
 
-        $this->setExpectedException('GetOpt\ArgumentException\Invalid');
+        self::expectException(Invalid::class);
         $option->setValue('foo');
     }
 
@@ -145,7 +132,7 @@ class ValidationTest extends TestCase
             return 'anything';
         });
 
-        $this->setExpectedException('GetOpt\ArgumentException\Invalid');
+        self::expectException(Invalid::class);
         $operand->setValue('foo');
     }
 }

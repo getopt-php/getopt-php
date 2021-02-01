@@ -39,7 +39,7 @@ class CommandTest extends TestCase
      * @test */
     public function namesNotAllowed($name)
     {
-        $this->setExpectedException('InvalidArgumentException');
+        self::expectException(\InvalidArgumentException::class);
         new Command($name, '', null);
     }
 
@@ -80,7 +80,8 @@ class CommandTest extends TestCase
         $command = new Command('foo', 'var_dump');
         $command->addOption(Option::create('v', 'var'));
 
-        self::setExpectedException('InvalidArgumentException', '$command has conflicting options');
+        self::expectException(\InvalidArgumentException::class);
+        self::expectExceptionMessage('$command has conflicting options');
 
         $getOpt->addCommand($command);
     }

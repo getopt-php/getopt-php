@@ -3,6 +3,9 @@
 namespace GetOpt\Test;
 
 use GetOpt\Argument;
+use GetOpt\ArgumentException\Invalid;
+use GetOpt\ArgumentException\Missing;
+use GetOpt\ArgumentException\Unexpected;
 use GetOpt\Arguments;
 use GetOpt\Command;
 use GetOpt\GetOpt;
@@ -33,7 +36,7 @@ class ArgumentsTest extends TestCase
     /** @test */
     public function parseUnknownOption()
     {
-        $this->setExpectedException('GetOpt\ArgumentException\Unexpected');
+        self::expectException(Unexpected::class);
         $this->getopt->addOption(new Option('a', null));
 
         $this->getopt->process('-b');
@@ -42,7 +45,7 @@ class ArgumentsTest extends TestCase
     /** @test */
     public function unknownLongOption()
     {
-        $this->setExpectedException('GetOpt\ArgumentException\Unexpected');
+        self::expectException(Unexpected::class);
         $this->getopt->addOption(new Option('a', 'alpha'));
 
         $this->getopt->process('--beta');
@@ -51,7 +54,7 @@ class ArgumentsTest extends TestCase
     /** @test */
     public function parseRequiredArgumentMissing()
     {
-        $this->setExpectedException('GetOpt\ArgumentException\Missing');
+        self::expectException(Missing::class);
         $this->getopt->addOption(new Option('a', null, GetOpt::REQUIRED_ARGUMENT));
 
         $this->getopt->process('-a');
@@ -146,7 +149,7 @@ class ArgumentsTest extends TestCase
     /** @test */
     public function parseCollapsedShortOptionsRequiredArgumentMissing()
     {
-        $this->setExpectedException('GetOpt\ArgumentException\Missing');
+        self::expectException(Missing::class);
         $this->getopt->addOptions([
             new Option('a', null),
             new Option('b', null, GetOpt::REQUIRED_ARGUMENT)
@@ -475,7 +478,7 @@ class ArgumentsTest extends TestCase
     /** @test */
     public function parseInvalidArgument()
     {
-        $this->setExpectedException('GetOpt\ArgumentException\Invalid');
+        self::expectException(Invalid::class);
         $validation = 'is_numeric';
         $option = new Option('a', null, GetOpt::OPTIONAL_ARGUMENT);
         $option->setArgument(new Argument(null, $validation));
@@ -603,7 +606,7 @@ class ArgumentsTest extends TestCase
             })
         ]);
 
-        $this->setExpectedException('GetOpt\ArgumentException\Invalid');
+        self::expectException(Invalid::class);
         $this->getopt->process('-a -b');
     }
 

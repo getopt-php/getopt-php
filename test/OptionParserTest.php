@@ -46,28 +46,28 @@ class OptionParserTest extends TestCase
     /** @test */
     public function parseStringEmpty()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        self::expectException(\InvalidArgumentException::class);
         $this->parser->parseString('');
     }
 
     /** @test */
     public function parseStringInvalidCharacter()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        self::expectException(\InvalidArgumentException::class);
         $this->parser->parseString('ab:c::dä');
     }
 
     /** @test */
     public function parseStringStartsWithColon()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        self::expectException(\InvalidArgumentException::class);
         $this->parser->parseString(':ab:c::d');
     }
 
     /** @test */
     public function parseStringTripleColon()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        self::expectException(\InvalidArgumentException::class);
         $this->parser->parseString('ab:c:::d');
     }
 
@@ -114,14 +114,14 @@ class OptionParserTest extends TestCase
     /** @test */
     public function parseArrayEmpty()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        self::expectException(\InvalidArgumentException::class);
         $this->parser->parseArray([]);
     }
 
     /** @test */
     public function parseArrayInvalid()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        self::expectException(\InvalidArgumentException::class);
         $this->parser->parseArray([ 'a', '_' ]);
     }
 }
