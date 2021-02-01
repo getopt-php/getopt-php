@@ -29,9 +29,9 @@ class GetoptTest extends TestCase
 
         $getopt->process('-a aparam -s sparam --long longparam');
 
-        $this->assertEquals('aparam', $getopt->getOption('a'));
-        $this->assertEquals('longparam', $getopt->getOption('long'));
-        $this->assertEquals('sparam', $getopt->getOption('s'));
+        self::assertSame('aparam', $getopt->getOption('a'));
+        self::assertSame('longparam', $getopt->getOption('long'));
+        self::assertSame('sparam', $getopt->getOption('s'));
     }
 
     /** @test */
@@ -44,8 +44,8 @@ class GetoptTest extends TestCase
         ]);
 
         $getopt->process('-s --long longparam');
-        $this->assertEquals('longparam', $getopt->getOption('long'));
-        $this->assertEquals('1', $getopt->getOption('s'));
+        self::assertSame('longparam', $getopt->getOption('long'));
+        self::assertSame(1, $getopt->getOption('s'));
     }
 
     /** @test */
@@ -81,8 +81,8 @@ class GetoptTest extends TestCase
         $getopt->getOption('a', true)->setMode(GetOpt::NO_ARGUMENT);
         $getopt->process('-a foo');
 
-        $this->assertEquals(1, $getopt->getOption('a'));
-        $this->assertEquals('foo', $getopt->getOperand(0));
+        self::assertSame(1, $getopt->getOption('a'));
+        self::assertSame('foo', $getopt->getOperand(0));
     }
 
 
@@ -120,7 +120,7 @@ class GetoptTest extends TestCase
 
         $getopt = new GetOpt('a');
         $getopt->process();
-        $this->assertEquals(1, $getopt->getOption('a'));
+        self::assertSame(1, $getopt->getOption('a'));
     }
 
     /** @test */
@@ -130,14 +130,14 @@ class GetoptTest extends TestCase
         $getopt->process('-a foo');
 
         $options = $getopt->getOptions();
-        $this->assertCount(1, $options);
-        $this->assertEquals(1, $options['a']);
-        $this->assertEquals(1, $getopt->getOption('a'));
+        self::assertCount(1, $options);
+        self::assertSame(1, $options['a']);
+        self::assertSame(1, $getopt->getOption('a'));
 
         $operands = $getopt->getOperands();
-        $this->assertCount(1, $operands);
-        $this->assertEquals('foo', $operands[0]);
-        $this->assertEquals('foo', $getopt->getOperand(0));
+        self::assertCount(1, $operands);
+        self::assertSame('foo', $operands[0]);
+        self::assertSame('foo', $getopt->getOperand(0));
     }
 
     /** @test */
@@ -149,7 +149,7 @@ class GetoptTest extends TestCase
             new Option('c', 'gamma'),
         ]);
         $getopt->process('-abc');
-        $this->assertEquals(3, count($getopt));
+        self::assertSame(3, count($getopt));
     }
 
     /** @test */
@@ -157,7 +157,7 @@ class GetoptTest extends TestCase
     {
         $getopt = new GetOpt('q');
         $getopt->process('-q');
-        $this->assertEquals(1, $getopt['q']);
+        self::assertSame(1, $getopt['q']);
     }
 
     /** @test */
@@ -169,9 +169,10 @@ class GetoptTest extends TestCase
         ]);
         $getopt->process('--alpha -b foo');
 
-        $result = $getopt->getIterator();
+        $result = iterator_to_array($getopt->getIterator());
+        $expected = iterator_to_array(new \ArrayIterator([ 'alpha' => 1, 'beta' => 'foo' ]));
 
-        self::assertEquals(new \ArrayIterator([ 'alpha' => 1, 'beta' => 'foo' ]), $result);
+        self::assertSame($expected, $result);
     }
 
     /** @test */
@@ -182,9 +183,10 @@ class GetoptTest extends TestCase
         ]);
         $getopt->process('--alpha ""');
 
-        $result = $getopt->getIterator();
+        $result = iterator_to_array($getopt->getIterator());
+        $expected = iterator_to_array(new \ArrayIterator([ 'alpha' => '']));
 
-        self::assertEquals(new \ArrayIterator([ 'alpha' => '']), $result);
+        self::assertSame($expected, $result);
     }
 
     /** @test */
@@ -195,7 +197,7 @@ class GetoptTest extends TestCase
 
         $helpText = $getopt->getHelpText();
 
-        $this->assertSame('Usage: test [operands]' . PHP_EOL . PHP_EOL, $helpText);
+        self::assertSame('Usage: test [operands]' . PHP_EOL . PHP_EOL, $helpText);
     }
 
     /** @test */
@@ -208,7 +210,7 @@ class GetoptTest extends TestCase
             Help::DESCRIPTION => 'Running the tests',
         ]);
 
-        $this->assertSame(
+        self::assertSame(
             'Usage: test [operands]' . PHP_EOL . PHP_EOL .
             'Running the tests' . PHP_EOL . PHP_EOL,
             $helpText
@@ -230,7 +232,7 @@ class GetoptTest extends TestCase
         $getopt = new GetOpt();
         $getopt->addOption('c');
 
-        $this->assertEquals(new Option('c', null), $getopt->getOption('c', true));
+        self::assertSame((string)new Option('c', null), (string)$getopt->getOption('c', true));
     }
 
     /** @test */

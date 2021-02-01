@@ -52,7 +52,7 @@ class ValueTest extends TestCase
         $option->setValue(null);
         $option->setValue(null);
 
-        $this->assertSame('2', (string)$option);
+        self::assertSame('2', (string)$option);
     }
 
     /** @test */
@@ -61,7 +61,7 @@ class ValueTest extends TestCase
         $option = new Option('a', null, GetOpt::REQUIRED_ARGUMENT);
         $option->setValue('valueA');
 
-        $this->assertSame('valueA', (string)$option);
+        self::assertSame('valueA', (string)$option);
     }
 
     /** @test */
@@ -71,7 +71,7 @@ class ValueTest extends TestCase
         $option->setValue('valueA');
         $option->setValue('valueB');
 
-        $this->assertSame('valueA,valueB', (string)$option);
+        self::assertSame('valueA,valueB', (string)$option);
     }
 
     /** @test */
@@ -82,6 +82,6 @@ class ValueTest extends TestCase
 
         $option->setValue(null);
 
-        $this->assertSame(1, $option->getValue());
+        self::assertSame(1, $option->getValue());
     }
 }

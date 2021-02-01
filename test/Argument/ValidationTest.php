@@ -123,8 +123,8 @@ class ValidationTest extends TestCase
         $option = Option::create('a', 'alpha', GetOpt::REQUIRED_ARGUMENT);
         $option->setValidation('is_numeric', function (Describable $object, $value) use ($option) {
 
-            $this->assertSame('foo', $value);
-            $this->assertSame($option, $object);
+            self::assertSame('foo', $value);
+            self::assertSame($option, $object);
 
             return 'anything';
         });
@@ -139,8 +139,8 @@ class ValidationTest extends TestCase
         $operand = Operand::create('alpha');
         $operand->setValidation('is_numeric', function (Describable $object, $value) use ($operand) {
 
-            $this->assertSame('foo', $value);
-            $this->assertSame($operand, $object);
+            self::assertSame('foo', $value);
+            self::assertSame($operand, $object);
 
             return 'anything';
         });

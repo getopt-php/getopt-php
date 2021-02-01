@@ -13,18 +13,18 @@ class CommonTest extends TestCase
     public function construct()
     {
         $option = new Option('a', 'az-AZ09_', GetOpt::OPTIONAL_ARGUMENT);
-        $this->assertEquals('a', $option->getShort());
-        $this->assertEquals('az-AZ09_', $option->getLong());
-        $this->assertEquals(GetOpt::OPTIONAL_ARGUMENT, $option->getMode());
+        self::assertSame('a', $option->getShort());
+        self::assertSame('az-AZ09_', $option->getLong());
+        self::assertSame(GetOpt::OPTIONAL_ARGUMENT, $option->getMode());
     }
 
     /** @test */
     public function create()
     {
         $option = Option::create('a', 'az-AZ09_', GetOpt::OPTIONAL_ARGUMENT);
-        $this->assertEquals('a', $option->getShort());
-        $this->assertEquals('az-AZ09_', $option->getLong());
-        $this->assertEquals(GetOpt::OPTIONAL_ARGUMENT, $option->getMode());
+        self::assertSame('a', $option->getShort());
+        self::assertSame('az-AZ09_', $option->getLong());
+        self::assertSame(GetOpt::OPTIONAL_ARGUMENT, $option->getMode());
     }
 
     /** @dataProvider dataConstructFails
@@ -53,8 +53,8 @@ class CommonTest extends TestCase
     public function setArgument()
     {
         $option = new Option('a', null, GetOpt::OPTIONAL_ARGUMENT);
-        $this->assertEquals($option, $option->setArgument(new Argument()));
-        $this->assertInstanceof(Argument::CLASSNAME, $option->getArgument());
+        self::assertSame($option, $option->setArgument(new Argument()));
+        self::assertInstanceof(Argument::CLASSNAME, $option->getArgument());
     }
 
     /** @test */
@@ -69,15 +69,15 @@ class CommonTest extends TestCase
     public function setDefaultValue()
     {
         $option = new Option('a', null, GetOpt::OPTIONAL_ARGUMENT);
-        $this->assertEquals($option, $option->setDefaultValue(10));
-        $this->assertEquals(10, $option->getArgument()->getDefaultValue());
+        self::assertSame($option, $option->setDefaultValue(10));
+        self::assertSame(10, $option->getArgument()->getDefaultValue());
     }
 
     /** @test */
     public function setValidation()
     {
         $option = new Option('a', null, GetOpt::OPTIONAL_ARGUMENT);
-        $this->assertEquals($option, $option->setValidation('is_numeric'));
-        $this->assertTrue($option->getArgument()->hasValidation());
+        self::assertSame($option, $option->setValidation('is_numeric'));
+        self::assertTrue($option->getArgument()->hasValidation());
     }
 }
