@@ -280,7 +280,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      * Get the current or a named command.
      *
      * @param string $name
-     * @return CommandInterface
+     * @return CommandInterface|null
      */
     public function getCommand($name = null)
     {
@@ -312,7 +312,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     /**
      * Get the next operand
      *
-     * @return Operand
+     * @return Operand|null
      */
     protected function nextOperand()
     {
