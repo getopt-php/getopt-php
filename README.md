@@ -1,6 +1,6 @@
 # GetOpt.PHP
 
-[![Build Status](https://travis-ci.org/getopt-php/getopt-php.svg?branch=master)](https://travis-ci.org/getopt-php/getopt-php)
+[![Build Status](https://gitlab.com/thflori/getopt-php/badges/master/pipeline.svg)](https://gitlab.com/thflori/getopt-php/-/pipelines?ref=master)
 [![Coverage Status](https://coveralls.io/repos/github/getopt-php/getopt-php/badge.svg?branch=master)](https://coveralls.io/github/getopt-php/getopt-php?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/ulrichsg/getopt-php/v/stable.svg)](https://packagist.org/packages/ulrichsg/getopt-php) 
 [![Total Downloads](https://poser.pugx.org/ulrichsg/getopt-php/downloads.svg)](https://packagist.org/packages/ulrichsg/getopt-php) 
