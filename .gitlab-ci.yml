@@ -28,11 +28,12 @@ php74-unit-test:
   image: iras/php7-composer:4
   variables:
     CI_NAME: "gitalb-ci"
-    CI_BUILD: "$CI_JOB_ID"
+    CI_BUILD_NUMBER: "$CI_JOB_ID"
     CI_BRANCH: "$CI_COMMIT_REF_NAME"
     CI_BUILD_URL: "$CI_JOB_URL"
   script:
-    - composer require php-coveralls/php-coveralls:~2.4@stable
     - php -dzend_extension=xdebug.so -dxdebug.mode=coverage vendor/bin/phpunit -c phpunit.xml --coverage-clover=build/coverage.xml --coverage-text --colors=always
+  after_script:
+    - composer require php-coveralls/php-coveralls:~2.4@stable
     - php vendor/bin/php-coveralls -v -x build/coverage.xml
 
