@@ -6,7 +6,7 @@
     paths:
       - .composer
   before_script:
-    - mkdir -p .composer build
+    - mkdir -p .composer build/logs
     - composer install --no-interaction
   script:
     - composer test -- --colors=always
