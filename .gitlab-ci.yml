@@ -1,0 +1,34 @@
+.php-unit-test:
+  stage: test
+  variables:
+    COMPOSER_CACHE_DIR: "$CI_PROJECT_DIR/.composer"
+  cache:
+    paths:
+      - .composer
+  before_script:
+    - mkdir .composer
+    - mkdir -p build/logs
+    - composer install --no-interaction
+  script:
+    - composer test -- --colors=always
+
+php71-unit-test:
+  extends: .php-unit-test
+  image: iras/php7-composer:1
+
+php72-unit-test:
+  extends: .php-unit-test
+  image: iras/php7-composer:2
+
+php73-unit-test:
+  extends: .php-unit-test
+  image: iras/php7-composer:3
+
+php74-unit-test:
+  extends: .php-unit-test
+  image: iras/php7-composer:4
+  script:
+    - composer require satooshi/php-coveralls:~0.6@stable
+    - php -dzend_extension=xdebug.so -dxdebug.mode=coverage vendor/bin/phpunit -c phpunit.xml --coverage-clover=build/coverage.xml --coverage-text --colors=always
+    - php vendor/bin/coveralls -v -x build/coverage.xml
+
