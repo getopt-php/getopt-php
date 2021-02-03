@@ -34,5 +34,5 @@ php74-unit-test:
   script:
     - composer require php-coveralls/php-coveralls:~2.4@stable
     - php -dzend_extension=xdebug.so -dxdebug.mode=coverage vendor/bin/phpunit -c phpunit.xml --coverage-clover=build/coverage.xml --coverage-text --colors=always
-    - php vendor/bin/coveralls -v -x build/coverage.xml
+    - php vendor/bin/php-coveralls -v -x build/coverage.xml
 
