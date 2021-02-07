@@ -102,7 +102,7 @@ $getopt = new \GetOpt\GetOpt([
     // you can define long, short, argument mode, description and default value
     ['d', 'delta', \GetOpt\GetOpt::MULTIPLE_ARGUMENT, 'Description for delta', 'default value'],
     
-    // note that you have to provide null values if you want to add a desciprtion or default value
+    // note that you have to provide null values if you want to add a description or default value
     ['e', null, \GetOpt\GetOpt::NO_ARGUMENT, 'Enable something'],
     
 ]);
