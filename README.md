@@ -21,7 +21,7 @@ For an overview of the releases with a changelog please have look here: https://
 * Collapsed short options (e.g. `-abc` instead of `-a -b -c`), also with an argument for the last option 
     (e.g. `-ab 1` instead of `-a -b 1`)
 * Two alternative notations for short options with arguments: `-o value` and `-ovalue`
-* Quoted arguments (e.g. `--path "/some path/with spcaces"`) for string processing
+* Quoted arguments (e.g. `--path "/some path/with spaces"`) for string processing
 * Options with multiple arguments (e.g. `--domain example.org --domain example.com`)
 * Operand (positional arguments) specification, validation and limitation
 * Command routing with specified options and operands
