@@ -1,3 +1,6 @@
+Please find Changelog information for releases 3.0 and later on GitHub 
+https://github.com/getopt-php/getopt-php/releases
+
 ## 3.0.0 (alpha)
 
 Features:
