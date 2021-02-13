@@ -97,7 +97,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      * @param mixed $value
      * @return self
      */
-    public function set($setting, $value)
+    public function set(string $setting, $value): GetOpt
     {
         switch ($setting) {
             case self::SETTING_DEFAULT_MODE:
@@ -116,7 +116,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      * @param string $setting
      * @return mixed
      */
-    public function get($setting)
+    public function get(string $setting)
     {
         return isset($this->settings[$setting]) ? $this->settings[$setting] : null;
     }
@@ -205,7 +205,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      * @param bool   $object Get the definition object instead of the current value.
      * @return Option|mixed
      */
-    public function getOption($name, $object = false)
+    public function getOption(string $name, $object = false)
     {
         $option = $this->getOptionObject($name);
 
@@ -225,7 +225,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * @return array
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         $result = [];
 
@@ -251,7 +251,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      * @param Command[] $commands
      * @return self
      */
-    public function addCommands(array $commands)
+    public function addCommands(array $commands): GetOpt
     {
         foreach ($commands as $command) {
             $this->addCommand($command);
@@ -265,7 +265,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      * @param CommandInterface $command
      * @return self
      */
-    public function addCommand(CommandInterface $command)
+    public function addCommand(CommandInterface $command): GetOpt
     {
         foreach ($command->getOptions() as $option) {
             if ($this->conflicts($option)) {
@@ -282,7 +282,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      * @param string $name
      * @return CommandInterface|null
      */
-    public function getCommand($name = null)
+    public function getCommand($name = null): ?CommandInterface
     {
         if ($name !== null) {
             return isset($this->commands[$name]) ? $this->commands[$name] : null;
@@ -294,7 +294,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     /**
      * @return CommandInterface[]
      */
-    public function getCommands()
+    public function getCommands(): array
     {
         return $this->commands;
     }
@@ -304,7 +304,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * @return bool
      */
-    public function hasCommands()
+    public function hasCommands(): bool
     {
         return !empty($this->commands);
     }
@@ -314,7 +314,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * @return Operand|null
      */
-    protected function nextOperand()
+    protected function nextOperand(): ?Operand
     {
         if (isset($this->operands[$this->operandsCount])) {
             $operand = $this->operands[$this->operandsCount];
@@ -330,9 +330,9 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     /**
      * Returns the list of operands. Must be invoked after parse().
      *
-     * @return array
+     * @return Operand[]
      */
-    public function getOperands()
+    public function getOperands(): array
     {
         $operandValues = [];
         foreach ($this->getOperandObjects() as $operand) {
@@ -380,7 +380,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      * @return self
      * @codeCoverageIgnore trivial
      */
-    public function setHelp(HelpInterface $help)
+    public function setHelp(HelpInterface $help): GetOpt
     {
         $this->help = $help;
         return $this;
@@ -406,7 +406,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      * @param string $key
      * @return string
      */
-    public static function translate($key)
+    public static function translate(string $key): string
     {
         return self::getTranslator()->translate($key);
     }
@@ -416,7 +416,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * @return Translator
      */
-    protected static function getTranslator()
+    protected static function getTranslator(): Translator
     {
         if (self::$translator === null) {
             self::$translator = new Translator;
@@ -433,7 +433,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      * @param string $language
      * @return bool Whether the language change was successful
      */
-    public static function setLang($language)
+    public static function setLang(string $language): bool
     {
         return self::getTranslator()->setLanguage($language);
     }
@@ -443,7 +443,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      *
      * @return HelpInterface
      */
-    public function getHelp()
+    public function getHelp(): HelpInterface
     {
         if (!$this->help) {
             $this->help = new Help();
@@ -463,7 +463,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      * @param array $data This data will be forwarded to HelpInterface::render and is available in templates
      * @return string
      */
-    public function getHelpText(array $data = [])
+    public function getHelpText(array $data = []): string
     {
         return $this->getHelp()->render($this, $data);
     }
@@ -506,7 +506,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      * @return \Traversable
      * @throws \Exception
      */
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         $result = [];
 
@@ -526,7 +526,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      * @param mixed $offset
      * @return bool
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         $option = $this->getOptionObject($offset);
         if ($option && $option->getValue() !== null) {
@@ -580,7 +580,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      * @return int
      * @throws \Exception
      */
-    public function count()
+    public function count(): int
     {
         return $this->getIterator()->count();
     }

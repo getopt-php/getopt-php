@@ -27,7 +27,7 @@ class Argument implements Describable
     protected $name;
 
     /** @var bool */
-    protected $multiple;
+    protected $multiple = false;
 
     /** @var mixed */
     protected $value;
@@ -41,9 +41,9 @@ class Argument implements Describable
     /**
      * Creates a new argument.
      *
-     * @param mixed    $default    Default value or NULL
-     * @param callable $validation A validation function
-     * @param string   $name       A name for the argument
+     * @param mixed     $default    Default value or NULL
+     * @param ?callable $validation A validation function
+     * @param string    $name       A name for the argument
      */
     public function __construct($default = null, callable $validation = null, $name = "arg")
     {
@@ -63,7 +63,7 @@ class Argument implements Describable
      * @return $this
      * @throws \InvalidArgumentException
      */
-    public function setDefaultValue($value)
+    public function setDefaultValue($value): Argument
     {
         if (!is_scalar($value)) {
             throw new \InvalidArgumentException("Default value must be scalar");
@@ -80,7 +80,7 @@ class Argument implements Describable
      * @param string|callable $message
      * @return $this
      */
-    public function setValidation(callable $callable, $message = null)
+    public function setValidation(callable $callable, $message = null): Argument
     {
         $this->validation        = $callable;
         $this->validationMessage = $message;
@@ -91,13 +91,13 @@ class Argument implements Describable
      * @param string $name
      * @return $this
      */
-    public function setName($name)
+    public function setName(string $name): Argument
     {
         $this->name = $name;
         return $this;
     }
 
-    protected function getValidationMessage($value)
+    protected function getValidationMessage($value): string
     {
         if (is_callable($this->validationMessage)) {
             return call_user_func($this->validationMessage, $this->option ?: $this, $value);
@@ -113,7 +113,7 @@ class Argument implements Describable
     /**
      * @return bool
      */
-    public function isMultiple()
+    public function isMultiple(): bool
     {
         return $this->multiple;
     }
@@ -122,7 +122,7 @@ class Argument implements Describable
      * @param bool $multiple
      * @return $this
      */
-    public function multiple($multiple = true)
+    public function multiple(bool $multiple = true): Argument
     {
         $this->multiple = $multiple;
         return $this;
@@ -134,7 +134,7 @@ class Argument implements Describable
      * @param Option $option
      * @return $this
      */
-    public function setOption(Option $option)
+    public function setOption(Option $option): Argument
     {
         $this->option = $option;
         return $this;
@@ -143,10 +143,10 @@ class Argument implements Describable
     /**
      *  Internal method to set the current value
      *
-     * @param $value
+     * @param mixed $value
      * @return $this
      */
-    public function setValue($value)
+    public function setValue($value): Argument
     {
         if ($this->validation && !$this->validates($value)) {
             throw new Invalid($this->getValidationMessage($value));
@@ -181,7 +181,7 @@ class Argument implements Describable
      * @param string $arg
      * @return bool
      */
-    public function validates($arg)
+    public function validates(string $arg): bool
     {
         return (bool)call_user_func($this->validation, $arg);
     }
@@ -191,7 +191,7 @@ class Argument implements Describable
      *
      * @return bool
      */
-    public function hasValidation()
+    public function hasValidation(): bool
     {
         return isset($this->validation);
     }
@@ -201,7 +201,7 @@ class Argument implements Describable
      *
      * @return boolean
      */
-    public function hasDefaultValue()
+    public function hasDefaultValue(): bool
     {
         return !is_null($this->default);
     }
@@ -225,7 +225,7 @@ class Argument implements Describable
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -235,7 +235,7 @@ class Argument implements Describable
      *
      * @return string
      */
-    public function describe()
+    public function describe(): string
     {
         return $this->option ? $this->option->describe() :
             sprintf('%s \'%s\'', GetOpt::translate(static::TRANSLATION_KEY), $this->getName());

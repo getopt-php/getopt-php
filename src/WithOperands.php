@@ -57,7 +57,7 @@ trait WithOperands
      *
      * @return Operand[]
      */
-    public function getOperands()
+    public function getOperands(): array
     {
         return $this->operands;
     }
@@ -70,7 +70,7 @@ trait WithOperands
      * @param int|string $index
      * @return Operand
      */
-    public function getOperand($index)
+    public function getOperand($index): ?Operand
     {
         if (is_string($index)) {
             $name = $index;
@@ -90,7 +90,7 @@ trait WithOperands
      *
      * @return bool
      */
-    public function hasOperands()
+    public function hasOperands(): bool
     {
         return !empty($this->operands);
     }

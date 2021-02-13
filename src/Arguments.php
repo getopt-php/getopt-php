@@ -36,7 +36,7 @@ class Arguments
      * @param callable $addOperand
      * @return bool
      */
-    public function process(GetOpt $getopt, callable $setOption, callable $setCommand, callable $addOperand)
+    public function process(GetOpt $getopt, callable $setOption, callable $setCommand, callable $addOperand): bool
     {
         $operands = [];
         while (($arg = array_shift($this->arguments)) !== null) {
@@ -105,7 +105,7 @@ class Arguments
      * @param string $arg
      * @return bool
      */
-    protected function isOption($arg)
+    protected function isOption($arg): bool
     {
         return !$this->isValue($arg) && !$this->isMeta($arg);
     }
@@ -116,7 +116,7 @@ class Arguments
      * @param string $arg
      * @return bool
      */
-    protected function isValue($arg)
+    protected function isValue($arg): bool
     {
         return (empty($arg) || $arg === '-' || 0 !== strpos($arg, '-'));
     }
@@ -127,7 +127,7 @@ class Arguments
      * @param string $arg
      * @return bool
      */
-    protected function isMeta($arg)
+    protected function isMeta($arg): bool
     {
         return $arg && $arg === '--';
     }
@@ -138,7 +138,7 @@ class Arguments
      * @param $arg
      * @return bool
      */
-    protected function isLongOption($arg)
+    protected function isLongOption($arg): bool
     {
         return $this->isOption($arg) && $arg[1] === '-';
     }
@@ -149,7 +149,7 @@ class Arguments
      * @param string $arg
      * @return string
      */
-    protected function longName($arg)
+    protected function longName(string $arg): string
     {
         $name = substr($arg, 2);
         $p    = strpos($name, '=');
@@ -162,7 +162,7 @@ class Arguments
      * @param string $arg
      * @return string[] (single character string multi byte safe)
      */
-    protected function shortNames($arg)
+    protected function shortNames(string $arg): array
     {
         if (!$this->isOption($arg) || $this->isLongOption($arg)) {
             return [];
@@ -182,10 +182,10 @@ class Arguments
      *
      * @param string $arg
      * @param string $name
-     * @param Option $option
-     * @return string
+     * @param ?Option $option
+     * @return ?string
      */
-    protected function value($arg, $name = null, Option $option = null)
+    protected function value(string $arg, $name = null, Option $option = null): ?string
     {
         $p = strpos($arg, $this->isLongOption($arg) ? '=' : $name);
         if ($this->isLongOption($arg) && $p || !$this->isLongOption($arg) && $p < strlen($arg)-1) {
@@ -208,7 +208,7 @@ class Arguments
      * @param string $argsString
      * @return Arguments
      */
-    public static function fromString($argsString)
+    public static function fromString(string $argsString): Arguments
     {
         $argv = [ '' ];
         $argsString = trim($argsString);

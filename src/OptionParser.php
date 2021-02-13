@@ -19,7 +19,7 @@ class OptionParser
      * @return Option[]
      * @throws \InvalidArgumentException
      */
-    public static function parseString($string)
+    public static function parseString(string $string): array
     {
         if (!mb_strlen($string)) {
             throw new \InvalidArgumentException('Option string must not be empty');
@@ -62,7 +62,7 @@ class OptionParser
      * @param array $array
      * @return Option
      */
-    public static function parseArray(array $array)
+    public static function parseArray(array $array): Option
     {
         if (empty($array)) {
             throw new \InvalidArgumentException('Invalid option array (at least a name has to be given)');
@@ -96,7 +96,7 @@ class OptionParser
      * @param array $row
      * @return array
      */
-    protected static function completeOptionArray(array $row)
+    protected static function completeOptionArray(array $row): array
     {
         $short = (strlen($row[0]) == 1) ? $row[0] : null;
 

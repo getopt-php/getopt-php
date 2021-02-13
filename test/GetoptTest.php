@@ -321,7 +321,7 @@ class GetoptTest extends TestCase
         $getopt->set(GetOpt::SETTING_SCRIPT_NAME, 'test');
         $getopt->addOption(Option::create('v', 'verbose')->setDescription('Ausführliche Ausgaben aktivieren'));
 
-        $result = $getopt->setHelpLang('de');
+        $result = $getopt->setLang('de');
 
         self::assertTrue($result);
         self::assertSame(
@@ -337,7 +337,7 @@ class GetoptTest extends TestCase
     {
         $getopt = new GetOpt();
 
-        $result = $getopt->setHelpLang('any/path/to/file.php');
+        $result = $getopt->setLang('any/path/to/file.php');
 
         self::assertFalse($result);
     }

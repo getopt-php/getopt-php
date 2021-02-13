@@ -93,7 +93,7 @@ class CommandTest extends TestCase
         $command = new Command('bar', 'var_dump');
         $getOpt->addCommand($command);
 
-        $getOpt->parse('foo --version bar');
+        $getOpt->process('foo --version bar');
 
         self::assertNull($getOpt->getCommand());
         self::assertSame(['foo', 'bar'], $getOpt->getOperands());
@@ -205,7 +205,7 @@ class CommandTest extends TestCase
         $command = Command::create('import reviews', 'var_dump');
         $getOpt->addCommand($command);
 
-        $getOpt->parse('import reviews');
+        $getOpt->process('import reviews');
 
         self::assertSame($command, $getOpt->getCommand());
     }
@@ -218,7 +218,7 @@ class CommandTest extends TestCase
         $importReviews = Command::create('import reviews', 'var_dump');
         $getOpt->addCommands([$import, $importReviews]);
 
-        $getOpt->parse('import reviews');
+        $getOpt->process('import reviews');
 
         self::assertSame($import, $getOpt->getCommand());
         self::assertSame(['reviews'], $getOpt->getOperands());
@@ -231,7 +231,7 @@ class CommandTest extends TestCase
         $command = Command::create('import reviews', 'var_dump');
         $getOpt->addCommand($command);
 
-        $getOpt->parse('import --version reviews');
+        $getOpt->process('import --version reviews');
 
         self::assertNull($getOpt->getCommand());
         self::assertSame(['import', 'reviews'], $getOpt->getOperands());

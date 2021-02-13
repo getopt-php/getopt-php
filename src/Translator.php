@@ -43,7 +43,7 @@ class Translator
      * @param string $key
      * @return string
      */
-    public function translate($key)
+    public function translate(string $key): string
     {
         if ($this->translations === null) {
             $this->loadTranslations();
@@ -66,7 +66,7 @@ class Translator
      * @param string $language
      * @return bool Whether the language change was successful
      */
-    public function setLanguage($language)
+    public function setLanguage(string $language): bool
     {
         $languageFile = file_exists($language) ?
             $language : sprintf(static::PATH_TEMPLATE, __DIR__, $language);
