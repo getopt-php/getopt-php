@@ -387,16 +387,6 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * @param string $language
-     * @return bool Whether the language change was successful
-     * @deprecated use GetOpt::setLang($language) instead
-     */
-    public function setHelpLang($language = 'en')
-    {
-        return self::setLang($language);
-    }
-
-    /**
      * Translate $key
      *
      * Returns the translation for the given key; falls back to English if it is
@@ -466,36 +456,6 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     public function getHelpText(array $data = []): string
     {
         return $this->getHelp()->render($this, $data);
-    }
-
-    // backward compatibility
-
-    /**
-     * Set script name manually
-     *
-     * @param string $scriptName
-     * @return self
-     * @deprecated Use `GetOpt::set(GetOpt::SETTING_SCRIPT_NAME, $scriptName)` instead
-     * @codeCoverageIgnore
-     */
-    public function setScriptName($scriptName)
-    {
-        return $this->set(self::SETTING_SCRIPT_NAME, $scriptName);
-    }
-
-    /**
-     * Process $arguments or $_SERVER['argv']
-     *
-     * These function is an alias for process now. Parse was not the correct verb for what
-     * the function is currently doing.
-     *
-     * @deprecated Use `GetOpt::process($arguments)` instead
-     * @param mixed $arguments optional ARGV array or argument string
-     * @codeCoverageIgnore
-     */
-    public function parse($arguments = null)
-    {
-        $this->process($arguments);
     }
 
     // array functions

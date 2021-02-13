@@ -83,16 +83,6 @@ class Option implements Describable
     }
 
     /**
-     * @deprecated will be removed in version 4
-     * @see getDescription
-     * @codeCoverageIgnore
-     */
-    public function description()
-    {
-        return $this->description;
-    }
-
-    /**
      * Defines a default value for the option.
      *
      * @param mixed $value
@@ -180,16 +170,6 @@ class Option implements Describable
     }
 
     /**
-     * @deprecated will be removed in version 4
-     * @see getShort
-     * @codeCoverageIgnore
-     */
-    public function short()
-    {
-        return $this->short;
-    }
-
-    /**
      * Change the long name
      *
      * @param ?string $long
@@ -208,16 +188,6 @@ class Option implements Describable
     }
 
     public function getLong(): ?string
-    {
-        return $this->long;
-    }
-
-    /**
-     * @deprecated will be removed in version 4
-     * @see getLong
-     * @codeCoverageIgnore
-     */
-    public function long()
     {
         return $this->long;
     }
@@ -249,16 +219,6 @@ class Option implements Describable
     }
 
     public function getMode(): string
-    {
-        return $this->mode;
-    }
-
-    /**
-     * @deprecated will be removed in version 4
-     * @see getMode
-     * @codeCoverageIgnore
-     */
-    public function mode()
     {
         return $this->mode;
     }
@@ -306,16 +266,6 @@ class Option implements Describable
     {
         $value = $this->argument->getValue();
         return $value === null || $value === [] ? $this->argument->getDefaultValue() : $value;
-    }
-
-    /**
-     * @deprecated will be removed in version 4
-     * @see getValue
-     * @codeCoverageIgnore
-     */
-    public function value()
-    {
-        return $this->getValue();
     }
 
     /**
