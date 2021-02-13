@@ -69,18 +69,6 @@ class Operand extends Argument
     }
 
     /**
-     *  Internal method to set the current value
-     *
-     * @param $value
-     * @return $this
-     */
-    public function setValue($value): Argument
-    {
-        parent::setValue($value);
-        return $this;
-    }
-
-    /**
      * Get the current value
      *
      * @return mixed
