@@ -74,7 +74,7 @@ class Operand extends Argument
      * @param $value
      * @return $this
      */
-    public function setValue($value): Operand
+    public function setValue($value): Argument
     {
         parent::setValue($value);
         return $this;
