@@ -28,7 +28,7 @@ class Help implements HelpInterface
 
     /** @var array */
     protected $settings = [
-        self::MAX_WIDTH            => 120,
+        self::MAX_WIDTH => 120,
     ];
 
     /** @var string[] */
@@ -66,7 +66,7 @@ class Help implements HelpInterface
      * @param mixed $value
      * @return $this
      */
-    public function set($setting, $value)
+    public function set(string $setting, $value): Help
     {
         switch ($setting) {
             case 'optionsTemplate':
@@ -91,7 +91,7 @@ class Help implements HelpInterface
      * @see $texts
      * @return $this
      */
-    public function setTexts(array $texts)
+    public function setTexts(array $texts): Help
     {
         $this->texts = array_map(function ($text) {
             return preg_replace('/\R/', PHP_EOL, $text);
@@ -105,7 +105,7 @@ class Help implements HelpInterface
      * @param $key
      * @return string
      */
-    protected function getText($key)
+    protected function getText($key): string
     {
         return isset($this->texts[$key]) ? $this->texts[$key] : GetOpt::translate($key);
     }
@@ -117,7 +117,7 @@ class Help implements HelpInterface
      * @param array  $data Additional data for templates
      * @return string
      */
-    public function render(GetOpt $getopt, array $data = [])
+    public function render(GetOpt $getopt, array $data = []): string
     {
         $this->getOpt = $getopt;
         foreach ($data as $setting => $value) {
@@ -167,12 +167,12 @@ class Help implements HelpInterface
      * @param string $with
      * @return string
      */
-    protected function surround($text, $with)
+    protected function surround(string $text, string $with): string
     {
         return $with[0] . $text . substr($with, -1);
     }
 
-    protected function renderUsage()
+    protected function renderUsage(): string
     {
         return $this->getText('usage-title') .
                $this->getOpt->get(GetOpt::SETTING_SCRIPT_NAME) . ' ' .
@@ -182,7 +182,7 @@ class Help implements HelpInterface
                 $this->renderDescription();
     }
 
-    protected function renderOperands()
+    protected function renderOperands(): string
     {
         $data = [];
         $definitionWidth = 0;
@@ -211,7 +211,7 @@ class Help implements HelpInterface
         return $this->getText('operands-title') . $this->renderColumns($definitionWidth, $data) . PHP_EOL;
     }
 
-    protected function renderOptions()
+    protected function renderOptions(): string
     {
         $data            = [];
         $definitionWidth = 0;
@@ -240,7 +240,7 @@ class Help implements HelpInterface
         return $this->getText('options-title') . $this->renderColumns($definitionWidth, $data) . PHP_EOL;
     }
 
-    protected function renderCommands()
+    protected function renderCommands(): string
     {
         $data      = [];
         $nameWidth = 0;
@@ -258,7 +258,7 @@ class Help implements HelpInterface
         return $this->getText('commands-title') . $this->renderColumns($nameWidth, $data) . PHP_EOL;
     }
 
-    protected function renderUsageCommand()
+    protected function renderUsageCommand(): string
     {
         if ($command = $this->getOpt->getCommand()) {
             return $command->getName() . ' ';
@@ -269,14 +269,15 @@ class Help implements HelpInterface
         return '';
     }
     
-    protected function renderUsageOptions()
+    protected function renderUsageOptions(): string
     {
         if ($this->getOpt->hasOptions() || !$this->getOpt->get(GetOpt::SETTING_STRICT_OPTIONS)) {
             return $this->surround($this->getText('usage-options'), $this->texts['optional']) . ' ';
         }
+        return '';
     }
     
-    protected function renderUsageOperands()
+    protected function renderUsageOperands(): string
     {
         $usage = '';
         
@@ -305,7 +306,7 @@ class Help implements HelpInterface
         return $usage;
     }
 
-    protected function renderDescription()
+    protected function renderDescription(): string
     {
         if ($command = $this->getOpt->getCommand()) {
             return $command->getDescription() . PHP_EOL . PHP_EOL;
@@ -316,7 +317,7 @@ class Help implements HelpInterface
         return '';
     }
 
-    protected function getScreenWidth()
+    protected function getScreenWidth(): int
     {
         if (!$this->screenWidth) {
             $columns = defined('COLUMNS') ? (int)COLUMNS : (int)@getenv('COLUMNS');
@@ -336,7 +337,7 @@ class Help implements HelpInterface
         return $this->screenWidth;
     }
 
-    protected function renderColumns($columnWidth, $data)
+    protected function renderColumns($columnWidth, $data): string
     {
         $text = '';
         $screenWidth = $this->getScreenWidth();
@@ -365,7 +366,7 @@ class Help implements HelpInterface
         return $text;
     }
 
-    protected function renderTemplate($template, $data)
+    protected function renderTemplate($template, $data): string
     {
         extract($data, EXTR_SKIP);
         ob_start();
@@ -377,7 +378,7 @@ class Help implements HelpInterface
      * @return string
      * @codeCoverageIgnore trivial
      */
-    public function getUsageTemplate()
+    public function getUsageTemplate(): string
     {
         return $this->usageTemplate;
     }
@@ -387,7 +388,7 @@ class Help implements HelpInterface
      * @codeCoverageIgnore trivial
      * @return $this
      */
-    public function setUsageTemplate($usageTemplate)
+    public function setUsageTemplate(string $usageTemplate): Help
     {
         $this->usageTemplate = $usageTemplate;
         return $this;
@@ -397,7 +398,7 @@ class Help implements HelpInterface
      * @return string
      * @codeCoverageIgnore trivial
      */
-    public function getOptionsTemplate()
+    public function getOptionsTemplate(): string
     {
         return $this->optionsTemplate;
     }
@@ -407,7 +408,7 @@ class Help implements HelpInterface
      * @codeCoverageIgnore trivial
      * @return $this
      */
-    public function setOptionsTemplate($optionsTemplate)
+    public function setOptionsTemplate(string $optionsTemplate): Help
     {
         $this->optionsTemplate = $optionsTemplate;
         return $this;
@@ -417,7 +418,7 @@ class Help implements HelpInterface
      * @return string
      * @codeCoverageIgnore trivial
      */
-    public function getCommandsTemplate()
+    public function getCommandsTemplate(): string
     {
         return $this->commandsTemplate;
     }
@@ -427,7 +428,7 @@ class Help implements HelpInterface
      * @codeCoverageIgnore trivial
      * @return $this
      */
-    public function setCommandsTemplate($commandsTemplate)
+    public function setCommandsTemplate(string $commandsTemplate): Help
     {
         $this->commandsTemplate = $commandsTemplate;
         return $this;

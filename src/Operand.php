@@ -22,7 +22,7 @@ class Operand extends Argument
     protected $required;
 
     /** @var string */
-    protected $description;
+    protected $description = '';
 
     /**
      * Operand constructor.
@@ -30,7 +30,7 @@ class Operand extends Argument
      * @param string $name A name for the operand
      * @param int    $mode The operand mode
      */
-    public function __construct($name, $mode = self::OPTIONAL)
+    public function __construct(string $name, int $mode = self::OPTIONAL)
     {
         $this->required = (bool)($mode & self::REQUIRED);
         $this->multiple = (bool)($mode & self::MULTIPLE);
@@ -45,7 +45,7 @@ class Operand extends Argument
      * @param int    $mode
      * @return static
      */
-    public static function create($name, $mode = 0)
+    public static function create(string $name, int $mode = 0): Operand
     {
         return new static($name, $mode);
     }
@@ -53,7 +53,7 @@ class Operand extends Argument
     /**
      * @return bool
      */
-    public function isRequired()
+    public function isRequired(): bool
     {
         return $this->required;
     }
@@ -62,21 +62,9 @@ class Operand extends Argument
      * @param bool $required
      * @return $this
      */
-    public function required($required = true)
+    public function required(bool $required = true): Operand
     {
         $this->required = $required;
-        return $this;
-    }
-
-    /**
-     *  Internal method to set the current value
-     *
-     * @param $value
-     * @return $this
-     */
-    public function setValue($value)
-    {
-        parent::setValue($value);
         return $this;
     }
 
@@ -94,7 +82,7 @@ class Operand extends Argument
     /**
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -103,20 +91,10 @@ class Operand extends Argument
      * @param string $description
      * @return $this
      */
-    public function setDescription($description)
+    public function setDescription(string $description): Operand
     {
         $this->description = $description;
         return $this;
-    }
-
-    /**
-     * @deprecated will be removed in version 4
-     * @see getValue
-     * @codeCoverageIgnore
-     */
-    public function value()
-    {
-        return $this->getValue();
     }
 
     /**
@@ -124,7 +102,7 @@ class Operand extends Argument
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         $value = $this->getValue();
         return !is_array($value) ? (string)$value : implode(',', $value);

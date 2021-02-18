@@ -27,12 +27,12 @@ class Option implements Describable
     /**
      * Creates a new option.
      *
-     * @param string   $short The option's short name (one of [a-zA-Z0-9?!§$%#]) or null for long-only options
-     * @param string   $long  The option's long name (a string of 1+ letter/digit/_/- characters, starting with a letter
+     * @param ?string  $short The option's short name (one of [a-zA-Z0-9?!§$%#]) or null for long-only options
+     * @param ?string  $long  The option's long name (a string of 1+ letter|digit|_|- characters, starting with a letter
      *                        or digit) or null for short-only options
      * @param string   $mode  Whether the option can/must have an argument (optional, defaults to no argument)
      */
-    public function __construct($short, $long = null, $mode = GetOpt::NO_ARGUMENT)
+    public function __construct(?string $short, string $long = null, string $mode = GetOpt::NO_ARGUMENT)
     {
         if (!$short && !$long) {
             throw new \InvalidArgumentException("The short and long name may not both be empty");
@@ -52,12 +52,12 @@ class Option implements Describable
      * Fluent interface for constructor so options can be added during construction
      *
      * @see Options::__construct()
-     * @param string   $short
-     * @param string   $long
+     * @param ?string  $short
+     * @param ?string  $long
      * @param string   $mode
      * @return static
      */
-    public static function create($short, $long = null, $mode = GetOpt::NO_ARGUMENT)
+    public static function create(?string $short, string $long = null, string $mode = GetOpt::NO_ARGUMENT): Option
     {
         return new static($short, $long, $mode);
     }
@@ -66,9 +66,9 @@ class Option implements Describable
      * Defines a description for the option. This is only used for generating usage information.
      *
      * @param string $description
-     * @return Option this object (for chaining calls)
+     * @return $this
      */
-    public function setDescription($description)
+    public function setDescription(string $description): Option
     {
         $this->description = $description;
         return $this;
@@ -77,17 +77,7 @@ class Option implements Describable
     /**
      * @return string
      */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * @deprecated will be removed in version 4
-     * @see getDescription
-     * @codeCoverageIgnore
-     */
-    public function description()
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -98,7 +88,7 @@ class Option implements Describable
      * @param mixed $value
      * @return Option this object (for chaining calls)
      */
-    public function setDefaultValue($value)
+    public function setDefaultValue($value): Option
     {
         $this->argument->setDefaultValue($value);
         return $this;
@@ -111,7 +101,7 @@ class Option implements Describable
      * @param string|callable $message
      * @return Option this object (for chaining calls)
      */
-    public function setValidation($function, $message = null)
+    public function setValidation(callable $function, $message = null): Option
     {
         $this->argument->setValidation($function, $message);
         return $this;
@@ -120,10 +110,10 @@ class Option implements Describable
     /**
      * Set the argumentName.
      *
-     * @param $name
+     * @param string $name
      * @return $this
      */
-    public function setArgumentName($name)
+    public function setArgumentName(string $name): Option
     {
         $this->argument->setName($name);
         return $this;
@@ -133,9 +123,9 @@ class Option implements Describable
      * Sets the argument object directly.
      *
      * @param Argument $arg
-     * @return Option this object (for chaining calls)
+     * @return $this
      */
-    public function setArgument(Argument $arg)
+    public function setArgument(Argument $arg): Option
     {
         if ($this->mode == GetOpt::NO_ARGUMENT) {
             throw new \InvalidArgumentException("Option should not have any argument");
@@ -149,10 +139,10 @@ class Option implements Describable
     /**
      * Change the short name
      *
-     * @param string $short
-     * @return Option this object (for chaining calls)
+     * @param ?string $short
+     * @return $this
      */
-    public function setShort($short)
+    public function setShort(?string $short): Option
     {
         if (!(is_null($short) || preg_match("/^[a-zA-Z0-9?!§$%#]$/", $short))) {
             throw new \InvalidArgumentException(sprintf(
@@ -164,10 +154,7 @@ class Option implements Describable
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getShort()
+    public function getShort(): ?string
     {
         return $this->short;
     }
@@ -177,28 +164,18 @@ class Option implements Describable
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->getLong() ?: $this->getShort();
     }
 
     /**
-     * @deprecated will be removed in version 4
-     * @see getShort
-     * @codeCoverageIgnore
-     */
-    public function short()
-    {
-        return $this->short;
-    }
-
-    /**
      * Change the long name
      *
-     * @param $long
-     * @return Option this object (for chaining calls)
+     * @param ?string $long
+     * @return $this
      */
-    public function setLong($long)
+    public function setLong(?string $long): Option
     {
         if (!(is_null($long) || preg_match("/^[a-zA-Z0-9][a-zA-Z0-9_-]*$/", $long))) {
             throw new \InvalidArgumentException(sprintf(
@@ -210,20 +187,7 @@ class Option implements Describable
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getLong()
-    {
-        return $this->long;
-    }
-
-    /**
-     * @deprecated will be removed in version 4
-     * @see getLong
-     * @codeCoverageIgnore
-     */
-    public function long()
+    public function getLong(): ?string
     {
         return $this->long;
     }
@@ -231,10 +195,10 @@ class Option implements Describable
     /**
      * Change the mode
      *
-     * @param $mode
-     * @return Option this object (for chaining calls)
+     * @param string $mode
+     * @return $this
      */
-    public function setMode($mode)
+    public function setMode(string $mode): Option
     {
         if (!in_array($mode, [
             GetOpt::NO_ARGUMENT,
@@ -254,20 +218,7 @@ class Option implements Describable
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getMode()
-    {
-        return $this->mode;
-    }
-
-    /**
-     * @deprecated will be removed in version 4
-     * @see getMode
-     * @codeCoverageIgnore
-     */
-    public function mode()
+    public function getMode(): string
     {
         return $this->mode;
     }
@@ -277,7 +228,7 @@ class Option implements Describable
      *
      * @return Argument
      */
-    public function getArgument()
+    public function getArgument(): Argument
     {
         return $this->argument;
     }
@@ -288,7 +239,7 @@ class Option implements Describable
      * @param mixed $value
      * @return $this
      */
-    public function setValue($value = null)
+    public function setValue($value = null): Option
     {
         if ($value === null) {
             if (in_array($this->mode, [ GetOpt::REQUIRED_ARGUMENT, GetOpt::MULTIPLE_ARGUMENT ])) {
@@ -315,16 +266,6 @@ class Option implements Describable
     {
         $value = $this->argument->getValue();
         return $value === null || $value === [] ? $this->argument->getDefaultValue() : $value;
-    }
-
-    /**
-     * @deprecated will be removed in version 4
-     * @see getValue
-     * @codeCoverageIgnore
-     */
-    public function value()
-    {
-        return $this->getValue();
     }
 
     /**

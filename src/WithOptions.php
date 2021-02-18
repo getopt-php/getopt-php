@@ -95,7 +95,7 @@ trait WithOptions
      * @param Option $option
      * @return bool
      */
-    public function conflicts(Option $option)
+    public function conflicts(Option $option): bool
     {
         $short = $option->getShort();
         $long = $option->getLong();
@@ -107,7 +107,7 @@ trait WithOptions
      *
      * @return Option[]
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }
@@ -118,7 +118,7 @@ trait WithOptions
      * @param string $name   Short or long name of the option
      * @return Option
      */
-    public function getOption($name)
+    public function getOption(string $name): ?Option
     {
         return isset($this->optionMapping[$name]) ? $this->optionMapping[$name] : null;
     }
@@ -126,7 +126,7 @@ trait WithOptions
     /**
      * @return bool
      */
-    public function hasOptions()
+    public function hasOptions(): bool
     {
         return !empty($this->options);
     }

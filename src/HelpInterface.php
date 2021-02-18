@@ -17,5 +17,5 @@ interface HelpInterface
      * @param array  $data
      * @return string
      */
-    public function render(GetOpt $getopt, array $data = []);
+    public function render(GetOpt $getopt, array $data = []): string;
 }
