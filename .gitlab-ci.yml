@@ -37,3 +37,9 @@ php74-unit-test:
     - composer require php-coveralls/php-coveralls:~2.4@stable
     - php vendor/bin/php-coveralls -v -x build/coverage.xml
 
+php80-unit-test:
+  extends: .php-unit-test
+  image: iras/php8-composer:0
+  before_script:
+    - mkdir -p .composer build/logs
+    - composer install --no-interaction --ignore-platform-reqs
