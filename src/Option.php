@@ -32,7 +32,7 @@ class Option implements Describable
      *                        or digit) or null for short-only options
      * @param string   $mode  Whether the option can/must have an argument (optional, defaults to no argument)
      */
-    public function __construct(?string $short, string $long = null, string $mode = GetOpt::NO_ARGUMENT)
+    final public function __construct(?string $short, string $long = null, string $mode = GetOpt::NO_ARGUMENT)
     {
         if (!$short && !$long) {
             throw new \InvalidArgumentException("The short and long name may not both be empty");
