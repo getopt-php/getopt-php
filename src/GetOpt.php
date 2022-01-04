@@ -502,6 +502,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      * @param mixed $offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         $option = $this->getOptionObject($offset);
@@ -518,7 +519,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      * @param mixed $offset
      * @param mixed $value
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         throw new \LogicException('Read only array access');
     }
@@ -529,7 +530,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
      * @param mixed $offset
      * @throws \LogicException
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         throw new \LogicException('Read only array access');
     }
