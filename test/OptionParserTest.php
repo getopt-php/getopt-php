@@ -12,16 +12,16 @@ class OptionParserTest extends TestCase
     /** @var OptionParser */
     private $parser;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->parser = new OptionParser(GetOpt::REQUIRED_ARGUMENT);
     }
 
     /** @test */
-    public function parseString()
+    public function parseString(): void
     {
         $options = $this->parser->parseString('ab:c::3');
-        self::assertInternalType('array', $options);
+        self::assertIsArray($options);
         self::assertCount(4, $options);
         foreach ($options as $option) {
             self::assertInstanceOf(Option::CLASSNAME, $option);
@@ -44,28 +44,28 @@ class OptionParserTest extends TestCase
     }
 
     /** @test */
-    public function parseStringEmpty()
+    public function parseStringEmpty(): void
     {
         self::expectException(\InvalidArgumentException::class);
         $this->parser->parseString('');
     }
 
     /** @test */
-    public function parseStringInvalidCharacter()
+    public function parseStringInvalidCharacter(): void
     {
         self::expectException(\InvalidArgumentException::class);
         $this->parser->parseString('ab:c::dä');
     }
 
     /** @test */
-    public function parseStringStartsWithColon()
+    public function parseStringStartsWithColon(): void
     {
         self::expectException(\InvalidArgumentException::class);
         $this->parser->parseString(':ab:c::d');
     }
 
     /** @test */
-    public function parseStringTripleColon()
+    public function parseStringTripleColon(): void
     {
         self::expectException(\InvalidArgumentException::class);
         $this->parser->parseString('ab:c:::d');
@@ -83,7 +83,7 @@ class OptionParserTest extends TestCase
     /** @dataProvider provideOptionArrays
      * @param array $array
      * @test */
-    public function parseArray($array)
+    public function parseArray($array): void
     {
         $option = $this->parser->parseArray($array);
 
@@ -112,14 +112,14 @@ class OptionParserTest extends TestCase
     }
 
     /** @test */
-    public function parseArrayEmpty()
+    public function parseArrayEmpty(): void
     {
         self::expectException(\InvalidArgumentException::class);
         $this->parser->parseArray([]);
     }
 
     /** @test */
-    public function parseArrayInvalid()
+    public function parseArrayInvalid(): void
     {
         self::expectException(\InvalidArgumentException::class);
         $this->parser->parseArray([ 'a', '_' ]);

@@ -5,3 +5,4 @@ vendor
 nbproject
 _site
 .idea/
+.phpunit.result.cache

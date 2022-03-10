@@ -12,14 +12,14 @@ use PHPUnit\Framework\TestCase;
 
 class ValidationTest extends TestCase
 {
-    protected function tearDown()
+    protected function tearDown(): void
     {
         GetOpt::setLang('en'); // reset the language
         parent::tearDown();
     }
 
     /** @test */
-    public function defaultMessageForOption()
+    public function defaultMessageForOption(): void
     {
         $option = Option::create('a', 'alpha', GetOpt::REQUIRED_ARGUMENT)
             ->setValidation('is_numeric');
@@ -31,7 +31,7 @@ class ValidationTest extends TestCase
     }
 
     /** @test */
-    public function defaultMessageForOperand()
+    public function defaultMessageForOperand(): void
     {
         $operand = Operand::create('alpha')
             ->setValidation('is_numeric');
@@ -43,7 +43,7 @@ class ValidationTest extends TestCase
     }
 
     /** @test */
-    public function defaultMessageForArgument()
+    public function defaultMessageForArgument(): void
     {
         $argument = new Argument(null, 'is_numeric', 'alpha');
 
@@ -54,7 +54,7 @@ class ValidationTest extends TestCase
     }
 
     /** @test */
-    public function usesCustomMessage()
+    public function usesCustomMessage(): void
     {
         $option = Option::create('a', 'alpha', GetOpt::REQUIRED_ARGUMENT)
             ->setValidation('is_numeric', 'alpha has to be numeric');
@@ -66,7 +66,7 @@ class ValidationTest extends TestCase
     }
 
     /** @test */
-    public function usesTranslatedDescriptions()
+    public function usesTranslatedDescriptions(): void
     {
         GetOpt::setLang('de');
         $operand = Operand::create('alpha')
@@ -79,7 +79,7 @@ class ValidationTest extends TestCase
     }
 
     /** @test */
-    public function providesValueAsSecondReplacement()
+    public function providesValueAsSecondReplacement(): void
     {
         $option = Option::create('a', 'alpha', GetOpt::REQUIRED_ARGUMENT)
             ->setValidation('is_numeric', '%s %s');
@@ -91,7 +91,7 @@ class ValidationTest extends TestCase
     }
 
     /** @test */
-    public function usesCallbackToGetMessage()
+    public function usesCallbackToGetMessage(): void
     {
         $option = Option::create('a', 'alpha', GetOpt::REQUIRED_ARGUMENT)
             ->setValidation('is_numeric', function () {
@@ -105,7 +105,7 @@ class ValidationTest extends TestCase
     }
 
     /** @test */
-    public function providesOptionAndValue()
+    public function providesOptionAndValue(): void
     {
         $option = Option::create('a', 'alpha', GetOpt::REQUIRED_ARGUMENT);
         $option->setValidation('is_numeric', function (Describable $object, $value) use ($option) {
@@ -121,7 +121,7 @@ class ValidationTest extends TestCase
     }
 
     /** @test */
-    public function providesOperandAndValue()
+    public function providesOperandAndValue(): void
     {
         $operand = Operand::create('alpha');
         $operand->setValidation('is_numeric', function (Describable $object, $value) use ($operand) {

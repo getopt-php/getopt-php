@@ -12,7 +12,7 @@ class ValueTest extends TestCase
      * @param Option $option
      * @param mixed  $expected
      * @test */
-    public function valueWithoutDefault(Option $option, $expected)
+    public function valueWithoutDefault(Option $option, $expected): void
     {
         $result = $option->getValue();
 
@@ -25,7 +25,7 @@ class ValueTest extends TestCase
      * @param mixed  $value
      * @param mixed  $expected
      * @test */
-    public function valueWithoutDefaultButSetValue(Option $option, $dummy, $value, $expected)
+    public function valueWithoutDefaultButSetValue(Option $option, $dummy, $value, $expected): void
     {
         $option->setValue($value);
 
@@ -46,7 +46,7 @@ class ValueTest extends TestCase
     }
 
     /** @test */
-    public function toStringWithoutArgument()
+    public function toStringWithoutArgument(): void
     {
         $option = new Option('a', null);
         $option->setValue(null);
@@ -56,7 +56,7 @@ class ValueTest extends TestCase
     }
 
     /** @test */
-    public function toStringWithArgument()
+    public function toStringWithArgument(): void
     {
         $option = new Option('a', null, GetOpt::REQUIRED_ARGUMENT);
         $option->setValue('valueA');
@@ -65,7 +65,7 @@ class ValueTest extends TestCase
     }
 
     /** @test */
-    public function toStringWithMultipleArguments()
+    public function toStringWithMultipleArguments(): void
     {
         $option = new Option('a', null, GetOpt::MULTIPLE_ARGUMENT);
         $option->setValue('valueA');
@@ -75,7 +75,7 @@ class ValueTest extends TestCase
     }
 
     /** @test */
-    public function defaultValueNotUsedForCounting()
+    public function defaultValueNotUsedForCounting(): void
     {
         $option = new Option('a', null, GetOpt::OPTIONAL_ARGUMENT);
         $option->setDefaultValue(42);
