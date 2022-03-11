@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 class MultipleTest extends TestCase
 {
     /** @test */
-    public function valueForMultiple()
+    public function valueForMultiple(): void
     {
         $operand1 = new Operand('op1', Operand::OPTIONAL);
         $operand2 = new Operand('op2', Operand::MULTIPLE);
@@ -26,7 +26,7 @@ class MultipleTest extends TestCase
     }
 
     /** @test */
-    public function defaultValueForMultiple()
+    public function defaultValueForMultiple(): void
     {
         $operand = Operand::create('op1', Operand::MULTIPLE)
             ->setDefaultValue(42);
@@ -39,7 +39,7 @@ class MultipleTest extends TestCase
     }
 
     /** @test */
-    public function requiredMultiple()
+    public function requiredMultiple(): void
     {
         $operand = new Operand('op1', true, null, null, true);
 
@@ -51,7 +51,7 @@ class MultipleTest extends TestCase
     }
 
     /** @test */
-    public function requiredMultipleNotToThrow()
+    public function requiredMultipleNotToThrow(): void
     {
         $operand = new Operand('op1', Operand::REQUIRED + Operand::MULTIPLE);
 
@@ -63,7 +63,7 @@ class MultipleTest extends TestCase
     }
 
     /** @test */
-    public function validationOfMultiple()
+    public function validationOfMultiple(): void
     {
         $operand1 = Operand::create('op1', Operand::MULTIPLE)
             ->setValidation(function ($value) {
@@ -78,7 +78,7 @@ class MultipleTest extends TestCase
     }
 
     /** @test */
-    public function restrictsAddingAfterMultiple()
+    public function restrictsAddingAfterMultiple(): void
     {
         $operand1 = new Operand('op1', Operand::MULTIPLE);
         $operand2 = new Operand('op2', Operand::OPTIONAL);

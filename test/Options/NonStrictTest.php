@@ -10,7 +10,7 @@ class NonStrictTest extends TestCase
     /** @var GetOpt */
     protected $getopt;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->getopt = new GetOpt(null, [
             GetOpt::SETTING_STRICT_OPTIONS => false,
@@ -18,7 +18,7 @@ class NonStrictTest extends TestCase
     }
 
     /** @test */
-    public function additionalOptionsDoNotThrow()
+    public function additionalOptionsDoNotThrow(): void
     {
         $this->getopt->process('-a --beta');
 
@@ -26,7 +26,7 @@ class NonStrictTest extends TestCase
     }
 
     /** @test */
-    public function storesTheArgument()
+    public function storesTheArgument(): void
     {
         $this->getopt->process('-a aValue --beta betaValue -ccValue');
 
@@ -39,7 +39,7 @@ class NonStrictTest extends TestCase
     }
 
     /** @test */
-    public function additionalOptionsAreResetted()
+    public function additionalOptionsAreResetted(): void
     {
         $this->getopt->process('-a aValue --beta betaValue -ccValue');
 
@@ -49,7 +49,7 @@ class NonStrictTest extends TestCase
     }
 
     /** @test */
-    public function iteratesOverAdditionalOptions()
+    public function iteratesOverAdditionalOptions(): void
     {
         $this->getopt->process('-a aValue --beta betaValue');
 
@@ -60,7 +60,7 @@ class NonStrictTest extends TestCase
     }
 
     /** @test */
-    public function offsetExists()
+    public function offsetExists(): void
     {
         $this->getopt->process('--alpha alphaValue');
 
@@ -68,7 +68,7 @@ class NonStrictTest extends TestCase
     }
 
     /** @test */
-    public function offsetGet()
+    public function offsetGet(): void
     {
         $this->getopt->process('--alpha alphaValue');
 
@@ -76,7 +76,7 @@ class NonStrictTest extends TestCase
     }
 
     /** @test */
-    public function storesTheCountWithoutValue()
+    public function storesTheCountWithoutValue(): void
     {
         $this->getopt->process('-a -a -a');
 
@@ -84,7 +84,7 @@ class NonStrictTest extends TestCase
     }
 
     /** @test */
-    public function showsOptionsInUsage()
+    public function showsOptionsInUsage(): void
     {
         $script = $_SERVER['PHP_SELF'];
 

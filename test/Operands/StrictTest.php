@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 class StrictTest extends TestCase
 {
     /** @test */
-    public function noOperandsAllowed()
+    public function noOperandsAllowed(): void
     {
         $getopt = new GetOpt();
         $getopt->set(GetOpt::SETTING_STRICT_OPERANDS, true);
@@ -20,7 +20,7 @@ class StrictTest extends TestCase
     }
 
     /** @test */
-    public function specifiedOperandsAllowed()
+    public function specifiedOperandsAllowed(): void
     {
         $getopt = new GetOpt();
         $getopt->set(GetOpt::SETTING_STRICT_OPERANDS, true);
@@ -32,7 +32,7 @@ class StrictTest extends TestCase
     }
 
     /** @test */
-    public function helpDoesNotShowAdditionalOperands()
+    public function helpDoesNotShowAdditionalOperands(): void
     {
         $getopt = new GetOpt();
         $getopt->set(GetOpt::SETTING_STRICT_OPERANDS, true);

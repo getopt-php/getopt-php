@@ -14,10 +14,16 @@
 php71-unit-test:
   extends: .php-unit-test
   image: iras/php7-composer:1
+  before_script:
+    - mkdir -p .composer build/logs
+    - composer require --no-interaction --dev limedeck/phpunit-detailed-printer "^4.0"
 
 php72-unit-test:
   extends: .php-unit-test
   image: iras/php7-composer:2
+  before_script:
+    - mkdir -p .composer build/logs
+    - composer require --no-interaction --dev limedeck/phpunit-detailed-printer "^5.0"
 
 php73-unit-test:
   extends: .php-unit-test
@@ -40,6 +46,3 @@ php74-unit-test:
 php80-unit-test:
   extends: .php-unit-test
   image: iras/php8-composer:0
-  before_script:
-    - mkdir -p .composer build/logs
-    - composer install --no-interaction --ignore-platform-reqs
