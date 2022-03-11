@@ -14,16 +14,10 @@
 php71-unit-test:
   extends: .php-unit-test
   image: iras/php7-composer:1
-  before_script:
-    - mkdir -p .composer build/logs
-    - composer install --no-interaction --ignore-platform-reqs
 
 php72-unit-test:
   extends: .php-unit-test
   image: iras/php7-composer:2
-  before_script:
-    - mkdir -p .composer build/logs
-    - composer install --no-interaction --ignore-platform-reqs
 
 php73-unit-test:
   extends: .php-unit-test
