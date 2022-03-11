@@ -13,7 +13,7 @@ class CommandTest extends TestCase
     protected $command;
     protected $options = [];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -29,7 +29,7 @@ class CommandTest extends TestCase
     }
 
     /** @test */
-    public function constructorSavesName()
+    public function constructorSavesName(): void
     {
         self::assertSame('the-name', $this->command->getName());
     }
@@ -37,7 +37,7 @@ class CommandTest extends TestCase
     /** @dataProvider dataNamesNotAllowed
      * @param string $name
      * @test */
-    public function namesNotAllowed($name)
+    public function namesNotAllowed($name): void
     {
         self::expectException(\InvalidArgumentException::class);
         new Command($name, '', null);
@@ -53,19 +53,19 @@ class CommandTest extends TestCase
     }
 
     /** @test */
-    public function constructorSavesHandler()
+    public function constructorSavesHandler(): void
     {
         self::assertSame([ '\PDO', 'getAvailableDrivers' ], $this->command->getHandler());
     }
 
     /** @test */
-    public function constructorSavesOptions()
+    public function constructorSavesOptions(): void
     {
         self::assertSame($this->options, $this->command->getOptions());
     }
 
     /** @test */
-    public function addOptionsAppendsOptions()
+    public function addOptionsAppendsOptions(): void
     {
         $optionC = new Option('c', 'optc');
         $this->command->addOptions([ $optionC ]);
@@ -74,7 +74,7 @@ class CommandTest extends TestCase
     }
 
     /** @test */
-    public function commandWithConflictingOptionsFailsToAdd()
+    public function commandWithConflictingOptionsFailsToAdd(): void
     {
         $getOpt = new GetOpt([Option::create('v', 'verbose')]);
         $command = new Command('foo', 'var_dump');
@@ -87,7 +87,7 @@ class CommandTest extends TestCase
     }
 
     /** @test */
-    public function operandsHaveToFollowCommands()
+    public function operandsHaveToFollowCommands(): void
     {
         $getOpt = new GetOpt([Option::create(null, 'version')]);
         $command = new Command('bar', 'var_dump');
@@ -100,7 +100,7 @@ class CommandTest extends TestCase
     }
 
     /** @test */
-    public function shortDescriptionUsedForDescription()
+    public function shortDescriptionUsedForDescription(): void
     {
         $command = new Command('test', 'var_dump');
 
@@ -110,7 +110,7 @@ class CommandTest extends TestCase
     }
 
     /** @test */
-    public function descriptionUsedForShortDescription()
+    public function descriptionUsedForShortDescription(): void
     {
         $command = new Command('test', 'var_dump');
 
@@ -120,7 +120,7 @@ class CommandTest extends TestCase
     }
 
     /** @test */
-    public function getHelpForExecutedCommand()
+    public function getHelpForExecutedCommand(): void
     {
         $longDescription = 'This is a very long description.' . PHP_EOL . 'It also may have line breaks.';
         $getopt = new GetOpt();
@@ -146,7 +146,7 @@ class CommandTest extends TestCase
     }
 
     /** @test */
-    public function getHelpForCommands()
+    public function getHelpForCommands(): void
     {
         $cmd1 = Command::create('help', 'var_dump')->setDescription('Shows help for a command');
         $cmd2 = Command::create('run:tests', 'var_dump')->setDescription('Executes the tests');
@@ -170,7 +170,7 @@ class CommandTest extends TestCase
     }
 
     /** @test */
-    public function tooLongShortDescription()
+    public function tooLongShortDescription(): void
     {
         defined('COLUMNS') || define('COLUMNS', 90);
         $getopt = new GetOpt([
@@ -199,7 +199,7 @@ class CommandTest extends TestCase
     }
 
     /** @test */
-    public function commandsWithSpaces()
+    public function commandsWithSpaces(): void
     {
         $getOpt = new GetOpt();
         $command = Command::create('import reviews', 'var_dump');
@@ -211,7 +211,7 @@ class CommandTest extends TestCase
     }
 
     /** @test */
-    public function singleWordCommandHavePrecedence()
+    public function singleWordCommandHavePrecedence(): void
     {
         $getOpt = new GetOpt();
         $import = Command::create('import', 'var_dump');
@@ -225,7 +225,7 @@ class CommandTest extends TestCase
     }
 
     /** @test */
-    public function commandCannotBeDividedByOptions()
+    public function commandCannotBeDividedByOptions(): void
     {
         $getOpt = new GetOpt([Option::create(null, 'version')]);
         $command = Command::create('import reviews', 'var_dump');

@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 class CommonTest extends TestCase
 {
     /** @test */
-    public function operandsAreResetted()
+    public function operandsAreResetted(): void
     {
         $getopt = new GetOpt();
         $getopt->process('"any operand"');
@@ -23,7 +23,7 @@ class CommonTest extends TestCase
     }
 
     /** @test */
-    public function addOperands()
+    public function addOperands(): void
     {
         $operand1 = new Operand('op1');
         $operand2 = new Operand('op2');
@@ -37,7 +37,7 @@ class CommonTest extends TestCase
     }
 
     /** @test */
-    public function operandValidation()
+    public function operandValidation(): void
     {
         $operand = Operand::create('op1')
             ->setValidation(function ($value) {
@@ -52,7 +52,7 @@ class CommonTest extends TestCase
     }
 
     /** @test */
-    public function optionalOperand()
+    public function optionalOperand(): void
     {
         $operand = new Operand('op1', Operand::OPTIONAL); // false is default
 
@@ -64,7 +64,7 @@ class CommonTest extends TestCase
     }
 
     /** @test */
-    public function requiredOperand()
+    public function requiredOperand(): void
     {
         $operand = new Operand('op1', Operand::REQUIRED);
 
@@ -76,7 +76,7 @@ class CommonTest extends TestCase
     }
 
     /** @test */
-    public function getOperandByName()
+    public function getOperandByName(): void
     {
         $operand = new Operand('op1');
 
@@ -88,7 +88,7 @@ class CommonTest extends TestCase
     }
 
     /** @test */
-    public function defaultValue()
+    public function defaultValue(): void
     {
         $operand = Operand::create('op1')
             ->setDefaultValue(42);
@@ -101,7 +101,7 @@ class CommonTest extends TestCase
     }
 
     /** @test */
-    public function allPreviousOperandsGetRequiredToo()
+    public function allPreviousOperandsGetRequiredToo(): void
     {
         $operand1 = new Operand('op1', Operand::OPTIONAL);
         $operand2 = new Operand('op2', Operand::REQUIRED);
@@ -113,7 +113,7 @@ class CommonTest extends TestCase
     }
 
     /** @test */
-    public function commandsCanHaveOperands()
+    public function commandsCanHaveOperands(): void
     {
         $operand = new Operand('op1');
         $command = new Command('command1', 'var_dump');
@@ -123,7 +123,7 @@ class CommonTest extends TestCase
     }
 
     /** @test */
-    public function commandWithOperand()
+    public function commandWithOperand(): void
     {
         $getopt = new GetOpt();
         $command = new Command('command', 'var_dump');
@@ -137,7 +137,7 @@ class CommonTest extends TestCase
     }
 
     /** @test */
-    public function returnsNullForUnknownOperands()
+    public function returnsNullForUnknownOperands(): void
     {
         $getopt = new GetOpt();
 
@@ -147,7 +147,7 @@ class CommonTest extends TestCase
     }
 
     /** @test */
-    public function requireMakesRequired()
+    public function requireMakesRequired(): void
     {
         $operand = new Operand('op1');
 
@@ -157,7 +157,7 @@ class CommonTest extends TestCase
     }
 
     /** @test */
-    public function requireFalse()
+    public function requireFalse(): void
     {
         $operand = new Operand('op1', Operand::REQUIRED);
 
@@ -167,7 +167,7 @@ class CommonTest extends TestCase
     }
 
     /** @test */
-    public function requireDoesNotMakeAnOperandMultiple()
+    public function requireDoesNotMakeAnOperandMultiple(): void
     {
         $operand = new Operand('op1');
 
@@ -179,7 +179,7 @@ class CommonTest extends TestCase
     }
 
     /** @test */
-    public function multipleMakesMultiple()
+    public function multipleMakesMultiple(): void
     {
         $operand = new Operand('op1');
 
@@ -189,7 +189,7 @@ class CommonTest extends TestCase
     }
 
     /** @test */
-    public function multipleFalse()
+    public function multipleFalse(): void
     {
         $operand = new Operand('op1', Operand::MULTIPLE);
 
@@ -199,7 +199,7 @@ class CommonTest extends TestCase
     }
 
     /** @test */
-    public function requiredMultipleThrowsMissing()
+    public function requiredMultipleThrowsMissing(): void
     {
         $operand = new Operand('port');
         $operand->multiple(true);

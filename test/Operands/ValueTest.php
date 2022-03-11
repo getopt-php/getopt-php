@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 class ValueTest extends TestCase
 {
     /** @test */
-    public function toStringWithoutValue()
+    public function toStringWithoutValue(): void
     {
         $operand = Operand::create('file');
 
@@ -16,7 +16,7 @@ class ValueTest extends TestCase
     }
 
     /** @test */
-    public function toStringWithDefaultValue()
+    public function toStringWithDefaultValue(): void
     {
         $operand = Operand::create('file')
             ->setDefaultValue('/dev/random');
@@ -25,7 +25,7 @@ class ValueTest extends TestCase
     }
 
     /** @test */
-    public function toStringWithValue()
+    public function toStringWithValue(): void
     {
         $operand = Operand::create('file');
 
@@ -35,7 +35,7 @@ class ValueTest extends TestCase
     }
 
     /** @test */
-    public function toStringWithMultipleValue()
+    public function toStringWithMultipleValue(): void
     {
         $operand = Operand::create('files', Operand::MULTIPLE);
 

@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 class CommonTest extends TestCase
 {
     /** @test */
-    public function throwsWhenLanguageNotAvailable()
+    public function throwsWhenLanguageNotAvailable(): void
     {
         self::expectException(\InvalidArgumentException::class);
 
@@ -16,7 +16,7 @@ class CommonTest extends TestCase
     }
 
     /** @test */
-    public function usesTranslationFile()
+    public function usesTranslationFile(): void
     {
         $translator = new Translator(__DIR__ . '/incomplete-translation.php');
 
@@ -26,7 +26,7 @@ class CommonTest extends TestCase
     }
 
     /** @test */
-    public function usesFallBackTranslation()
+    public function usesFallBackTranslation(): void
     {
         $translator = new Translator(__DIR__ . '/incomplete-translation.php');
 

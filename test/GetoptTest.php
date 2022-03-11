@@ -11,14 +11,14 @@ use PHPUnit\Framework\TestCase;
 
 class GetoptTest extends TestCase
 {
-    protected function tearDown()
+    protected function tearDown(): void
     {
         GetOpt::setLang('en');
         parent::tearDown();
     }
 
     /** @test */
-    public function addOptions()
+    public function addOptions(): void
     {
         $getopt = new GetOpt();
         $getopt->addOptions('a:');
@@ -36,7 +36,7 @@ class GetoptTest extends TestCase
     }
 
     /** @test */
-    public function addOptionsChooseShortOrLongAutomatically()
+    public function addOptionsChooseShortOrLongAutomatically(): void
     {
         $getopt = new GetOpt();
         $getopt->addOptions([
@@ -50,7 +50,7 @@ class GetoptTest extends TestCase
     }
 
     /** @test */
-    public function addOptionsUseDefaultArgumentType()
+    public function addOptionsUseDefaultArgumentType(): void
     {
         $getopt = new GetOpt(null, [
             GetOpt::SETTING_DEFAULT_MODE => GetOpt::REQUIRED_ARGUMENT
@@ -65,7 +65,7 @@ class GetoptTest extends TestCase
     }
 
     /** @test */
-    public function addOptionsFailsOnInvalidArgument()
+    public function addOptionsFailsOnInvalidArgument(): void
     {
         self::expectException(\InvalidArgumentException::class);
         $getopt = new GetOpt(null);
@@ -73,7 +73,7 @@ class GetoptTest extends TestCase
     }
 
     /** @test */
-    public function changeModeAfterwards()
+    public function changeModeAfterwards(): void
     {
         $getopt = new GetOpt([
             [ 'a', null, GetOpt::REQUIRED_ARGUMENT ]
@@ -107,7 +107,7 @@ class GetoptTest extends TestCase
      * @test
      * @param array $options
      */
-    public function addOptionsFailsOnConflict($options)
+    public function addOptionsFailsOnConflict($options): void
     {
         self::expectException(\InvalidArgumentException::class);
         $getopt = new GetOpt();
@@ -115,7 +115,7 @@ class GetoptTest extends TestCase
     }
 
     /** @test */
-    public function parseUsesGlobalArgvWhenNoneGiven()
+    public function parseUsesGlobalArgvWhenNoneGiven(): void
     {
         $_SERVER['argv'] = [ 'foo.php', '-a' ];
 
@@ -125,7 +125,7 @@ class GetoptTest extends TestCase
     }
 
     /** @test */
-    public function accessMethods()
+    public function accessMethods(): void
     {
         $getopt = new GetOpt('a');
         $getopt->process('-a foo');
@@ -142,7 +142,7 @@ class GetoptTest extends TestCase
     }
 
     /** @test */
-    public function countable()
+    public function countable(): void
     {
         $getopt = new GetOpt([
             new Option('a', 'alpha'),
@@ -154,7 +154,7 @@ class GetoptTest extends TestCase
     }
 
     /** @test */
-    public function arrayAccess()
+    public function arrayAccess(): void
     {
         $getopt = new GetOpt('q');
         $getopt->process('-q');
@@ -162,7 +162,7 @@ class GetoptTest extends TestCase
     }
 
     /** @test */
-    public function iterable()
+    public function iterable(): void
     {
         $getopt = new GetOpt([
             [ null, 'alpha', GetOpt::NO_ARGUMENT ],
@@ -177,7 +177,7 @@ class GetoptTest extends TestCase
     }
 
     /** @test */
-    public function iteratesOverEmptyStrings()
+    public function iteratesOverEmptyStrings(): void
     {
         $getopt = new GetOpt([
             [ 'a', 'alpha' , GetOpt::REQUIRED_ARGUMENT ]
@@ -191,7 +191,7 @@ class GetoptTest extends TestCase
     }
 
     /** @test */
-    public function helpTextWithCustomScriptName()
+    public function helpTextWithCustomScriptName(): void
     {
         $getopt = new GetOpt();
         $getopt->set(GetOpt::SETTING_SCRIPT_NAME, 'test');
@@ -202,7 +202,7 @@ class GetoptTest extends TestCase
     }
 
     /** @test */
-    public function helpTextWithDescription()
+    public function helpTextWithDescription(): void
     {
         $getopt = new GetOpt();
         $getopt->set(GetOpt::SETTING_SCRIPT_NAME, 'test');
@@ -219,7 +219,7 @@ class GetoptTest extends TestCase
     }
 
     /** @test */
-    public function throwsWithInvalidParameter()
+    public function throwsWithInvalidParameter(): void
     {
         self::expectException(\InvalidArgumentException::class);
         $getopt = new GetOpt();
@@ -228,7 +228,7 @@ class GetoptTest extends TestCase
     }
 
     /** @test */
-    public function addOptionByString()
+    public function addOptionByString(): void
     {
         $getopt = new GetOpt();
         $getopt->addOption('c');
@@ -237,7 +237,7 @@ class GetoptTest extends TestCase
     }
 
     /** @test */
-    public function throwsForUnparsableString()
+    public function throwsForUnparsableString(): void
     {
         self::expectException(\InvalidArgumentException::class);
         $getopt = new GetOpt();
@@ -246,7 +246,7 @@ class GetoptTest extends TestCase
     }
 
     /** @test */
-    public function throwsForInvalidParameter()
+    public function throwsForInvalidParameter(): void
     {
         self::expectException(\InvalidArgumentException::class);
         $getopt = new GetOpt();
@@ -255,7 +255,7 @@ class GetoptTest extends TestCase
     }
 
     /** @test */
-    public function issetArrayAccess()
+    public function issetArrayAccess(): void
     {
         $getopt = new GetOpt();
         $getopt->addOption('a');
@@ -267,7 +267,7 @@ class GetoptTest extends TestCase
     }
 
     /** @test */
-    public function restirctsArraySet()
+    public function restirctsArraySet(): void
     {
         self::expectException(\LogicException::class);
         $getopt = new GetOpt();
@@ -276,7 +276,7 @@ class GetoptTest extends TestCase
     }
 
     /** @test */
-    public function restrictsArrayUnset()
+    public function restrictsArrayUnset(): void
     {
         self::expectException(\LogicException::class);
         $getopt = new GetOpt();
@@ -287,7 +287,7 @@ class GetoptTest extends TestCase
     }
 
     /** @test */
-    public function addCommandWithConflictingOptions()
+    public function addCommandWithConflictingOptions(): void
     {
         self::expectException(\InvalidArgumentException::class);
 
@@ -301,7 +301,7 @@ class GetoptTest extends TestCase
     }
 
     /** @test */
-    public function getCommandByName()
+    public function getCommandByName(): void
     {
         $cmd1 = new Command('help', 'var_dump');
         $cmd2 = new Command('test', 'var_dump');
@@ -315,7 +315,7 @@ class GetoptTest extends TestCase
     }
 
     /** @test */
-    public function setHelpLangToDe()
+    public function setHelpLangToDe(): void
     {
         $getopt = new GetOpt();
         $getopt->set(GetOpt::SETTING_SCRIPT_NAME, 'test');
@@ -333,7 +333,7 @@ class GetoptTest extends TestCase
     }
 
     /** @test */
-    public function returnsFalseWhenFileDoesNotExist()
+    public function returnsFalseWhenFileDoesNotExist(): void
     {
         $getopt = new GetOpt();
 

@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 class ArgumentTest extends TestCase
 {
     /** @test */
-    public function constructor()
+    public function constructor(): void
     {
         $argument1 = new Argument();
         $argument2 = new Argument(10);
@@ -17,7 +17,7 @@ class ArgumentTest extends TestCase
     }
 
     /** @test */
-    public function setDefaultValueNotScalar()
+    public function setDefaultValueNotScalar(): void
     {
         self::expectException(\InvalidArgumentException::class);
         $argument = new Argument();
@@ -25,7 +25,7 @@ class ArgumentTest extends TestCase
     }
 
     /** @test */
-    public function validates()
+    public function validates(): void
     {
         $test     = $this;
         $argument = new Argument();
@@ -40,7 +40,7 @@ class ArgumentTest extends TestCase
     }
 
     /** @test */
-    public function falsyDefaultValue()
+    public function falsyDefaultValue(): void
     {
         $argument = new Argument('');
 

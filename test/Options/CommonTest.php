@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 class CommonTest extends TestCase
 {
     /** @test */
-    public function construct()
+    public function construct(): void
     {
         $option = new Option('a', 'az-AZ09_', GetOpt::OPTIONAL_ARGUMENT);
         self::assertSame('a', $option->getShort());
@@ -19,7 +19,7 @@ class CommonTest extends TestCase
     }
 
     /** @test */
-    public function create()
+    public function create(): void
     {
         $option = Option::create('a', 'az-AZ09_', GetOpt::OPTIONAL_ARGUMENT);
         self::assertSame('a', $option->getShort());
@@ -32,7 +32,7 @@ class CommonTest extends TestCase
      * @param string $long
      * @param int    $mode
      * @test */
-    public function constructFails($short, $long, $mode)
+    public function constructFails($short, $long, $mode): void
     {
         self::expectException(\InvalidArgumentException::class);
         new Option($short, $long, $mode);
@@ -50,7 +50,7 @@ class CommonTest extends TestCase
     }
 
     /** @test */
-    public function setArgument()
+    public function setArgument(): void
     {
         $option = new Option('a', null, GetOpt::OPTIONAL_ARGUMENT);
         self::assertSame($option, $option->setArgument(new Argument()));
@@ -58,7 +58,7 @@ class CommonTest extends TestCase
     }
 
     /** @test */
-    public function setArgumentWrongMode()
+    public function setArgumentWrongMode(): void
     {
         self::expectException(\InvalidArgumentException::class);
         $option = new Option('a', null, GetOpt::NO_ARGUMENT);
@@ -66,7 +66,7 @@ class CommonTest extends TestCase
     }
 
     /** @test */
-    public function setDefaultValue()
+    public function setDefaultValue(): void
     {
         $option = new Option('a', null, GetOpt::OPTIONAL_ARGUMENT);
         self::assertSame($option, $option->setDefaultValue(10));
@@ -74,7 +74,7 @@ class CommonTest extends TestCase
     }
 
     /** @test */
-    public function setValidation()
+    public function setValidation(): void
     {
         $option = new Option('a', null, GetOpt::OPTIONAL_ARGUMENT);
         self::assertSame($option, $option->setValidation('is_numeric'));

@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 class TemplateTest extends TestCase
 {
     /** @test */
-    public function rendersUsageTemplate()
+    public function rendersUsageTemplate(): void
     {
         $getOpt = new GetOpt();
         $scriptName = $getOpt->get(GetOpt::SETTING_SCRIPT_NAME);
@@ -25,7 +25,7 @@ class TemplateTest extends TestCase
     }
 
     /** @test */
-    public function rendersOptionsTemplate()
+    public function rendersOptionsTemplate(): void
     {
         $getOpt = new GetOpt([
             Option::create('a', 'alpha', GetOpt::OPTIONAL_ARGUMENT),
@@ -47,7 +47,7 @@ class TemplateTest extends TestCase
     }
 
     /** @test */
-    public function rendersCommandsTemplate()
+    public function rendersCommandsTemplate(): void
     {
         $getOpt = new GetOpt();
         $getOpt->addCommand(Command::create('test', 'var_dump')->setDescription('Run this tests'));

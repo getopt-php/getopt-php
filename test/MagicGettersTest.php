@@ -14,7 +14,7 @@ class MagicGettersTest extends TestCase
 {
     /** @dataProvider provideGetOptAttributes
      * @test */
-    public function getOptUsesMagicGetters($getOpt, $attribute, $expected)
+    public function getOptUsesMagicGetters($getOpt, $attribute, $expected): void
     {
         $result = $getOpt->{$attribute};
 
@@ -49,7 +49,7 @@ class MagicGettersTest extends TestCase
 
     /** @dataProvider provideCommandAttributes
      * @test */
-    public function commandUsesMagicGetters($command, $attribute, $expected)
+    public function commandUsesMagicGetters($command, $attribute, $expected): void
     {
         $result = $command->{$attribute};
 
@@ -74,7 +74,7 @@ class MagicGettersTest extends TestCase
 
     /** @dataProvider provideArgumentAttributes
      * @test */
-    public function argumentUsesMagicGetters($argument, $attribute, $expected)
+    public function argumentUsesMagicGetters($argument, $attribute, $expected): void
     {
         $result = $argument->{$attribute};
 
@@ -93,7 +93,7 @@ class MagicGettersTest extends TestCase
 
     /** @dataProvider provideOperandAttributes
      * @test */
-    public function operandUsesMagicGetters($operand, $attribute, $expected)
+    public function operandUsesMagicGetters($operand, $attribute, $expected): void
     {
         $result = $operand->{$attribute};
 
@@ -113,7 +113,7 @@ class MagicGettersTest extends TestCase
 
     /** @dataProvider provideOptionAttributes
      * @test */
-    public function optionUsesMagicGetters($option, $attribute, $expected)
+    public function optionUsesMagicGetters($option, $attribute, $expected): void
     {
         $result = $option->{$attribute};
 

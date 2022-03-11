@@ -5,9 +5,9 @@ namespace GetOpt\Test;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Test;
 use PHPUnit\Framework\Warning;
-use PHPUnit\TextUI\ResultPrinter;
+use PHPUnit\TextUI\DefaultResultPrinter;
 
-class Printer extends ResultPrinter
+class Printer extends DefaultResultPrinter
 {
     /**
      * Replacement symbols for test statuses.
@@ -119,17 +119,17 @@ class Printer extends ResultPrinter
      * @param $time
      * @param $color
      */
-    protected function buildTestRow($className, $methodName, $time, $color = 'fg-white')
+    protected function buildTestRow($className, $methodName, $time, $color = 'fg-white'): void
     {
         if ($className != $this->previousClassName) {
-            $this->write(PHP_EOL . $this->formatWithColor('fg-magenta', $className) . PHP_EOL);
+            $this->write(PHP_EOL . $this->colorizeTextBox('fg-magenta', $className) . PHP_EOL);
             $this->previousClassName = $className;
         }
 
         $this->testRow = sprintf(
             "(%s) %s",
             $this->formatTestDuration($time),
-            $this->formatWithColor($color, "{$this->formatMethodName($methodName)}")
+            $this->colorizeTextBox($color, "{$this->formatMethodName($methodName)}")
         );
     }
     /**
@@ -176,7 +176,7 @@ class Printer extends ResultPrinter
     {
         $testDurationInMs = round($time * 1000);
         $duration = $testDurationInMs > 500
-            ? $this->formatWithColor('fg-yellow', $testDurationInMs)
+            ? $this->colorizeTextBox('fg-yellow', $testDurationInMs)
             : $testDurationInMs;
         return sprintf('%s ms', $duration);
     }

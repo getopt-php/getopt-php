@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 class HelpTest extends TestCase
 {
     /** @test */
-    public function helpContainsOperandNames()
+    public function helpContainsOperandNames(): void
     {
         $operand1 = new Operand('op1', true);
         $operand2 = new Operand('op2', false);
@@ -28,7 +28,7 @@ class HelpTest extends TestCase
     }
 
     /** @test */
-    public function helpCommandDefinesOperands()
+    public function helpCommandDefinesOperands(): void
     {
         $operand1 = new Operand('op1', true);
         $operand2 = new Operand('op2', false);
@@ -52,7 +52,7 @@ class HelpTest extends TestCase
     }
 
     /** @test */
-    public function helpTextForMultiple()
+    public function helpTextForMultiple(): void
     {
         $operand = new Operand('op1', Operand::MULTIPLE);
         $script = $_SERVER['PHP_SELF'];
@@ -67,7 +67,7 @@ class HelpTest extends TestCase
     }
 
     /** @test */
-    public function helpTextForRequiredMultiple()
+    public function helpTextForRequiredMultiple(): void
     {
         $operand = new Operand('op1', Operand::MULTIPLE + Operand::REQUIRED);
         $script = $_SERVER['PHP_SELF'];
@@ -82,7 +82,7 @@ class HelpTest extends TestCase
     }
 
     /** @test */
-    public function showsDescriptionsBeforeOptions()
+    public function showsDescriptionsBeforeOptions(): void
     {
         $script = $_SERVER['PHP_SELF'];
         $getOpt = new GetOpt(null, [GetOpt::SETTING_STRICT_OPERANDS => true]);
@@ -105,7 +105,7 @@ class HelpTest extends TestCase
     }
 
     /** @test */
-    public function hidesDescriptionsIfRequested()
+    public function hidesDescriptionsIfRequested(): void
     {
         $script = $_SERVER['PHP_SELF'];
         $getOpt = new GetOpt(null, [GetOpt::SETTING_STRICT_OPERANDS => true]);
