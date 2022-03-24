@@ -1,26 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    bootstrap="vendor/autoload.php"
-    colors="true"
-    convertErrorsToExceptions="true"
-    convertNoticesToExceptions="true"
-    convertWarningsToExceptions="true"
-    stopOnFailure="false"
-    backupGlobals="true"
-    printerClass="PhpUnitPrinter\TextPrinter"
-    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
-  <coverage pathCoverage="false">
-    <include>
-      <directory suffix=".php">src</directory>
-    </include>
-    <report>
-        <text outputFile="php://stdout" showUncoveredFiles="true" showOnlySummary="false"/>
-    </report>
-  </coverage>
+<phpunit bootstrap="vendor/autoload.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         stopOnFailure="false"
+         backupGlobals="true"
+         printerClass="PhpUnitPrinter\TextPrinter">
   <testsuites>
     <testsuite name="basic">
       <directory>test</directory>
     </testsuite>
   </testsuites>
+
+  <filter>
+    <whitelist>
+      <directory suffix=".php">src</directory>
+    </whitelist>
+  </filter>
 </phpunit>
