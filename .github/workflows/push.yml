@@ -1,0 +1,81 @@
+on: [push, pull_request]
+jobs:
+  before:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prepare CodeClimate
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        run: |
+          wget https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 -qO ./cc-test-reporter
+          chmod +x ./cc-test-reporter
+          ./cc-test-reporter before-build
+
+  unit-tests:
+    needs: [before]
+    strategy:
+      matrix:
+        include:
+          - image: 'iras/php7-composer:1'
+            php_version: 7.1
+          - image: 'iras/php7-composer:2'
+            php_version: 7.2
+          - image: 'iras/php7-composer:3'
+            php_version: 7.3
+          - image: 'iras/php7-composer:4'
+            php_version: 7.4
+          - image: 'iras/php8-composer:0'
+            php_version: 8.0
+    name: PHP Unit Tests on PHP ${{ matrix.php_version }}
+    runs-on: ubuntu-latest
+    container: ${{ matrix.image }}
+    steps:
+      - name: Container Setup
+        run: |
+          apk add --no-cache tar openssl
+          mkdir coverage
+          wget https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 -qO /usr/bin/cc-test-reporter
+          chmod +x /usr/bin/cc-test-reporter
+      - name: Checkout
+        run: |
+          git init && git remote add origin https://github.com/${{ github.repository }}.git
+          git fetch origin ${{ github.sha }} && git reset --hard ${{ github.sha }}
+      - uses: actions/cache@v2
+        with:
+          path: /composer/cache
+          key: composer-cache-7.${{ matrix.MINOR_VERSION }}
+      - name: Install dependencies
+        run: composer install --no-interaction --ansi
+      - name: Execute tests
+        run: |
+          php -dzend_extension=xdebug.so -dxdebug.mode=coverage vendor/bin/phpunit \
+            -c phpunit.xml \
+            --coverage-clover=coverage/clover.xml \
+            --coverage-text \
+            --color=always
+      - name: Format Coverage
+        run: |
+          cc-test-reporter format-coverage -t clover -o coverage/cc-${{ matrix.php_version }}.json coverage/clover.xml
+      - name: Store Coverage Result
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-results
+          path: coverage/
+
+  after:
+    needs: [unit-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Restore Coverage Result
+        uses: actions/download-artifact@v3
+        with:
+          name: coverage-results
+          path: coverage/
+      - name: Report Coverage
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        run: |
+          wget https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 -qO ./cc-test-reporter
+          chmod +x ./cc-test-reporter
+          ./cc-test-reporter sum-coverage coverage/cc-*.json -p 5 -o coverage/cc-total.json
+          ./cc-test-reporter upload-coverage -i coverage/cc-total.json

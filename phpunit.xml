@@ -8,7 +8,7 @@
     convertWarningsToExceptions="true"
     stopOnFailure="false"
     backupGlobals="true"
-    printerClass="LimeDeck\Testing\Printer"
+    printerClass="PhpUnitPrinter\TextPrinter"
     xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
   <coverage pathCoverage="false">
     <include>

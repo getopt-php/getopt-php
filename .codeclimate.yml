@@ -1,0 +1,17 @@
+version: "2"
+
+checks:
+  method-complexity:
+    config:
+      threshold: 9
+
+exclude_patterns:
+  - "docs/"
+  - "**/test/"
+  - "**/vendor/"
+
+plugins:
+  phpcodesniffer:
+    enabled: true
+    config:
+      standard: "PSR2"
