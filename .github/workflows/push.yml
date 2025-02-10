@@ -46,7 +46,7 @@ jobs:
         run: |
           git init && git remote add origin https://github.com/${{ github.repository }}.git
           git fetch origin ${{ github.sha }} && git reset --hard ${{ github.sha }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: /composer/cache
           key: composer-cache-${{ matrix.php_version }}
