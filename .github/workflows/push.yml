@@ -43,9 +43,7 @@ jobs:
           wget https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 -qO /usr/bin/cc-test-reporter
           chmod +x /usr/bin/cc-test-reporter
       - name: Checkout
-        run: |
-          git init && git remote add origin https://github.com/${{ github.repository }}.git
-          git fetch origin ${{ github.sha }} && git reset --hard ${{ github.sha }}
+        uses: actions/checkout@v3
       - uses: actions/cache@v3
         with:
           path: /composer/cache
