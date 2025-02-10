@@ -16,21 +16,21 @@ jobs:
     strategy:
       matrix:
         include:
-          - image: 'iras/php-composer:7.1'
+          - image: 'iras/php-composer:ubuntu-7.1'
             php_version: 7.1
-          - image: 'iras/php-composer:7.2'
+          - image: 'iras/php-composer:ubuntu-7.2'
             php_version: 7.2
-          - image: 'iras/php-composer:7.3'
+          - image: 'iras/php-composer:ubuntu-7.3'
             php_version: 7.3
-          - image: 'iras/php-composer:7.4'
+          - image: 'iras/php-composer:ubuntu-7.4'
             php_version: 7.4
-          - image: 'iras/php-composer:8.0'
+          - image: 'iras/php-composer:ubuntu-8.0'
             php_version: 8.0
-          - image: 'iras/php-composer:8.1'
+          - image: 'iras/php-composer:ubuntu-8.1'
             php_version: 8.1
-          - image: 'iras/php-composer:8.2'
+          - image: 'iras/php-composer:ubuntu-8.2'
             php_version: 8.2
-          - image: 'iras/php-composer:8.3'
+          - image: 'iras/php-composer:ubuntu-8.3'
             php_version: 8.3
     name: PHP Unit Tests on PHP ${{ matrix.php_version }}
     runs-on: ubuntu-latest
@@ -38,7 +38,7 @@ jobs:
     steps:
       - name: Container Setup
         run: |
-          apk add --no-cache tar openssl
+          apt-get update && apt-get install -y tar openssl wget
           mkdir coverage
           wget https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 -qO /usr/bin/cc-test-reporter
           chmod +x /usr/bin/cc-test-reporter
@@ -46,7 +46,7 @@ jobs:
         run: |
           git init && git remote add origin https://github.com/${{ github.repository }}.git
           git fetch origin ${{ github.sha }} && git reset --hard ${{ github.sha }}
-      - uses: actions/cache@v4
+      - uses: actions/cache@v3
         with:
           path: /composer/cache
           key: composer-cache-${{ matrix.php_version }}
