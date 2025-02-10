@@ -32,7 +32,7 @@ class Option implements Describable
      *                        or digit) or null for short-only options
      * @param string   $mode  Whether the option can/must have an argument (optional, defaults to no argument)
      */
-    public function __construct(?string $short, string $long = null, string $mode = GetOpt::NO_ARGUMENT)
+    public function __construct(?string $short, ?string $long = null, string $mode = GetOpt::NO_ARGUMENT)
     {
         if (!$short && !$long) {
             throw new \InvalidArgumentException("The short and long name may not both be empty");
@@ -57,7 +57,7 @@ class Option implements Describable
      * @param string   $mode
      * @return static
      */
-    public static function create(?string $short, string $long = null, string $mode = GetOpt::NO_ARGUMENT): Option
+    public static function create(?string $short, ?string $long = null, string $mode = GetOpt::NO_ARGUMENT): Option
     {
         return new static($short, $long, $mode);
     }
@@ -98,7 +98,7 @@ class Option implements Describable
      * Defines a validation function for the option.
      *
      * @param callable        $function
-     * @param string|callable $message
+     * @param string|callable|null $message (not typed for compatibility)
      * @return Option this object (for chaining calls)
      */
     public function setValidation(callable $function, $message = null): Option
@@ -239,7 +239,7 @@ class Option implements Describable
      * @param mixed $value
      * @return $this
      */
-    public function setValue($value = null): Option
+    public function setValue(mixed $value = null): Option
     {
         if ($value === null) {
             if (in_array($this->mode, [ GetOpt::REQUIRED_ARGUMENT, GetOpt::MULTIPLE_ARGUMENT ])) {

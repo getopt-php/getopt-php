@@ -45,7 +45,7 @@ class Argument implements Describable
      * @param ?callable $validation A validation function
      * @param string    $name       A name for the argument
      */
-    public function __construct($default = null, callable $validation = null, $name = "arg")
+    public function __construct($default = null, ?callable $validation = null, $name = "arg")
     {
         if (!is_null($default)) {
             $this->setDefaultValue($default);
@@ -77,7 +77,7 @@ class Argument implements Describable
      * The function must take a string and return true if it is valid, false otherwise.
      *
      * @param callable        $callable
-     * @param string|callable $message
+     * @param string|callable|null $message (not typed for compatibility)
      * @return $this
      */
     public function setValidation(callable $callable, $message = null): Argument

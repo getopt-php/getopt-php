@@ -58,7 +58,7 @@ class Arguments
             }
 
             if ($this->isLongOption($arg)) {
-                $setOption($this->longName($arg), function (Option $option = null) use ($arg) {
+                $setOption($this->longName($arg), function (?Option $option = null) use ($arg) {
                     return $this->value($arg, null, $option);
                 });
                 continue;
@@ -67,7 +67,7 @@ class Arguments
             // the only left is short options
             foreach ($this->shortNames($arg) as $name) {
                 $requestedValue = false;
-                $setOption($name, function (Option $option = null) use ($arg, $name, &$requestedValue) {
+                $setOption($name, function (?Option $option = null) use ($arg, $name, &$requestedValue) {
                     $requestedValue = true;
                     return $this->value($arg, $name, $option);
                 });
@@ -181,11 +181,11 @@ class Arguments
      * Returns the value inside $arg or the next argument when it is a value.
      *
      * @param string $arg
-     * @param string $name
+     * @param ?string $name
      * @param ?Option $option
      * @return ?string
      */
-    protected function value(string $arg, $name = null, Option $option = null): ?string
+    protected function value(string $arg, ?string $name = null, ?Option $option = null): ?string
     {
         $p = strpos($arg, $this->isLongOption($arg) ? '=' : $name);
         if ($this->isLongOption($arg) && $p || !$this->isLongOption($arg) && $p < strlen($arg)-1) {
