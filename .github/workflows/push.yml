@@ -26,6 +26,12 @@ jobs:
             php_version: 7.4
           - image: 'iras/php-composer:8.0'
             php_version: 8.0
+          - image: 'iras/php-composer:8.1'
+            php_version: 8.1
+          - image: 'iras/php-composer:8.2'
+            php_version: 8.2
+          - image: 'iras/php-composer:8.3'
+            php_version: 8.3
     name: PHP Unit Tests on PHP ${{ matrix.php_version }}
     runs-on: ubuntu-latest
     container: ${{ matrix.image }}
@@ -77,5 +83,5 @@ jobs:
         run: |
           wget https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 -qO ./cc-test-reporter
           chmod +x ./cc-test-reporter
-          ./cc-test-reporter sum-coverage coverage/cc-*.json -p 5 -o coverage/cc-total.json
+          ./cc-test-reporter sum-coverage coverage/cc-*.json -p 8 -o coverage/cc-total.json
           ./cc-test-reporter upload-coverage -i coverage/cc-total.json
