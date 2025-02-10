@@ -59,12 +59,13 @@ jobs:
             --color=always
       - name: Format Coverage
         run: |
+          git config --global --add safe.directory $GITHUB_WORKSPACE
           cc-test-reporter format-coverage -t clover -o coverage/cc-${{ matrix.php_version }}.json coverage/clover.xml
       - name: Store Coverage Result
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-results
           path: coverage/
+          overwrite: true
 
   after:
     needs: [unit-tests]
