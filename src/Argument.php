@@ -77,10 +77,10 @@ class Argument implements Describable
      * The function must take a string and return true if it is valid, false otherwise.
      *
      * @param callable        $callable
-     * @param string|callable|null $message
+     * @param string|callable|null $message (not typed for compatibility)
      * @return $this
      */
-    public function setValidation(callable $callable, string|callable|null $message = null): Argument
+    public function setValidation(callable $callable, $message = null): Argument
     {
         $this->validation        = $callable;
         $this->validationMessage = $message;
