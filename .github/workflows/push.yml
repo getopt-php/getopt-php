@@ -16,22 +16,26 @@ jobs:
     strategy:
       matrix:
         include:
-          - image: 'iras/php-composer:ubuntu-7.1'
-            php_version: 7.1
-          - image: 'iras/php-composer:ubuntu-7.2'
-            php_version: 7.2
-          - image: 'iras/php-composer:ubuntu-7.3'
-            php_version: 7.3
-          - image: 'iras/php-composer:ubuntu-7.4'
-            php_version: 7.4
+#          - image: 'iras/php-composer:ubuntu-7.1'
+#            php_version: 7.1
+#          - image: 'iras/php-composer:ubuntu-7.2'
+#            php_version: 7.2
+#          - image: 'iras/php-composer:ubuntu-7.3'
+#            php_version: 7.3
+#          - image: 'iras/php-composer:ubuntu-7.4'
+#            php_version: 7.4
           - image: 'iras/php-composer:ubuntu-8.0'
             php_version: 8.0
+            key: php80
           - image: 'iras/php-composer:ubuntu-8.1'
             php_version: 8.1
+            key: php81
           - image: 'iras/php-composer:ubuntu-8.2'
             php_version: 8.2
+            key: php82
           - image: 'iras/php-composer:ubuntu-8.3'
             php_version: 8.3
+            key: php83
     name: PHP Unit Tests on PHP ${{ matrix.php_version }}
     runs-on: ubuntu-latest
     container: ${{ matrix.image }}
@@ -47,7 +51,7 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: /composer/cache
-          key: composer-cache-${{ matrix.php_version }}
+          key: composer-cache-${{ matrix.key }}
       - name: Install dependencies
         run: composer install --no-interaction --ansi
       - name: Execute tests
@@ -60,12 +64,12 @@ jobs:
       - name: Format Coverage
         run: |
           git config --global --add safe.directory $GITHUB_WORKSPACE
-          cc-test-reporter format-coverage -t clover -o coverage/cc-${{ matrix.php_version }}.json coverage/clover.xml
+          cc-test-reporter format-coverage -t clover -o coverage/cc-${{ matrix.key }}.json coverage/clover.xml
       - name: Store Coverage Result
         uses: actions/upload-artifact@v4
         with:
-          path: coverage/
-          overwrite: true
+          name: coverage-${{ matrix.key }}
+          path: coverage/cc-${{ matrix.key }}.json
 
   after:
     needs: [unit-tests]
@@ -73,14 +77,13 @@ jobs:
     steps:
       - name: Restore Coverage Result
         uses: actions/download-artifact@v4
-        with:
-          name: coverage-results
-          path: coverage/
       - name: Report Coverage
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         run: |
           wget https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 -qO ./cc-test-reporter
           chmod +x ./cc-test-reporter
-          ./cc-test-reporter sum-coverage coverage/cc-*.json -p 8 -o coverage/cc-total.json
+          mkdir coverage && mv coverage-*/* coverage
+          ls -l coverage
+          ./cc-test-reporter sum-coverage coverage/cc-php*.json -p 4 -o coverage/cc-total.json
           ./cc-test-reporter upload-coverage -i coverage/cc-total.json
