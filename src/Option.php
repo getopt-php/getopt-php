@@ -239,7 +239,7 @@ class Option implements Describable
      * @param mixed $value
      * @return $this
      */
-    public function setValue(mixed $value = null): Option
+    public function setValue($value = null): Option
     {
         if ($value === null) {
             if (in_array($this->mode, [ GetOpt::REQUIRED_ARGUMENT, GetOpt::MULTIPLE_ARGUMENT ])) {

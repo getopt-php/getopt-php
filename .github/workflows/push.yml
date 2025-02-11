@@ -16,14 +16,18 @@ jobs:
     strategy:
       matrix:
         include:
-#          - image: 'iras/php-composer:ubuntu-7.1'
-#            php_version: 7.1
-#          - image: 'iras/php-composer:ubuntu-7.2'
-#            php_version: 7.2
-#          - image: 'iras/php-composer:ubuntu-7.3'
-#            php_version: 7.3
-#          - image: 'iras/php-composer:ubuntu-7.4'
-#            php_version: 7.4
+          - image: 'iras/php-composer:ubuntu-7.1'
+            php_version: 7.1
+            key: php71
+          - image: 'iras/php-composer:ubuntu-7.2'
+            php_version: 7.2
+            key: php72
+          - image: 'iras/php-composer:ubuntu-7.3'
+            php_version: 7.3
+            key: php73
+          - image: 'iras/php-composer:ubuntu-7.4'
+            php_version: 7.4
+            key: php74
           - image: 'iras/php-composer:ubuntu-8.0'
             php_version: 8.0
             key: php80
@@ -85,5 +89,5 @@ jobs:
           chmod +x ./cc-test-reporter
           mkdir coverage && mv coverage-*/* coverage
           ls -l coverage
-          ./cc-test-reporter sum-coverage coverage/cc-php*.json -p 4 -o coverage/cc-total.json
+          ./cc-test-reporter sum-coverage coverage/cc-php*.json -p 8 -o coverage/cc-total.json
           ./cc-test-reporter upload-coverage -i coverage/cc-total.json
