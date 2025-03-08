@@ -249,13 +249,22 @@ class Help implements HelpInterface
                 $nameWidth = strlen($command->getName());
             }
 
+            $aliasesLine = $command->getAliases()
+                ? $this->renderAliasLine($command->getAliases())
+                : '';
+
             $data[] = [
                 $command->getName(),
-                $command->getShortDescription()
+                $command->getShortDescription() . $aliasesLine
             ];
         }
 
         return $this->getText('commands-title') . $this->renderColumns($nameWidth, $data) . PHP_EOL;
+    }
+
+    protected function renderAliasLine(array $aliases): string
+    {
+        return ' ' . $this->surround('alias: ' . implode(', ', $aliases), $this->texts['optional']);
     }
 
     protected function renderUsageCommand(): string

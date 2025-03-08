@@ -315,6 +315,22 @@ class GetoptTest extends TestCase
     }
 
     /** @test */
+    public function getCommandByAlias(): void
+    {
+        $cmd1 = new Command('help', 'var_dump');
+        $cmd1->setAliases(['h']);
+        $cmd2 = new Command('test', 'var_dump');
+        $cmd2->setAliases(['t']);
+        $getopt = new GetOpt();
+
+        $getopt->addCOmmands([ $cmd1, $cmd2 ]);
+
+        self::assertSame($cmd1, $getopt->getCommand('h'));
+        self::assertSame($cmd2, $getopt->getCommand('t'));
+        self::assertNull($getopt->getCommand());
+    }
+
+    /** @test */
     public function setHelpLangToDe(): void
     {
         $getopt = new GetOpt();
