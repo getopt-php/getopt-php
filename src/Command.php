@@ -15,6 +15,9 @@ class Command implements CommandInterface
     /** @var string */
     protected $name;
 
+    /** @var array */
+    protected $aliases = [];
+
     /** @var string */
     protected $shortDescription;
 
@@ -71,6 +74,16 @@ class Command implements CommandInterface
     }
 
     /**
+     * @param array $aliases
+     * @return $this
+     */
+    public function setAliases($aliases)
+    {
+        $this->aliases = (array) $aliases;
+        return $this;
+    }
+
+    /**
      * @param mixed $handler
      * @return $this
      * @codeCoverageIgnore trivial
@@ -113,6 +126,14 @@ class Command implements CommandInterface
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAliases()
+    {
+        return $this->aliases;
     }
 
     /**

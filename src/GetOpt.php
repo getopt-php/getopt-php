@@ -50,6 +50,9 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     /** @var CommandInterface[] */
     protected $commands = [];
 
+    /** @var array */
+    protected $aliases = [];
+
     /** The command that is executed determined by process
      * @var CommandInterface */
     protected $command;
@@ -272,7 +275,11 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
                 throw new \InvalidArgumentException('$command has conflicting options');
             }
         }
-        $this->commands[$command->getName()] = $command;
+        $name = $command->getName();
+        $this->commands[$name] = $command;
+        foreach ((array) $command->getAliases() as $alias) {
+            $this->aliases[$alias] = $name;
+        }
         return $this;
     }
 
@@ -285,6 +292,7 @@ class GetOpt implements \Countable, \ArrayAccess, \IteratorAggregate
     public function getCommand($name = null): ?CommandInterface
     {
         if ($name !== null) {
+            $name = isset($this->aliases[$name]) ? $this->aliases[$name] : $name;
             return isset($this->commands[$name]) ? $this->commands[$name] : null;
         }
 
