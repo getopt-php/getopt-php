@@ -75,11 +75,11 @@ class OptionParser
 
         $option = new Option($array[0], $array[1], $array[2]);
 
-        if ($rowSize >= 4) {
+        if ($rowSize >= 4 && isset($array[3])) {
             $option->setDescription($array[3]);
         }
 
-        if ($rowSize >= 5 && $array[2] != GetOpt::NO_ARGUMENT) {
+        if ($rowSize >= 5 && $array[2] != GetOpt::NO_ARGUMENT && isset($array[4])) {
             $option->setArgument(new Argument($array[4]));
         }
 
