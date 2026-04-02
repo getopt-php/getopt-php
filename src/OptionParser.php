@@ -53,7 +53,7 @@ class OptionParser
     }
 
     /**
-     * Processes an option array. The array should be conform to the format
+     * Processes an option array. The array should conform to the format
      * (short, long, mode [, description [, default]]). See documentation for details.
      *
      * Developer note: Please don't add any further elements to the array. Future features should be configured only
@@ -70,13 +70,13 @@ class OptionParser
 
         $rowSize = count($array);
         if ($rowSize < 3) {
-            $array = self::completeOptionArray($array);
+            return new Option(...self::completeOptionArray($array));
         }
 
         $option = new Option($array[0], $array[1], $array[2]);
 
         if ($rowSize >= 4) {
-            $option->setDescription($array[3]);
+            $option->setDescription($array[3] ?? '');
         }
 
         if ($rowSize >= 5 && $array[2] != GetOpt::NO_ARGUMENT) {
